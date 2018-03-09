@@ -1,14 +1,7 @@
 {
   "name": "obsidian",
-  "version": "0.0.0",
-  "description": "Obsidian Framework",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@git.wanadev.org:obsidian/obsidian.git"
   },
   "author": "Wanadev",
   "license": "MIT",
@@ -16,6 +9,7 @@
     "babel-preset-env": "^1.6.1",
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.9.0"
+    "eslint-plugin-import": "^2.9.0",
+    "lerna": "^2.9.0"
   }
 }
