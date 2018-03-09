@@ -11,5 +11,10 @@
     "url": "git@git.wanadev.org:obsidian/obsidian.git"
   },
   "author": "Wanadev",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
+  }
 }
