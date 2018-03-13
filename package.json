@@ -1,10 +1,11 @@
 {
-  "name": "obsidian",
+  "name": "obsidian-framework",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wanadev",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "babel-preset-env": "^1.6.1",
     "eslint": "^4.18.2",
