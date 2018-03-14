@@ -1,12 +1,12 @@
 "use strict";
 
-const rootApp = Symbol("rootApp");
-const name = Symbol("name");
-const moduleName = Symbol("moduleName");
-const modules = Symbol("modules");
-const events = Symbol("events");
-const config = Symbol("config");
-const log = Symbol("log");
+const ROOT_APP = Symbol("rootApp");
+const NAME = Symbol("name");
+const MODULE_NAME = Symbol("moduleName");
+const MODULES = Symbol("modules");
+const EVENTS = Symbol("events");
+const CONFIG = Symbol("config");
+const LOG = Symbol("log");
 
 /**
  * Obsidian Application
@@ -15,18 +15,18 @@ const log = Symbol("log");
 class Application {
 
     constructor(name="obsidian", _params={}}) {
-        this[rootApp] = _params[rootApp] || null;
+        this[ROOT_APP] = _params[ROOT_APP] || null;
         this[name] = name;
-        this[moduleName] = _params[moduleName] || "core";
-        this[modules] = _params[modules] || {};
+        this[MODULE_NAME] = _params[MODULE_NAME] || "core";
+        this[MODULES] = _params[MODULES] || {};
     }
 
     get name() {
-        return this[name];
+        return this[NAME];
     }
 
     get moduleName() {
-        return this[moduleName];
+        return this[MODULE_NAME];
     }
 
     get events() {
@@ -59,9 +59,9 @@ class Application {
 
     _createSubApplication(moduleName, modules) {
         return new Application(this.name, {
-            [rootApp]: this,
-            [moduleName]: moduleName,
-            [modules]: modules,
+            [ROOT_APP]: this,
+            [MODULE_NAME]: moduleName,
+            [MODULES]: modules,
         });
     }
 }
