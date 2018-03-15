@@ -18,8 +18,8 @@ class Application {
      */
     constructor(name = "obsidian", _params = {}) {
         this[ROOT_APP] = _params[ROOT_APP] || null;
-        this[name] = name;
-        this[MODULE_NAME] = _params[MODULE_NAME] || "core";
+        this[NAME] = name;
+        this[MODULE_NAME] = _params[MODULE_NAME] || "obsidian";
         this[MODULES] = _params[MODULES] || {};
     }
 
@@ -33,7 +33,7 @@ class Application {
     }
 
     /**
-     * The current module's name.
+     * The current module name.
      *
      * @public
      */
@@ -42,7 +42,7 @@ class Application {
     }
 
     /**
-     * Handles application's events. See :doc:`events`.
+     * Handles application events. See :doc:`events`.
      *
      * @public
      */
@@ -51,7 +51,7 @@ class Application {
     }
 
     /**
-     * Handles application's configuration. See :doc:`config`.
+     * Handles application configuration. See :doc:`config`.
      *
      * @public
      */
@@ -60,7 +60,7 @@ class Application {
     }
 
     /**
-     * Handles application's logging. See :doc:`logging`.
+     * Handles application logging. See :doc:`logging`.
      *
      * @public
      */
