@@ -2,6 +2,7 @@
   "name": "obsidian-framework",
   "private": true,
   "scripts": {
+    "build-doc": "./scripts/build-doc.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wanadev",
@@ -11,6 +12,7 @@
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.9.0",
+    "jsdoc": "^3.5.5",
     "lerna": "^2.9.0"
   }
 }
