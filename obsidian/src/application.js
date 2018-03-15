@@ -1,5 +1,3 @@
-"use strict";
-
 const ROOT_APP = Symbol("rootApp");
 const NAME = Symbol("name");
 const MODULE_NAME = Symbol("moduleName");
@@ -18,7 +16,7 @@ class Application {
      * @param {String} [name="obsidian"] The name of the application (default:
      *                                   ``"obsidian"``).
      */
-    constructor(name="obsidian", _params={}) {
+    constructor(name = "obsidian", _params = {}) {
         this[ROOT_APP] = _params[ROOT_APP] || null;
         this[name] = name;
         this[MODULE_NAME] = _params[MODULE_NAME] || "core";
@@ -127,6 +125,7 @@ class Application {
             [MODULES]: modules,
         });
     }
+
 }
 
 module.exports = Application;

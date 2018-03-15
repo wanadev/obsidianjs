@@ -1,5 +1,3 @@
-"use strict";
-
 const Application = require("./application.js");
 
 /**
@@ -8,8 +6,8 @@ const Application = require("./application.js");
  * @param {String} [name="obsidian"] The name of the application (default: ``"obsidian"``).
  * @return {Application} A new Obsidian application.
  */
-function obsidian(name="obsidian") {
-    return new Application(name)
+function obsidian(name = "obsidian") {
+    return new Application(name);
 }
 
 module.exports = obsidian;
