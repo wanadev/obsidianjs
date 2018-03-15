@@ -7,10 +7,14 @@ SOURCEDIR=build/doc.tmp
 BUILDDIR=build
 
 if [ -d __env__ ] ; then
-    source __env__/bin/activate
+    test -f __env__/bin/activate \
+        && source __env__/bin/activate \
+        || source __env__/Scripts/activate
 else
     virtualenv __env__
-    source __env__/bin/activate
+    test -f __env__/bin/activate \
+        && source __env__/bin/activate \
+        || source __env__/Scripts/activate
     pip install -r requirements.txt
 fi
 
