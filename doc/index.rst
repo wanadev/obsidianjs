@@ -5,12 +5,9 @@ Welcome to Obsidian Framework's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   ./getting-started.rst
-   ./module.rst
-   ./application.rst
-   ./config.rst
-   ./events.rst
-   ./logging.rst
+   ./howto/index.rst
+   ./obsidian/index.rst
+   ./modules/index.rst
 
 
 Indices and tables
