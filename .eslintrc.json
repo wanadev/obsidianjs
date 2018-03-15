@@ -1,7 +1,21 @@
 {
-    "rules": {
-        "quotes": ["error", "double"],
-        "indent": ["error", 4]
-    },
-    "extends": "airbnb-base"
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "commonjs": true
+  },
+  "rules": {
+    "quotes": ["error", "double"],
+    "indent": ["error", 4],
+    "padded-blocks": ["error", {
+      "classes": "always"
+    }],
+    "no-multi-spaces": ["error", {
+      "ignoreEOLComments": true
+    }]
+
+  },
+  "extends": "airbnb-base"
 }
+
