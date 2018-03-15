@@ -2,6 +2,7 @@
   "name": "obsidian-framework",
   "private": true,
   "scripts": {
+    "build-doc": "./scripts/build-doc.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wanadev",
