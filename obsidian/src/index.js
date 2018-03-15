@@ -3,11 +3,10 @@
 const Application = require("./application.js");
 
 /**
- * Obsidian application factory
+ * Obsidian application factory.
  *
- * @public
- * @param {String} [name="obsidian"]
- * @return {Application}
+ * @param {String} [name="obsidian"] The name of the application (default: ``"obsidian"``).
+ * @return {Application} A new Obsidian application.
  */
 function obsidian(name="obsidian") {
     return new Application(name)
