@@ -13,7 +13,7 @@ To run all test of a specific module:
 
 To only run test on changed files:
 
-    npm test -o
+    npm test -- -o
 
 
 ## Build Documentation
