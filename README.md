@@ -1,7 +1,11 @@
 # Obsidian Framework
 
 
-## Running tests
+## Running Linter and Tests
+
+To run the linter:
+
+    npx eslint .
 
 To run all tests:
 
