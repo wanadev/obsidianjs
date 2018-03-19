@@ -1,0 +1,5 @@
+node_modules/*
+obsidian/node_modules/*
+modules/*/node_modules/*
+__env__/*
+build/*

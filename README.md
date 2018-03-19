@@ -1,6 +1,25 @@
 # Obsidian Framework
 
 
+## Running Linter and Tests
+
+To run the linter:
+
+    npx eslint .
+
+To run all tests:
+
+    npm test
+
+To run all test of a specific module:
+
+    npm test modules/my-module/
+
+To only run test on changed files:
+
+    npm test -- -o
+
+
 ## Build Documentation
 
 ### Linux

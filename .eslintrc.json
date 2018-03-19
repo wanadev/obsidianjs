@@ -1,4 +1,6 @@
 {
+  "root": true,
+  "extends": "airbnb-base",
   "env": {
     "es6": true,
     "browser": true,
@@ -16,6 +18,11 @@
     }]
 
   },
-  "extends": "airbnb-base"
+  "overrides": [{
+    "files": ["*.test.js"],
+    "env": {
+      "jest": true
+    }
+  }]
 }
 
