@@ -1,3 +1,5 @@
+import glob
+
 # -*- coding: utf-8 -*-
 #
 # Configuration file for the Sphinx documentation builder.
@@ -165,6 +167,10 @@ texinfo_documents = [
 
 js_source_path = [
     "obsidian/src/",
-    "modules/*/src/",
 ]
+js_source_path.extend(
+    [p.replace("../", "").replace("\\", "/")
+        for p in glob.glob("../../modules/*/src")]
+)
+print(js_source_path)
 root_for_relative_js_paths = "./"
