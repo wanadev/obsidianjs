@@ -1,3 +1,5 @@
+const helpers = require("./helpers.js");
+
 const MODULES_LIST = Symbol("modules-list");
 const MODULES = Symbol("modules");
 
@@ -112,7 +114,35 @@ class ModulesLoader {
      * @return A promise that returns the loaded module.
      */
     load(moduleName) {
-        throw new Error("NotImpelemntedError");  // return (promise) module
+        if (!this[MODULES_LIST][moduleName]) {
+            return Promise.reject(new Error(`UnknownModule: unable to find the '${moduleName}' module. Maybe someone forget to register it?`));
+        }
+
+        const moduleJavascriptName = helpers.toCamelCase(moduleName);
+
+        // The module is already loaded... return it.
+        if (this[MODULES][moduleJavascriptName] !== undefined) {
+            return Promise.resolve(this[MODULES][moduleJavascriptName]);
+        }
+
+        // Create the module's app
+        const app = {};  // TODO
+
+        // Load the module
+        return Promise.resolve()
+            .then(() => this[MODULES_LIST][moduleName].load(app))
+            .catch((error) => {
+                if (error instanceof Error) {
+                    error.message = `ModuleLoadingError: ${error.message}`;  // eslint-disable-line no-param-reassign
+                    throw error;
+                } else {
+                    throw new Error(`ModuleLoadingError: ${error}`);
+                }
+            })
+            .then((module_) => {
+                this[MODULES][moduleJavascriptName] = module_ || null;
+                return module_ || null;
+            });
     }
 
     /**

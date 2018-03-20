@@ -103,3 +103,130 @@ describe("ModulesLoader.register", () => {
     });
 
 });
+
+describe("ModulesLoader.load", () => {
+
+    test("can load a registered module", () => {
+        const testModuleLoadFn = jest.fn();
+        const testModuleUnloadFn = jest.fn();
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: testModuleLoadFn,
+            unload: testModuleUnloadFn,
+        };
+
+        const modules = new ModulesLoader();
+
+        modules.register(testModule);
+
+        return modules.load("test-module")
+            .then(() => {
+                expect(testModuleLoadFn.mock.calls.length).toBe(1);
+                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+            });
+    });
+
+    test("can load a renamed module", () => {
+        const testModuleLoadFn = jest.fn();
+        const testModuleUnloadFn = jest.fn();
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: testModuleLoadFn,
+            unload: testModuleUnloadFn,
+        };
+
+        const modules = new ModulesLoader();
+
+        modules.register(testModule, {
+            name: "new-test-module",
+        });
+
+        return modules.load("new-test-module")
+            .then(() => {
+                expect(testModuleLoadFn.mock.calls.length).toBe(1);
+                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+            });
+    });
+
+    test("does not reload a module that is already loaded (load() method is called only once)", () => {
+        const testModuleLoadFn = jest.fn();
+        const testModuleUnloadFn = jest.fn();
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: testModuleLoadFn,
+            unload: testModuleUnloadFn,
+        };
+
+        const modules = new ModulesLoader();
+
+        modules.register(testModule);
+
+        return modules.load("test-module")
+            .then(() => modules.load("test-module"))
+            .then(() => {
+                expect(testModuleLoadFn.mock.calls.length).toBe(1);
+                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+            });
+    });
+
+    test("returns an error if the module is not registered", () => {
+        expect.assertions(1);
+
+        const modules = new ModulesLoader();
+
+        return modules.load("foobar")
+            .catch((error) => {
+                expect(error.toString()).toMatch("UnknownModule");
+            });
+    });
+
+    test("returns an error if the load() function of the module fails", () => {
+        expect.assertions(1);
+
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: () => {
+                throw new Error("TestError");
+            },
+            unload: () => {},
+        };
+
+        const modules = new ModulesLoader();
+
+        modules.register(testModule);
+
+        return modules.load("test-module")
+            .catch((error) => {
+                expect(error.toString()).toMatch("ModuleLoadingError");
+            });
+    });
+
+});
+
+describe("ModulesLoader.modules", () => {
+
+    test("contains loaded modules", () => {
+        expect.assertions(1);
+
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: () => "my-test-module",
+            unload: () => {},
+        };
+
+        const modules = new ModulesLoader();
+
+        modules.register(testModule);
+
+        return modules.load("test-module")
+            .then(() => {
+                expect(modules.modules).toHaveProperty("testModule", "my-test-module");
+            });
+    });
+
+});
