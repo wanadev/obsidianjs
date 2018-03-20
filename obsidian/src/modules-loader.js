@@ -2,7 +2,7 @@ const MODULES_LIST = Symbol("modules-list");
 const MODULES = Symbol("modules");
 
 /**
- * Obsidian Modules Loader.
+ * Loads Obsidian modules, resolving and injecting dependencies.
  */
 class ModulesLoader {
 
