@@ -10,3 +10,4 @@ Obsidian Framework
    ./events.rst
    ./logging.rst
    ./module.rst
+   ./modules-loader.rst
