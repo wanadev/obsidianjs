@@ -9,5 +9,5 @@ Obsidian Framework
    ./config.rst
    ./events.rst
    ./logging.rst
-   ./module.rst
    ./modules-loader.rst
+   ./module.rst

@@ -1,5 +1,5 @@
-Module
-======
+Obsidian Module Definition
+==========================
 
 TODO
 
@@ -11,7 +11,7 @@ TODO
         requires: ["my-other-module"],
 
         load(app) {
-            return {};  // return the Controller/API ok the module
+            return {};  // return the Controller / API of the module
         },
 
         unload(app) {
