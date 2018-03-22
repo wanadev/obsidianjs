@@ -145,9 +145,9 @@ class Application {
     _createSubApplication(namespace, modules) {
         return new Application(this.name, namespace, {
             modulesLoader: this[MODULES_LOADER],
-            // config: this.config._getnamespaced(),
-            // events: this.events._getnamespaced(),
-            // log: this.log._getnamespaced(),
+            // config: this.config._getnamespaced(namespace),
+            // events: this.events._getnamespaced(namespace),
+            // log: this.log._getnamespaced(namespace),
             rootApp: this,
         }, modules);
     }
