@@ -61,12 +61,12 @@ class ModulesLoader {
      *    automatically. The ``modules`` option is only useful when you want to
      *    substitute a dependency by an other one.
      *
-     * @param {Object} module_ The module to load (see :doc:`module`)
-     * @param {Object} params (optional)
-     * @param {String} params.name A name that will be used instead of ``module_.name`` (optional)
-     * @param {Object} params.modules Modules objects or names that will be injected (optional)
+     * @param {Object} module_ The module to load (see :doc:`module`).
+     * @param {Object} params (optional).
+     * @param {String} params.name A name that will be used instead of ``module_.name`` (optional).
+     * @param {Object} params.modules Modules objects or names that will be injected (optional).
      * @param {Object} params.config Configuration that will be passed to the module at
-     *                               load time (optional)
+     *                               load time (optional).
      *
      */
     register(module_, {
@@ -84,7 +84,6 @@ class ModulesLoader {
 
         const moduleData = {
             name: name || module_.name,
-            loaded: false,
             requires: module_.requires,
             moduleOverride: modules,
             modules: {},
