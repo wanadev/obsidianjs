@@ -1,3 +1,5 @@
+const helpers = require("./helpers.js");
+
 const NAME = Symbol("name");
 const NAMESPACE = Symbol("moduleName");
 const MODULES_LOADER = Symbol("modulesLoader");
@@ -7,6 +9,7 @@ const LOG = Symbol("log");
 const ROOT_APP = Symbol("rootApp");
 
 const MODULES = Symbol("modules");
+const IS_STARTED = Symbol("isStarted");
 
 /**
  * Obsidian Application.
@@ -39,6 +42,7 @@ class Application {
         this[ROOT_APP] = dependencies.rootApp || null;
 
         this[MODULES] = modules;
+        this[IS_STARTED] = false;
     }
 
     /**
@@ -100,7 +104,10 @@ class Application {
      * @public
      */
     get modules() {
-        return this[MODULES];
+        if (this[ROOT_APP]) {
+            return this[MODULES];
+        }
+        return this[MODULES_LOADER].modules;
     }
 
     /**
@@ -108,10 +115,18 @@ class Application {
      *
      * @public
      * @param {Object} module The module to load (see :doc:`module`).
-     * @param {Object} params Additional parameters for the module
+     * @param {Object} [params={}] (optional) Additional parameters for the module
      */
-    load(module, params) {
-        throw new Error("NotImplementedError");  // TODO
+    load(module, params = {}) {
+        if (this[ROOT_APP]) throw new Error("ContextError: you cannot load modules from a module.");
+
+        const moduleName = params.name || module.name;
+
+        this[MODULES_LOADER].register(module, params);
+
+        if (this[IS_STARTED]) {
+            this[MODULES_LOADER].load(moduleName);
+        }
     }
 
     /**
@@ -130,7 +145,11 @@ class Application {
      * @public
      */
     start() {
-        throw new Error("NotImplementedError");  // TODO
+        if (this[IS_STARTED]) {
+            throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
+        }
+        this[IS_STARTED] = true;
+        this[MODULES_LOADER].loadAll();
     }
 
     /**
