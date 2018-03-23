@@ -119,14 +119,9 @@ class Application {
      */
     load(module, params = {}) {
         if (this[ROOT_APP]) throw new Error("ContextError: you cannot load modules from a module.");
-
-        const moduleName = params.name || module.name;
+        if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot load modules once application started.");
 
         this[MODULES_LOADER].register(module, params);
-
-        if (this[IS_STARTED]) {
-            this[MODULES_LOADER].load(moduleName);
-        }
     }
 
     /**

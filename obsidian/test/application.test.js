@@ -51,41 +51,24 @@ describe("application.load", () => {
         expect(modulesLoader.register).toHaveBeenCalledWith(module, params);
     });
 
-    test("registers and load module immediatly if the application is already started", () => {
-        const modulesLoader = {
-            register: jest.fn(),
-            load: jest.fn(),
-            loadAll: jest.fn(),
-        };
-
-        const module = {
-            name: "test-module",
-            requires: [],
-            load: () => "test-module-object",
-            unload: () => {},
-        };
-
-        const app = new Application("test", undefined, {
-            modulesLoader,
-        });
-
-        app.start();
-
-        app.load(module);
-
-        expect(modulesLoader.register).toHaveBeenCalledTimes(1);
-        expect(modulesLoader.register).toHaveBeenCalledWith(module, {});
-        expect(modulesLoader.loadAll).toHaveBeenCalledTimes(1);
-        expect(modulesLoader.load).toHaveBeenCalledTimes(1);
-        expect(modulesLoader.load).toHaveBeenCalledWith("test-module");
-    });
-
     test("throws an error if called from a sub-application (inside a module)", () => {
         const app = new Application("test", "sub-application", {
             rootApp: {},
         });
 
         expect(() => app.load({})).toThrow(/ContextError/);
+    });
+
+    test("throw an error when trying to load a module when applicaiton already started", () => {
+        const app = new Application("test", undefined, {
+            modulesLoader: {
+                loadAll: () => {},
+            },
+        });
+
+        app.start();
+
+        expect(() => app.load({})).toThrow(/ApplicationAlreadyStarted/);
     });
 
 });
