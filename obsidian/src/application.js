@@ -37,7 +37,7 @@ class Application {
 
         this[MODULES_LOADER] = dependencies.modulesLoader;
         this[CONFIG] = dependencies.config;
-        this[EVENTS] = dependencies.config;
+        this[EVENTS] = dependencies.events;
         this[LOG] = dependencies.log;
         this[ROOT_APP] = dependencies.rootApp || null;
 
