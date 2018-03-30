@@ -13,7 +13,7 @@ const helpers = {
      */
     toCamelCase(string) {
         let result = "";
-        const words = string.match(/[a-z]+[0-9]*/gi);
+        const words = string.match(/([A-Za-z][a-z0-9]+|[A-Z]{2}[A-Z0-9]*(?![a-z])|[a-zA-Z0-9])/g);
 
         for (let i = 0; i < words.length; i += 1) {
             const word = words[i];
