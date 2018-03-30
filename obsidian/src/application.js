@@ -1,7 +1,7 @@
 const helpers = require("./helpers.js");
 
 const NAME = Symbol("name");
-const NAMESPACE = Symbol("moduleName");
+const NAMESPACE = Symbol("namespace");
 const MODULES_LOADER = Symbol("modulesLoader");
 const CONFIG = Symbol("config");
 const EVENTS = Symbol("events");
@@ -159,9 +159,9 @@ class Application {
     _createSubApplication(namespace, modules) {
         return new Application(this.name, namespace, {
             modulesLoader: this[MODULES_LOADER],
-            // config: this.config._getnamespaced(namespace),
-            // events: this.events._getnamespaced(namespace),
-            // log: this.log._getnamespaced(namespace),
+            // config: this.config._getNamespaced(namespace),
+            events: this.events._getNamespaced(namespace),
+            // log: this.log._getNamespaced(namespace),
             rootApp: this,
         }, modules);
     }
