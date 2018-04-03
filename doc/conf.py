@@ -73,6 +73,7 @@ exclude_patterns = []
 pygments_style = "sphinx"
 
 primary_domain = "js"
+highlight_language = "js"
 
 
 # -- Options for HTML output -------------------------------------------------
