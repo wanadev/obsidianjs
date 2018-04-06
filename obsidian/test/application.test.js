@@ -1,4 +1,4 @@
-const Application = require("../src/application.js");
+const Application = require("../src/application");
 
 describe("application.load", () => {
 

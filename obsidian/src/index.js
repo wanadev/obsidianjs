@@ -1,8 +1,8 @@
-const Application = require("./application.js");
-const ModulesLoader = require("./modules-loader.js");
-const Config = require("./config.js");
-const Events = require("./events.js");
-const Logging = require("./logging.js");
+const Application = require("./application");
+const ModulesLoader = require("./modules-loader");
+const Config = require("./config");
+const { Events } = require("./events");
+const Logging = require("./logging");
 
 /**
  * Obsidian application factory.
@@ -11,10 +11,12 @@ const Logging = require("./logging.js");
  * @return {Application} A new Obsidian application.
  */
 function obsidian(name) {
+    const events = new Events();
+
     return new Application(name, undefined, {
         modulesLoader: new ModulesLoader(),
         config: new Config(),
-        events: new Events(),
+        events: events._getNamespaced("obsidian"),
         log: new Logging(),
     });
 }

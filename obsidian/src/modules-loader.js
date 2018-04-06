@@ -1,4 +1,4 @@
-const helpers = require("./helpers.js");
+const helpers = require("./helpers");
 
 const MODULES_LIST = Symbol("modules-list");
 const MODULES = Symbol("modules");
