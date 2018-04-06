@@ -21,14 +21,14 @@ class Application {
      * @param {string} [name="obsidian"] The name of the application (default: ``"obsidian"``).
      * @param {string} [namespace="obsidian"] The namespace, generally the
      *        module name (default: ``"obsidian"``).
-     * @param {Object} dependencies Application dependencies.
+     * @param {Object} [dependencies={}] Application dependencies.
      * @param {ModulesLoader} dependencies.modulesLoader An instance of the module loader.
      * @param {Config} dependencies.config An instance of the config handler.
      * @param {Events} dependencies.events An instance of the event dispatcher.
      * @param {Logging} dependencies.log An instance of the logger.
      * @param {Application} [dependencies.rootApp=null] (optional) An instance
      *        of the root application, if any.
-     * @param {Object} modules (optional) The modules that should be accessible
+     * @param {Object} [modules={}] (optional) The modules that should be accessible
      *        through this application.
      */
     constructor(name = "obsidian", namespace = "obsidian", dependencies = {}, modules = {}) {
