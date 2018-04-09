@@ -46,6 +46,17 @@ class Application {
     }
 
     /**
+     * Indicate whether the application is started or not.
+     *
+     * @public
+     * @type {boolean}
+     */
+    get isStarted() {
+        if (this[ROOT_APP]) return this[ROOT_APP].isStarted;
+        return this[IS_STARTED];
+    }
+
+    /**
      * The application name.
      *
      * @public

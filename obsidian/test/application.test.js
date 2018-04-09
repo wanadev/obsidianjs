@@ -130,6 +130,53 @@ describe("application.start", () => {
 
 });
 
+describe("application.isStarted", () => {
+
+    test("indicates that application started (from root application)", () => {
+        const modulesLoader = {
+            loadAll: () => {},
+            _getNamespaced: () => ({}),
+        };
+
+        const app = new Application("test", undefined, {
+            modulesLoader,
+        });
+
+        expect(app.isStarted).toBe(false);
+
+        app.start();
+
+        expect(app.isStarted).toBe(true);
+    });
+
+    test("indicates that application started (from sub application)", () => {
+        const modulesLoader = {
+            loadAll: () => {},
+            _getNamespaced: () => ({}),
+        };
+
+        const module = {
+            _getNamespaced: () => ({}),
+        };
+
+        const app = new Application("test", undefined, {
+            modulesLoader,
+            config: module,
+            events: module,
+            log: module,
+        });
+
+        const subApp = app._createSubApplication("sub");
+
+        expect(subApp.isStarted).toBe(false);
+
+        app.start();
+
+        expect(subApp.isStarted).toBe(true);
+    });
+
+});
+
 describe("application.modules", () => {
 
     test("returns the module loader modules on root application", () => {
