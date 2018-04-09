@@ -128,6 +128,28 @@ describe("application.start", () => {
 
     });
 
+    test("not allows to be called from sub-application", () => {
+        const modulesLoader = {
+            loadAll: () => {},
+            _getNamespaced: () => ({}),
+        };
+
+        const module = {
+            _getNamespaced: () => ({}),
+        };
+
+        const app = new Application("test", undefined, {
+            modulesLoader,
+            config: module,
+            events: module,
+            log: module,
+        });
+
+        const subApp = app._createSubApplication("sub");  // eslint-disable-line no-underscore-dangle
+
+        expect(() => subApp.start()).toThrow(/ContextError/);
+    });
+
 });
 
 describe("application.isStarted", () => {
@@ -166,7 +188,7 @@ describe("application.isStarted", () => {
             log: module,
         });
 
-        const subApp = app._createSubApplication("sub");
+        const subApp = app._createSubApplication("sub");  // eslint-disable-line no-underscore-dangle
 
         expect(subApp.isStarted).toBe(false);
 

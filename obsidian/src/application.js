@@ -151,9 +151,8 @@ class Application {
      * @public
      */
     start() {
-        if (this[IS_STARTED]) {
-            throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
-        }
+        if (this[ROOT_APP]) throw new Error("ContextError: you cannot start the application from a module.");
+        if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
         this[IS_STARTED] = true;
         this[MODULES_LOADER].loadAll();
     }
