@@ -2,6 +2,7 @@ const helpers = require("./helpers.js");
 
 const MODULES_LIST = Symbol("modules-list");
 const MODULES = Symbol("modules");
+const APP = Symbol("app");
 
 /**
  * Loads Obsidian modules, resolving and injecting dependencies.
@@ -31,6 +32,16 @@ class ModulesLoader {
      */
     get modules() {
         return this[MODULES];
+    }
+
+    /**
+     * Define the (sub)application this module will work with.
+     *
+     * @public
+     * @param {Application} app The application or sub-application.
+     */
+    setApp(app) {
+        this[APP] = app;
     }
 
     /**

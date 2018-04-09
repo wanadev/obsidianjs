@@ -36,9 +36,13 @@ class Application {
         this[NAMESPACE] = namespace;
 
         this[MODULES_LOADER] = dependencies.modulesLoader;
+        if (this[MODULES_LOADER]) this[MODULES_LOADER].setApp(this);
         this[CONFIG] = dependencies.config;
+        if (this[CONFIG]) this[CONFIG].setApp(this);
         this[EVENTS] = dependencies.events;
+        if (this[EVENTS]) this[EVENTS].setApp(this);
         this[LOG] = dependencies.log;
+        if (this[LOG]) this[LOG].setApp(this);
         this[ROOT_APP] = dependencies.rootApp || null;
 
         this[MODULES] = modules;

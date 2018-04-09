@@ -1,5 +1,14 @@
 const ModulesLoader = require("../src/modules-loader.js");
 
+describe("ModulesLoader.setApp", () => {
+
+    test("can be used to set an application instance to work with", () => {
+        const modules = new ModulesLoader();
+        modules.setApp({});
+    });
+
+});
+
 describe("ModulesLoader.register", () => {
 
     test("can register a module that looks valide", () => {
