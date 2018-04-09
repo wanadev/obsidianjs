@@ -61,35 +61,35 @@ class ModulesLoader {
      *    automatically. The ``modules`` option is only useful when you want to
      *    substitute a dependency by an other one.
      *
-     * @param {Object} module_ The module to load (see :doc:`module`).
+     * @param {Object} module The module to load (see :doc:`module`).
      * @param {Object} params (optional).
-     * @param {string} params.name A name that will be used instead of ``module_.name`` (optional).
+     * @param {string} params.name A name that will be used instead of ``module.name`` (optional).
      * @param {Object} params.modules Modules objects or names that will be injected (optional).
      * @param {Object} params.config Configuration that will be passed to the module at
      *                               load time (optional).
      *
      */
-    register(module_, {
+    register(module, {
         name = null,
         modules = {},
         config = {},
     } = {}) {
-        if (!module_.name) throw new Error("InvalidObsidianModule: missing 'name' property");
-        if (!module_.requires) throw new Error("InvalidObsidianModule: missing 'requires' property");
-        if (!Array.isArray(module_.requires)) throw new Error("InvalidObsidianModule: 'requires' property must be an array");
-        if (!module_.load) throw new Error("InvalidObsidianModule: missing 'load' property");
-        if (typeof module_.load !== "function") throw new Error("InvalidObsidianModule: 'load' property must be a function");
-        if (!module_.unload) throw new Error("InvalidObsidianModule: missing 'unload' property");
-        if (typeof module_.unload !== "function") throw new Error("InvalidObsidianModule: 'unload' property must be a function");
+        if (!module.name) throw new Error("InvalidObsidianModule: missing 'name' property");
+        if (!module.requires) throw new Error("InvalidObsidianModule: missing 'requires' property");
+        if (!Array.isArray(module.requires)) throw new Error("InvalidObsidianModule: 'requires' property must be an array");
+        if (!module.load) throw new Error("InvalidObsidianModule: missing 'load' property");
+        if (typeof module.load !== "function") throw new Error("InvalidObsidianModule: 'load' property must be a function");
+        if (!module.unload) throw new Error("InvalidObsidianModule: missing 'unload' property");
+        if (typeof module.unload !== "function") throw new Error("InvalidObsidianModule: 'unload' property must be a function");
 
         const moduleData = {
-            name: name || module_.name,
-            requires: module_.requires,
+            name: name || module.name,
+            requires: module.requires,
             moduleOverride: modules,
             modules: {},
             config,
-            load: module_.load,
-            unload: module_.unload,
+            load: module.load,
+            unload: module.unload,
         };
 
         this[MODULES_LIST][moduleData.name] = moduleData;
@@ -138,9 +138,9 @@ class ModulesLoader {
                     throw new Error(`ModuleLoadingError: ${error}`);
                 }
             })
-            .then((module_) => {
-                this[MODULES][moduleJavascriptName] = module_ || null;
-                return module_ || null;
+            .then((module) => {
+                this[MODULES][moduleJavascriptName] = module || null;
+                return module || null;
             });
     }
 
