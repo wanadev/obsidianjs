@@ -126,6 +126,7 @@ describe("ModulesLoader.load", () => {
         };
 
         const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
 
         modules.register(testModule);
 
@@ -147,6 +148,7 @@ describe("ModulesLoader.load", () => {
         };
 
         const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
 
         modules.register(testModule, {
             name: "new-test-module",
@@ -170,6 +172,7 @@ describe("ModulesLoader.load", () => {
         };
 
         const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
 
         modules.register(testModule);
 
@@ -205,6 +208,7 @@ describe("ModulesLoader.load", () => {
         };
 
         const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
 
         modules.register(testModule);
 
@@ -229,6 +233,7 @@ describe("ModulesLoader.modules", () => {
         };
 
         const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
 
         modules.register(testModule);
 

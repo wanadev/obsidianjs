@@ -10,7 +10,7 @@ describe("Application.constructor", () => {
             log: { setApp: jest.fn() },
         };
 
-        const app = new Application("test", undefined, dependencies, undefined)
+        const app = new Application("test", undefined, dependencies, undefined);
 
         expect(dependencies.modulesLoader.setApp).toHaveBeenCalledTimes(1);
         expect(dependencies.modulesLoader.setApp).toHaveBeenCalledWith(app);

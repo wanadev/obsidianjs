@@ -136,7 +136,8 @@ class ModulesLoader {
         }
 
         // Create the module's app
-        const app = {};  // TODO
+        const app = this[APP]._createSubApplication(moduleName, {});  // TODO inject deps
+        //const app = {};
 
         // Load the module
         return Promise.resolve()
