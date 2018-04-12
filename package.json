@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "build-doc": "bash ./scripts/build-doc.sh",
-    "test": "jest --coverage --coverageDirectory=build/coverage"
+    "test": "jest --coverage --coverageDirectory=build/coverage",
+    "test-watch": "jest --watch",
+    "coverage": "npm test && xdg-open build/coverage/lcov-report/index.html"
   },
   "author": "Wanadev",
   "license": "BSD-3-Clause",

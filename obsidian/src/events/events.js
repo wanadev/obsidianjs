@@ -4,6 +4,16 @@ const EMIT = Symbol("emit");
 const ONCE = Symbol("once");
 const REMOVE_LISTENER = Symbol("removeListener");
 
+const ROOT_NAMESPACE = "obsidian";
+
+const resolveEventPath = (eventPath, namespace) => {
+    const parts = eventPath.split(".");
+
+    return parts[0] === "~"
+        ? `${namespace}.${parts.slice(1).join(".")}`
+        : eventPath;
+};
+
 /**
  * Handle Obsidian application events.
  */
@@ -14,32 +24,23 @@ class Events {
     }
 
     on(eventPath, listener) {
-        this[ON]("obsidian", eventPath, listener);
+        this[ON](ROOT_NAMESPACE, eventPath, listener);
     }
 
     once(eventPath, listener) {
-        this[ONCE]("obsidian", eventPath, listener);
+        this[ONCE](ROOT_NAMESPACE, eventPath, listener);
     }
 
     removeListener(eventPath, listener) {
-        this[REMOVE_LISTENER]("obsidian", eventPath, listener);
+        this[REMOVE_LISTENER](ROOT_NAMESPACE, eventPath, listener);
     }
 
     emit(eventPath, ...args) {
-        this[EMIT]("obsidian", eventPath, ...args);
-    }
-
-    resolveEventPath(eventPath, namespace) {
-        const parts = eventPath.split(".");
-
-        return parts[0] === "~"
-            ? `${namespace}.${parts.slice(1).join(".")}`
-            : eventPath;
+        this[EMIT](ROOT_NAMESPACE, eventPath, ...args);
     }
 
     [ON](namespace, eventPath, listener) {
-        const eventId = this.resolveEventPath(eventPath, namespace);
-        // console.log(eventId);
+        const eventId = resolveEventPath(eventPath, namespace);
 
         if (!this[LISTENERS][eventId]) {
             this[LISTENERS][eventId] = [];
@@ -54,7 +55,7 @@ class Events {
     }
 
     [REMOVE_LISTENER](namespace, eventPath, listener) {
-        const eventId = this.resolveEventPath(eventPath, namespace);
+        const eventId = resolveEventPath(eventPath, namespace);
 
         if (!this[LISTENERS][eventId]) {
             return;
