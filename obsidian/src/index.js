@@ -11,12 +11,10 @@ const Logging = require("./logging");
  * @return {Application} A new Obsidian application.
  */
 function obsidian(name) {
-    const events = new Events();
-
     return new Application(name, undefined, {
         modulesLoader: new ModulesLoader(),
         config: new Config(),
-        events: events._getNamespaced("obsidian"),
+        events: new Events(),
         log: new Logging(),
     });
 }
