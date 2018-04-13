@@ -3,7 +3,7 @@ const LISTENERS = Symbol("events");
 const NAMESPACE = Symbol("namespace");
 
 /**
- * Handle Obsidian application events.
+ * Provides an access to an event namespace.
  */
 class Bus {
 
