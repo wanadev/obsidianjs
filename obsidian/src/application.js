@@ -32,21 +32,24 @@ class Application {
      *        through this application.
      */
     constructor(name = "obsidian", namespace = "obsidian", dependencies = {}, modules = {}) {
-        this[NAME] = name;
-        this[NAMESPACE] = namespace;
+        Object.assign(this, {
+            [NAME]: name,
+            [NAMESPACE]: namespace,
 
-        this[MODULES_LOADER] = dependencies.modulesLoader;
+            [MODULES_LOADER]: dependencies.modulesLoader,
+            [CONFIG]: dependencies.config,
+            [EVENTS]: dependencies.events,
+            [LOG]: dependencies.log,
+            [ROOT_APP]: dependencies.rootApp || null,
+
+            [MODULES]: modules,
+            [IS_STARTED]: false,
+        });
+
         if (this[MODULES_LOADER]) this[MODULES_LOADER].setApp(this);
-        this[CONFIG] = dependencies.config;
         if (this[CONFIG]) this[CONFIG].setApp(this);
-        this[EVENTS] = dependencies.events;
         if (this[EVENTS]) this[EVENTS].setApp(this);
-        this[LOG] = dependencies.log;
         if (this[LOG]) this[LOG].setApp(this);
-        this[ROOT_APP] = dependencies.rootApp || null;
-
-        this[MODULES] = modules;
-        this[IS_STARTED] = false;
     }
 
     /**
