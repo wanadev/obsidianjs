@@ -6,13 +6,9 @@ const REMOVE_LISTENER = Symbol("removeListener");
 
 const ROOT_NAMESPACE = "obsidian";
 
-const resolveEventPath = (eventPath, namespace) => {
-    const parts = eventPath.split(".");
-
-    return parts[0] === "~"
-        ? `${namespace}.${parts.slice(1).join(".")}`
-        : eventPath;
-};
+const resolveEventPath = (eventPath, namespace) => (eventPath[0] === "@"
+    ? eventPath.slice(1)
+    : `${namespace}.${eventPath}`);
 
 /**
  * Handle Obsidian application events.

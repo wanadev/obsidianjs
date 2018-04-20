@@ -6,7 +6,7 @@ describe("basic event emitting", () => {
             const events = new Events();
             const listener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
+            events.on("my-event", listener);
             events.emit("my-event");
 
             expect(listener).toHaveBeenCalledTimes(1);
@@ -17,7 +17,7 @@ describe("basic event emitting", () => {
             const listener = jest.fn();
             const args = ["hello", "world", 12];
 
-            events.on("obsidian.my-event", listener);
+            events.on("my-event", listener);
             events.emit("my-event", ...args);
 
             expect(listener).toHaveBeenCalledWith(...args);
@@ -27,7 +27,7 @@ describe("basic event emitting", () => {
             const events = new Events();
             const listener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
+            events.on("my-event", listener);
 
             events.emit("my-event");
             events.emit("my-event");
@@ -42,7 +42,7 @@ describe("basic event emitting", () => {
             const args = ["hello", "world", 12];
 
             listeners.forEach(listener =>
-                events.on("obsidian.my-event", listener));
+                events.on("my-event", listener));
 
             events.emit("my-event", ...args);
 
@@ -54,8 +54,8 @@ describe("basic event emitting", () => {
             const events = new Events();
             const listener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
-            events.on("obsidian.my-event", listener);
+            events.on("my-event", listener);
+            events.on("my-event", listener);
 
             events.emit("my-event");
 
@@ -66,8 +66,8 @@ describe("basic event emitting", () => {
             const events = new Events();
             const listener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
-            events.removeListener("obsidian.my-event", listener);
+            events.on("my-event", listener);
+            events.removeListener("my-event", listener);
             events.emit("my-event");
 
             expect(listener).not.toHaveBeenCalled();
@@ -86,8 +86,8 @@ describe("basic event emitting", () => {
             const events = new Events();
             const listener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
-            events.removeListener("obsidian.my-unregistered-event", listener);
+            events.on("my-event", listener);
+            events.removeListener("my-unregistered-event", listener);
             events.emit("my-event");
 
             expect(listener).toHaveBeenCalledTimes(1);
@@ -98,8 +98,8 @@ describe("basic event emitting", () => {
             const listener = jest.fn();
             const unregisteredListener = jest.fn();
 
-            events.on("obsidian.my-event", listener);
-            events.removeListener("obsidian.my-event", unregisteredListener);
+            events.on("my-event", listener);
+            events.removeListener("my-event", unregisteredListener);
             events.emit("my-event");
 
             expect(listener).toHaveBeenCalledTimes(1);
