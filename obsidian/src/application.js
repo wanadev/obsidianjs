@@ -159,6 +159,7 @@ class Application {
         if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
         this[IS_STARTED] = true;
         this[MODULES_LOADER].loadAll();
+        // TODO .then fire event
     }
 
     /**

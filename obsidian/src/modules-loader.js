@@ -135,8 +135,19 @@ class ModulesLoader {
             return Promise.resolve(this[MODULES][moduleJavascriptName]);
         }
 
+        // Get module's dependencies
+        const dependencies = {};
+        for (const dependencyName of this[MODULES_LIST][moduleName].requires) {
+            const dependencyJavascriptName = helpers.toCamelCase(dependencyName);
+            const dependency = this[MODULES][dependencyJavascriptName];
+            if (dependency === undefined) {
+                return Promise.reject(new Error(`UnmetDependency: "${moduleName}" requires "${dependencyName}" but it cannot be found.`));
+            }
+            dependencies[dependencyJavascriptName] = dependency;
+        }
+
         // Create the module's app
-        const app = this[APP]._createSubApplication(moduleName, {});  // TODO inject deps
+        const app = this[APP]._createSubApplication(moduleName, dependencies);
 
         // Load the module
         return Promise.resolve()
