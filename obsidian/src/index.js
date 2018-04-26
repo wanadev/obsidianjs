@@ -7,7 +7,7 @@ const Logging = require("./logging");
 /**
  * Obsidian application factory.
  *
- * @param {String} [name="obsidian"] The name of the application (default: ``"obsidian"``).
+ * @param {string} [name=obsidian] The name of the application (default: ``"obsidian"``).
  * @return {Application} A new Obsidian application.
  */
 function obsidian(name) {
