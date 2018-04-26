@@ -21,28 +21,46 @@ class Application {
      * @param {string} [name="obsidian"] The name of the application (default: ``"obsidian"``).
      * @param {string} [namespace="obsidian"] The namespace, generally the
      *        module name (default: ``"obsidian"``).
-     * @param {Object} dependencies Application dependencies.
+     * @param {Object} [dependencies={}] Application dependencies.
      * @param {ModulesLoader} dependencies.modulesLoader An instance of the module loader.
      * @param {Config} dependencies.config An instance of the config handler.
      * @param {Events} dependencies.events An instance of the event dispatcher.
      * @param {Logging} dependencies.log An instance of the logger.
      * @param {Application} [dependencies.rootApp=null] (optional) An instance
      *        of the root application, if any.
-     * @param {Object} modules (optional) The modules that should be accessible
+     * @param {Object} [modules={}] (optional) The modules that should be accessible
      *        through this application.
      */
     constructor(name = "obsidian", namespace = "obsidian", dependencies = {}, modules = {}) {
-        this[NAME] = name;
-        this[NAMESPACE] = namespace;
+        Object.assign(this, {
+            [NAME]: name,
+            [NAMESPACE]: namespace,
 
-        this[MODULES_LOADER] = dependencies.modulesLoader;
-        this[CONFIG] = dependencies.config;
-        this[EVENTS] = dependencies.events;
-        this[LOG] = dependencies.log;
-        this[ROOT_APP] = dependencies.rootApp || null;
+            [MODULES_LOADER]: dependencies.modulesLoader,
+            [CONFIG]: dependencies.config,
+            [EVENTS]: dependencies.events,
+            [LOG]: dependencies.log,
+            [ROOT_APP]: dependencies.rootApp || null,
 
-        this[MODULES] = modules;
-        this[IS_STARTED] = false;
+            [MODULES]: modules,
+            [IS_STARTED]: false,
+        });
+
+        if (this[MODULES_LOADER]) this[MODULES_LOADER].setApp(this);
+        if (this[CONFIG]) this[CONFIG].setApp(this);
+        if (this[EVENTS]) this[EVENTS].setApp(this);
+        if (this[LOG]) this[LOG].setApp(this);
+    }
+
+    /**
+     * Indicate whether the application is started or not.
+     *
+     * @public
+     * @type {boolean}
+     */
+    get isStarted() {
+        if (this[ROOT_APP]) return this[ROOT_APP].isStarted;
+        return this[IS_STARTED];
     }
 
     /**
@@ -140,11 +158,11 @@ class Application {
      * @public
      */
     start() {
-        if (this[IS_STARTED]) {
-            throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
-        }
+        if (this[ROOT_APP]) throw new Error("ContextError: you cannot start the application from a module.");
+        if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
         this[IS_STARTED] = true;
         this[MODULES_LOADER].loadAll();
+        // TODO .then fire event
     }
 
     /**
