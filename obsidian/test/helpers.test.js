@@ -1,4 +1,4 @@
-const helpers = require("../src/helpers.js");
+const helpers = require("../src/helpers");
 
 describe("helpers.toCamelCase", () => {
 

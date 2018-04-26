@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "build-doc": "bash ./scripts/build-doc.sh",
-    "test": "jest --coverage --coverageDirectory=build/coverage"
+    "test": "jest --coverage --coverageDirectory=build/coverage",
+    "test-watch": "jest --watch",
+    "coverage": "npm test && opn build/coverage/lcov-report/index.html"
   },
   "author": "Wanadev",
   "license": "BSD-3-Clause",
@@ -14,6 +16,7 @@
     "eslint-plugin-import": "^2.9.0",
     "jest": "^22.4.2",
     "jsdoc": "^3.5.5",
-    "lerna": "^2.9.0"
+    "lerna": "^2.9.0",
+    "opn-cli": "^3.1.0"
   }
 }

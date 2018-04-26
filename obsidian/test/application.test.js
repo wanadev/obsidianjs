@@ -1,4 +1,4 @@
-const Application = require("../src/application.js");
+const Application = require("../src/application");
 
 describe("Application.constructor", () => {
 
@@ -6,7 +6,6 @@ describe("Application.constructor", () => {
         const dependencies = {
             modulesLoader: { setApp: jest.fn() },
             config: { setApp: jest.fn() },
-            events: { setApp: jest.fn() },
             log: { setApp: jest.fn() },
         };
 
@@ -17,9 +16,6 @@ describe("Application.constructor", () => {
 
         expect(dependencies.config.setApp).toHaveBeenCalledTimes(1);
         expect(dependencies.config.setApp).toHaveBeenCalledWith(app);
-
-        expect(dependencies.events.setApp).toHaveBeenCalledTimes(1);
-        expect(dependencies.events.setApp).toHaveBeenCalledWith(app);
 
         expect(dependencies.log.setApp).toHaveBeenCalledTimes(1);
         expect(dependencies.log.setApp).toHaveBeenCalledWith(app);
