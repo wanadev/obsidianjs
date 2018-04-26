@@ -15,8 +15,8 @@
     }],
     "no-multi-spaces": ["error", {
       "ignoreEOLComments": true
-    }]
-
+    }],
+    "function-paren-newline": ["error", "consistent"]
   },
   "overrides": [{
     "files": ["*.test.js"],
@@ -25,4 +25,3 @@
     }
   }]
 }
-

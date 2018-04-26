@@ -1,5 +1,5 @@
-const obsidian = require("../src/index.js");
-const Application = require("../src/application.js");
+const obsidian = require("../src/index");
+const Application = require("../src/application");
 
 test("Factory function returns an Application instance", () => {
     expect(obsidian()).toBeInstanceOf(Application);
