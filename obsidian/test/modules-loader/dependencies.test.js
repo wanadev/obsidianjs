@@ -165,6 +165,51 @@ describe("dependencies.getLoadingOrder", () => {
             ],
         ],
 
+        // ----------------------------------------------------
+
+        // 1   2
+        //  \ /
+        //   3
+
+        [
+            "multi in",
+
+            [
+                { name: "mod1", requires: ["mod3"] },
+                { name: "mod2", requires: ["mod3"] },
+                { name: "mod3", requires: [] },
+            ],
+
+            [
+                ["mod3", "mod2"],
+                ["mod3", "mod1"],
+            ],
+        ],
+
+        // ----------------------------------------------------
+
+        //   1     4
+        //  / \    |
+        // 2  3    5
+
+        [
+            "multi tree",
+
+            [
+                { name: "mod1", requires: ["mod2", "mod3"] },
+                { name: "mod2", requires: [] },
+                { name: "mod3", requires: [] },
+                { name: "mod4", requires: ["mod5"] },
+                { name: "mod5", requires: [] },
+            ],
+
+            [
+                ["mod5", "mod4"],
+                ["mod3", "mod1"],
+                ["mod2", "mod1"],
+            ],
+        ],
+
     ]).test("can resolve dependencies (%s)", (label, modules, constraints) => {
         const order = dependencies.getLoadingOrder(modules);
         expect(order).toHaveLength(modules.length);
