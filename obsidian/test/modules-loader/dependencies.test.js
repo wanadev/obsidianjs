@@ -113,7 +113,7 @@ describe("dependencies.getLoadingOrder", () => {
         // 4   5
 
         [
-            "cross",
+            "cross 1",
 
             [
                 { name: "mod1", requires: ["mod2", "mod3"] },
@@ -133,6 +133,37 @@ describe("dependencies.getLoadingOrder", () => {
             ],
         ],
 
+        // ----------------------------------------------------
+
+        //   1
+        //  / \
+        // 2   3
+        // |\ /|
+        // | 4 |
+        //  \|/
+        //   5
+
+        [
+            "cross 2",
+
+            [
+                { name: "mod1", requires: ["mod2", "mod3"] },
+                { name: "mod2", requires: ["mod4", "mod5"] },
+                { name: "mod3", requires: ["mod4", "mod5"] },
+                { name: "mod4", requires: ["mod5"] },
+                { name: "mod5", requires: [] },
+            ],
+
+            [
+                ["mod5", "mod4"],
+                ["mod5", "mod3"],
+                ["mod5", "mod2"],
+                ["mod4", "mod3"],
+                ["mod4", "mod2"],
+                ["mod3", "mod1"],
+                ["mod2", "mod1"],
+            ],
+        ],
 
     ]).test("can resolve dependencies (%s)", (label, modules, constraints) => {
         const order = dependencies.getLoadingOrder(modules);
