@@ -1,5 +1,5 @@
 const Application = require("./application");
-const ModulesLoader = require("./modules-loader");
+const { ModulesLoader } = require("./modules-loader");
 const Config = require("./config");
 const { Events } = require("./events");
 const Logging = require("./logging");

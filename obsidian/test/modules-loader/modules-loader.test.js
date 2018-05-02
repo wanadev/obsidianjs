@@ -1,4 +1,4 @@
-const ModulesLoader = require("../src/modules-loader");
+const { ModulesLoader } = require("../../src/modules-loader");
 
 describe("ModulesLoader.setApp", () => {
 
