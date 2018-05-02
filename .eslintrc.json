@@ -16,6 +16,7 @@
     "no-multi-spaces": ["error", {
       "ignoreEOLComments": true
     }],
+    "no-continue": false,
     "function-paren-newline": ["error", "consistent"]
   },
   "overrides": [{

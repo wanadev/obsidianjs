@@ -217,6 +217,14 @@ describe("dependencies.getLoadingOrder", () => {
         constraints.forEach(c => expect(order.indexOf(c[0])).toBeLessThan(order.indexOf(c[1])));
     });
 
+    test("ignores required modules that are not listed", () => {
+        const modules = [
+            { name: "mod1", requires: ["mod2"] },
+        ];
+
+        expect(dependencies.getLoadingOrder(modules)).toEqual(["mod1"]);
+    });
+
     // TODO circular
 
 });
