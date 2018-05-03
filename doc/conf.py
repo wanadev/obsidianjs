@@ -168,6 +168,8 @@ texinfo_documents = [
 
 js_source_path = [
     "obsidian/src/",
+    "obsidian/src/events/",
+    "obsidian/src/modules-loader/",
 ]
 js_source_path.extend(
     [p.replace("../", "").replace("\\", "/")

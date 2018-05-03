@@ -1,4 +1,4 @@
-const ModulesLoader = require("../src/modules-loader");
+const { ModulesLoader } = require("../../src/modules-loader");
 
 describe("ModulesLoader.setApp", () => {
 
@@ -116,13 +116,11 @@ describe("ModulesLoader.register", () => {
 describe("ModulesLoader.load", () => {
 
     test("can load a registered module", () => {
-        const testModuleLoadFn = jest.fn();
-        const testModuleUnloadFn = jest.fn();
         const testModule = {
             name: "test-module",
             requires: [],
-            load: testModuleLoadFn,
-            unload: testModuleUnloadFn,
+            load: jest.fn(),
+            unload: jest.fn(),
         };
 
         const modules = new ModulesLoader();
@@ -132,19 +130,17 @@ describe("ModulesLoader.load", () => {
 
         return modules.load("test-module")
             .then(() => {
-                expect(testModuleLoadFn.mock.calls.length).toBe(1);
-                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+                expect(testModule.load).toHaveBeenCalledTimes(1);
+                expect(testModule.unload).toHaveBeenCalledTimes(0);
             });
     });
 
     test("can load a renamed module", () => {
-        const testModuleLoadFn = jest.fn();
-        const testModuleUnloadFn = jest.fn();
         const testModule = {
             name: "test-module",
             requires: [],
-            load: testModuleLoadFn,
-            unload: testModuleUnloadFn,
+            load: jest.fn(),
+            unload: jest.fn(),
         };
 
         const modules = new ModulesLoader();
@@ -156,19 +152,17 @@ describe("ModulesLoader.load", () => {
 
         return modules.load("new-test-module")
             .then(() => {
-                expect(testModuleLoadFn.mock.calls.length).toBe(1);
-                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+                expect(testModule.load).toHaveBeenCalledTimes(1);
+                expect(testModule.unload).toHaveBeenCalledTimes(0);
             });
     });
 
     test("does not reload a module that is already loaded (load() method is called only once)", () => {
-        const testModuleLoadFn = jest.fn();
-        const testModuleUnloadFn = jest.fn();
         const testModule = {
             name: "test-module",
             requires: [],
-            load: testModuleLoadFn,
-            unload: testModuleUnloadFn,
+            load: jest.fn(),
+            unload: jest.fn(),
         };
 
         const modules = new ModulesLoader();
@@ -179,8 +173,8 @@ describe("ModulesLoader.load", () => {
         return modules.load("test-module")
             .then(() => modules.load("test-module"))
             .then(() => {
-                expect(testModuleLoadFn.mock.calls.length).toBe(1);
-                expect(testModuleUnloadFn.mock.calls.length).toBe(0);
+                expect(testModule.load).toHaveBeenCalledTimes(1);
+                expect(testModule.unload).toHaveBeenCalledTimes(0);
             });
     });
 
@@ -258,10 +252,6 @@ describe("ModulesLoader.load", () => {
     });
 
     test("throws an error if a required module is not loaded", () => {
-        // XXX This behaviour will change in the future:
-        // * If a required module is registered but not loaded -> it will be loaded
-        // * If a required module is not registered -> throw an exception
-
         const module2 = {
             name: "module-2",
             requires: ["module-1"],
@@ -281,6 +271,70 @@ describe("ModulesLoader.load", () => {
         return modules.load("module-2")
             .catch((error) => {
                 expect(error.toString()).toMatch(/UnmetDependency/);
+            });
+    });
+
+});
+
+describe("ModulesLoader.loadAll", () => {
+
+    test("can load all registered modules", () => {
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: jest.fn(),
+            unload: jest.fn(),
+        };
+
+        const module2 = {
+            name: "module2",
+            requires: [],
+            load: jest.fn(),
+            unload: jest.fn(),
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
+
+        modules.register(module1);
+        modules.register(module2);
+
+        return modules.loadAll()
+            .then(() => {
+                expect(module1.load).toHaveBeenCalledTimes(1);
+                expect(module1.unload).toHaveBeenCalledTimes(0);
+                expect(module2.load).toHaveBeenCalledTimes(1);
+                expect(module2.unload).toHaveBeenCalledTimes(0);
+            });
+    });
+
+    test("returns loaded modules", () => {
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: () => "module1",
+            unload: () => {},
+        };
+
+        const module2 = {
+            name: "module2",
+            requires: [],
+            load: () => "module2",
+            unload: () => {},
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
+
+        modules.register(module1);
+        modules.register(module2);
+
+        return modules.loadAll()
+            .then((loadedModules) => {
+                expect(loadedModules).toEqual({
+                    module1: "module1",
+                    module2: "module2",
+                });
             });
     });
 

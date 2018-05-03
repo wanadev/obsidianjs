@@ -1,5 +1,3 @@
-const helpers = require("./helpers");
-
 const NAME = Symbol("name");
 const NAMESPACE = Symbol("namespace");
 const MODULES_LOADER = Symbol("modulesLoader");
@@ -18,8 +16,8 @@ class Application {
 
     /**
      * @constructor
-     * @param {string} [name="obsidian"] The name of the application (default: ``"obsidian"``).
-     * @param {string} [namespace="obsidian"] The namespace, generally the
+     * @param {string} [name] The name of the application (default: ``"obsidian"``).
+     * @param {string} [namespace] The namespace, generally the
      *        module name (default: ``"obsidian"``).
      * @param {Object} [dependencies={}] Application dependencies.
      * @param {ModulesLoader} dependencies.modulesLoader An instance of the module loader.

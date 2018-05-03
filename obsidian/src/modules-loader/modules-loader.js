@@ -1,4 +1,5 @@
-const helpers = require("./helpers");
+const helpers = require("../helpers");
+const { getLoadingOrder } = require("./dependencies.js");
 
 const MODULES_LIST = Symbol("modules-list");
 const MODULES = Symbol("modules");
@@ -207,7 +208,12 @@ class ModulesLoader {
      * @return A promise that returns an object containing the loaded modules.
      */
     loadAll() {
-        throw new Error("NotImpelemntedError");  // return (promise) {moduleName: module, foo: ...}
+        return getLoadingOrder(this[MODULES_LIST])
+            .reduce(
+                (promise, moduleName) => promise.then(this.load.bind(this, moduleName)),
+                Promise.resolve(),
+            )
+            .then(() => this.modules);
     }
 
 }
