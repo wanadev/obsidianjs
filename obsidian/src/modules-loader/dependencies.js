@@ -3,7 +3,7 @@
  * for modules.
  *
  * @public
- * @param {Object[]} modules List of module on which the resolution will be
+ * @param {Object[]} modules Catalog of modules on which the resolution will be
  *                           done (``{ name: {name: string, requires: [string]} }``).
  * @return {string[]}
  */
