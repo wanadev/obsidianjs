@@ -113,7 +113,7 @@ describe("dependencies.getLoadingOrder", () => {
         // 4   5
 
         [
-            "cross 1",
+            "cross",
 
             [
                 { name: "mod1", requires: ["mod2", "mod3"] },
@@ -144,7 +144,7 @@ describe("dependencies.getLoadingOrder", () => {
         //   5
 
         [
-            "cross 2",
+            "cube",
 
             [
                 { name: "mod1", requires: ["mod2", "mod3"] },
@@ -172,7 +172,7 @@ describe("dependencies.getLoadingOrder", () => {
         //   3
 
         [
-            "multi in",
+            "V",
 
             [
                 { name: "mod1", requires: ["mod3"] },
@@ -190,7 +190,7 @@ describe("dependencies.getLoadingOrder", () => {
 
         //   1     4
         //  / \    |
-        // 2  3    5
+        // 2   3   5
 
         [
             "multi tree",

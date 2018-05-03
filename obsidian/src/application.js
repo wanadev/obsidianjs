@@ -1,5 +1,3 @@
-const helpers = require("./helpers");
-
 const NAME = Symbol("name");
 const NAMESPACE = Symbol("namespace");
 const MODULES_LOADER = Symbol("modulesLoader");
