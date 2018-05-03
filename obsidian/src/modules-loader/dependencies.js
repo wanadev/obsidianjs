@@ -4,26 +4,21 @@
  *
  * @public
  * @param {Object[]} modules List of module on which the resolution will be
- *                           done (``[{name: string, requires: [string]}]``).
+ *                           done (``{ name: {name: string, requires: [string]} }``).
  * @return {string[]}
  */
 function getLoadingOrder(modules) {
     let order = [];
-    const modulesIndex = modules.reduce((acc, item) => {
-        acc[item.name] = item;
-        return acc;
-    }, {});
-    let stack = modules
-        .reduce((acc, item) => (acc.includes(item.name) ? acc : acc.concat(item.name)), []);  // map + uniq
+    let stack = Object.keys(modules);
 
     while (stack.length) {
         const moduleName = stack.pop();
 
         // Unlisted module -> skip
-        if (!modulesIndex[moduleName]) continue;
+        if (!modules[moduleName]) continue;
 
         order.push(moduleName);
-        stack = stack.concat(modulesIndex[moduleName].requires);
+        stack = stack.concat(modules[moduleName].requires);
     }
 
     order.reverse();
