@@ -3,8 +3,8 @@
  * for modules.
  *
  * @public
- * @param {Object[]} modules Catalog of modules on which the resolution will be
- *                           done (``{ name: {name: string, requires: [string]} }``).
+ * @param {Object} modules Catalog of modules on which the resolution will be
+ *                         done (``{ name: {name: string, requires: [string]} }``).
  * @return {string[]}
  */
 function getLoadingOrder(modules) {
