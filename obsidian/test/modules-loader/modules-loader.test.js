@@ -276,6 +276,40 @@ describe("ModulesLoader.load", () => {
 
 });
 
+describe("ModulesLoader.loadAll", () => {
+
+    test("can load all registered modules", () => {
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: jest.fn(),
+            unload: jest.fn(),
+        };
+
+        const module2 = {
+            name: "module2",
+            requires: [],
+            load: jest.fn(),
+            unload: jest.fn(),
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
+
+        modules.register(module1);
+        modules.register(module2);
+
+        return modules.loadAll()
+            .then(() => {
+                expect(module1.load).toHaveBeenCalledTimes(1);
+                expect(module1.unload).toHaveBeenCalledTimes(0);
+                expect(module2.load).toHaveBeenCalledTimes(1);
+                expect(module2.unload).toHaveBeenCalledTimes(0);
+            });
+    });
+
+});
+
 describe("ModulesLoader.modules", () => {
 
     test("contains loaded modules", () => {
