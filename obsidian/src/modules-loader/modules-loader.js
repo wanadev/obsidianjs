@@ -208,12 +208,12 @@ class ModulesLoader {
      * @return A promise that returns an object containing the loaded modules.
      */
     loadAll() {
-        const order = getLoadingOrder(this[MODULES_LIST]);
-        let promise = Promise.resolve();
-        for (const moduleName of order) {
-            promise = promise.then(this.load.bind(this, moduleName));
-        }
-        return promise.then(() => this.modules);
+        return getLoadingOrder(this[MODULES_LIST])
+            .reduce(
+                (promise, moduleName) => promise.then(this.load.bind(this, moduleName)),
+                Promise.resolve(),
+            )
+            .then(() => this.modules);
     }
 
 }
