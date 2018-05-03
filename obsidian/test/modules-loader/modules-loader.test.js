@@ -308,6 +308,36 @@ describe("ModulesLoader.loadAll", () => {
             });
     });
 
+    test("returns loaded modules", () => {
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: () => "module1",
+            unload: () => {},
+        };
+
+        const module2 = {
+            name: "module2",
+            requires: [],
+            load: () => "module2",
+            unload: () => {},
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
+
+        modules.register(module1);
+        modules.register(module2);
+
+        return modules.loadAll()
+            .then((loadedModules) => {
+                expect(loadedModules).toEqual({
+                    module1: "module1",
+                    module2: "module2",
+                });
+            });
+    });
+
 });
 
 describe("ModulesLoader.modules", () => {
