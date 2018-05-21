@@ -1,6 +1,109 @@
-const each = require("jest-each");
+const each = require("jest-each");  // eslint-disable-line import/no-extraneous-dependencies
 
 const dependencies = require("../../src/modules-loader/dependencies.js");
+
+describe("dependencies.generateDependencyTree", () => {
+
+    each([
+
+        // ----------------------------------------------------
+
+        //   2
+        //   |
+        //   1
+
+        [
+            "simple case 1",
+
+            "mod2",
+
+            {
+                mod1: { name: "mod1", requires: [] },
+                mod2: { name: "mod2", requires: ["mod1"] },
+            },
+
+            {
+                name: "mod2",
+                children: [{
+                    name: "mod1",
+                    children: [],
+                }],
+            },
+
+        ],
+
+        // ----------------------------------------------------
+
+        //   1
+        //  / \
+        // 2   3
+        //  \ /
+        //   4
+
+        [
+            "losange",
+
+            "mod1",
+
+            {
+                mod1: { name: "mod1", requires: ["mod2", "mod3"] },
+                mod2: { name: "mod2", requires: ["mod4"] },
+                mod3: { name: "mod3", requires: ["mod4"] },
+                mod4: { name: "mod4", requires: [] },
+            },
+
+            {
+                name: "mod1",
+                children: [
+                    {
+                        name: "mod2",
+                        children: [{
+                            name: "mod4",
+                            children: [],
+                        }],
+                    }, {
+                        name: "mod3",
+                        children: [{
+                            name: "mod4",
+                            children: [],
+                        }],
+                    },
+                ],
+            },
+
+        ],
+
+    ]).test("can generate dependency tree (%s)", (label, moduleName, modules, expectedTree) => {
+        expect(dependencies.generateDependencyTree(moduleName, modules))
+            .toMatchObject(expectedTree);
+    });
+
+    test("Throw an error on circular dependencies", () => {
+        // 1--> 2 --> 3
+        // ^          |
+        // |          |
+        // +----------+
+        const modules = {
+            mod1: { name: "mod1", requires: ["mod2"] },
+            mod2: { name: "mod2", requires: ["mod3"] },
+            mod3: { name: "mod3", requires: ["mod1"] },
+        };
+
+        expect(() => dependencies.generateDependencyTree("mod1", modules))
+            .toThrow(/CircularDependencyError/);
+        expect(() => dependencies.generateDependencyTree("mod1", modules))
+            .toThrow(/mod1/);
+        expect(() => dependencies.generateDependencyTree("mod1", modules))
+            .toThrow(/mod3/);
+    });
+
+});
+
+describe("dependencies.flattenDependencyTree", () => {
+
+    // TODO
+
+});
 
 describe("dependencies.getLoadingOrder", () => {
 

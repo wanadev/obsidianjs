@@ -1,4 +1,26 @@
 /**
+ * Generate dependency tree for the requested module.
+ *
+ * @param {string} moduleName The name of the module for which the dependency
+ *                            tree will be generated.
+ * @param {Object} modules Catalog of modules on which the resolution will be
+ *                         done (``{ name: {name: string, requires: [string]} }``).
+ * @return {Object} The dependency tree of the given module.
+ */
+function generateDependencyTree(moduleName, modules) {
+}
+
+/**
+ * Transformes a dependency tree into an ordered list of module.
+ *
+ * @public
+ * @param {Object} tree The tree to flatten
+ * @return {string[]} An ordered module list.
+ */
+function flattenDependencyTree(tree) {
+}
+
+/**
  * Resolves dependencies between modules and returns the best order of loading
  * for modules.
  *
@@ -28,5 +50,7 @@ function getLoadingOrder(modules) {
 }
 
 module.exports = {
+    generateDependencyTree,
+    flattenDependencyTree,
     getLoadingOrder,
 };
