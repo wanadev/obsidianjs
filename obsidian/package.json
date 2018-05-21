@@ -1,6 +1,6 @@
 {
-  "name": "obsidian",
-  "version": "0.0.0",
+  "name": "@obsidianjs/obsidian",
+  "version": "0.1.0",
   "description": "Obsidian Framework",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -8,4 +8,3 @@
   "author": "Wanadev",
   "license": "BSD-3-Clause"
 }
-
