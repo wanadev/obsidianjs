@@ -56,13 +56,13 @@ describe("dependencies.generateDependencyTree", () => {
                 name: "mod1",
                 children: [
                     {
-                        name: "mod2",
+                        name: "mod3",
                         children: [{
                             name: "mod4",
                             children: [],
                         }],
                     }, {
-                        name: "mod3",
+                        name: "mod2",
                         children: [{
                             name: "mod4",
                             children: [],

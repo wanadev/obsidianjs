@@ -8,6 +8,51 @@
  * @return {Object} The dependency tree of the given module.
  */
 function generateDependencyTree(moduleName, modules) {
+
+    function _appendChild(node, childName) {
+        const childNode = {
+            name: childName,
+            parent: node,
+            children: [],
+        };
+        if (node) node.children.push(childNode);
+        return childNode;
+    }
+
+    function _isCircular(node, childName) {
+        let currentNode = node;
+        while (currentNode) {
+            if (currentNode.name === childName) return true;
+            currentNode = currentNode.parent;
+        }
+        return false;
+    }
+
+    function _printCircularPath(node, childName) {
+        let path = `[${childName}]`;
+        let currentNode = node;
+        while (currentNode) {
+            path = `${currentNode.name} -> ${path}`;
+            if (currentNode.name === childName) break;
+            currentNode = currentNode.parent;
+        }
+        return path;
+    }
+
+    const tree = _appendChild(null, moduleName);
+    let stack = modules[moduleName].requires.map(item => [tree, item]);
+
+    while (stack.length) {
+        const [node, childName] = stack.pop();
+        if (_isCircular(node, childName)) {
+            throw new Error(`CircularDependencyError: "${childName}" module has circular dependency: ${_printCircularPath(node, childName)}`);
+        } else {
+            const childNode = _appendChild(node, childName);
+            stack = stack.concat(modules[childName].requires.map(item => [childNode, item]));
+        }
+    }
+
+    return tree;
 }
 
 /**
