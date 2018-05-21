@@ -48,7 +48,9 @@ function generateDependencyTree(moduleName, modules) {
             throw new Error(`CircularDependencyError: "${childName}" module has circular dependency: ${_printCircularPath(node, childName)}`);
         } else {
             const childNode = _appendChild(node, childName);
-            stack = stack.concat(modules[childName].requires.map(item => [childNode, item]));
+            if (modules[childName]) {
+                stack = stack.concat(modules[childName].requires.map(item => [childNode, item]));
+            }
         }
     }
 

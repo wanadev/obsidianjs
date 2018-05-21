@@ -73,6 +73,29 @@ describe("dependencies.generateDependencyTree", () => {
 
         ],
 
+        // ----------------------------------------------------
+
+        [
+            "dependency not in catalog",
+
+            "mod1",
+
+            {
+                mod1: { name: "mod1", requires: ["mod2"] },
+            },
+
+            {
+                name: "mod1",
+                children: [
+                    {
+                        name: "mod2",
+                        children: [],
+                    },
+                ],
+            },
+
+        ],
+
     ]).test("can generate dependency tree (%s)", (label, moduleName, modules, expectedTree) => {
         expect(dependencies.generateDependencyTree(moduleName, modules))
             .toMatchObject(expectedTree);
