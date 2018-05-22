@@ -79,7 +79,7 @@ function flattenDependencyTree(tree) {
     }
 
     order.reverse();
-    order = _uniq(order);
+    order = _uniq(order);  // FIXME no need to have uniq modules here
 
     return order;
 }
@@ -98,21 +98,17 @@ function getLoadingOrder(modules) {
         return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
     }
 
+    const modulesList = Object.keys(modules);
     let order = [];
-    let stack = Object.keys(modules);
 
-    while (stack.length) {
-        const moduleName = stack.pop();
+    modulesList.forEach((moduleName) => {
+        const moduleDependencyTree = generateDependencyTree(moduleName, modules);
+        const moduleDependencyOrder = flattenDependencyTree(moduleDependencyTree);
+        order = order.concat(moduleDependencyOrder);
+    });
 
-        // Unlisted module -> skip
-        if (!modules[moduleName]) continue;
-
-        order.push(moduleName);
-        stack = stack.concat(modules[moduleName].requires);
-    }
-
-    order.reverse();
     order = _uniq(order);
+    order = order.filter(moduleName => modulesList.includes(moduleName));
 
     return order;
 }
