@@ -64,11 +64,6 @@ function generateDependencyTree(moduleName, modules) {
  * @return {string[]} An ordered module list.
  */
 function flattenDependencyTree(tree) {
-
-    function _uniq(list) {  // TODO move this to an helper
-        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
-    }
-
     let order = [];
     let stack = [tree];
 
@@ -79,8 +74,6 @@ function flattenDependencyTree(tree) {
     }
 
     order.reverse();
-    order = _uniq(order);  // FIXME no need to have uniq modules here
-
     return order;
 }
 

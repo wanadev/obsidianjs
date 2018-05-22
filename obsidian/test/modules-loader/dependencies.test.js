@@ -143,8 +143,6 @@ describe("modules-loader/dependencies.flattenDependencyTree", () => {
                 }],
             },
 
-            2,
-
             [
                 ["mod1", "mod2"],
             ],
@@ -181,8 +179,6 @@ describe("modules-loader/dependencies.flattenDependencyTree", () => {
                 ],
             },
 
-            4,
-
             [
                 ["mod4", "mod2"],
                 ["mod4", "mod3"],
@@ -192,9 +188,8 @@ describe("modules-loader/dependencies.flattenDependencyTree", () => {
 
         ],
 
-    ]).test("can flatten dependency tree (%s)", (label, tree, length, constraints) => {
+    ]).test("can flatten dependency tree (%s)", (label, tree, constraints) => {
         const order = dependencies.flattenDependencyTree(tree);
-        expect(order).toHaveLength(length);
         constraints.forEach(([a, b]) => expect(order.indexOf(a)).toBeLessThan(order.indexOf(b)));
     });
 
