@@ -1,3 +1,6 @@
+const { appendChild, isCircular, printCircularPath } = require("./helpers.js");
+const { uniq } = require("../helpers.js");
+
 /**
  * Generate dependency tree for the requested module.
  *
@@ -8,46 +11,15 @@
  * @return {Object} The dependency tree of the given module.
  */
 function generateDependencyTree(moduleName, modules) {
-
-    function _appendChild(node, childName) {  // TODO move this to an helper
-        const childNode = {
-            name: childName,
-            parent: node,
-            children: [],
-        };
-        if (node) node.children.push(childNode);
-        return childNode;
-    }
-
-    function _isCircular(node, childName) {  // TODO move this to an helper
-        let currentNode = node;
-        while (currentNode) {
-            if (currentNode.name === childName) return true;
-            currentNode = currentNode.parent;
-        }
-        return false;
-    }
-
-    function _printCircularPath(node, childName) {  // TODO move this to an helper
-        let path = `[${childName}]`;
-        let currentNode = node;
-        while (currentNode) {
-            path = `${currentNode.name} -> ${path}`;
-            if (currentNode.name === childName) break;
-            currentNode = currentNode.parent;
-        }
-        return path;
-    }
-
-    const tree = _appendChild(null, moduleName);
+    const tree = appendChild(null, moduleName);
     let stack = modules[moduleName].requires.map(item => [tree, item]);
 
     while (stack.length) {
         const [node, childName] = stack.pop();
-        if (_isCircular(node, childName)) {
-            throw new Error(`CircularDependencyError: "${childName}" module has circular dependency: ${_printCircularPath(node, childName)}`);
+        if (isCircular(node, childName)) {
+            throw new Error(`CircularDependencyError: "${childName}" module has circular dependency: ${printCircularPath(node, childName)}`);
         } else {
-            const childNode = _appendChild(node, childName);
+            const childNode = appendChild(node, childName);
             if (modules[childName]) {
                 stack = stack.concat(modules[childName].requires.map(item => [childNode, item]));
             }
@@ -87,10 +59,6 @@ function flattenDependencyTree(tree) {
  */
 function getLoadingOrder(modules) {
 
-    function _uniq(list) {  // TODO move this to an helper
-        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
-    }
-
     const modulesList = Object.keys(modules);
     let order = [];
 
@@ -101,7 +69,7 @@ function getLoadingOrder(modules) {
         order = order.concat(moduleDependencyOrder);
     });
 
-    order = _uniq(order);
+    order = uniq(order);
     order = order.filter(moduleName => modulesList.includes(moduleName));
 
     return order;

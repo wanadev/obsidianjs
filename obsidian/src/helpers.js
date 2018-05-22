@@ -24,6 +24,16 @@ const helpers = {
         return result;
     },
 
+    /**
+     * Returns a duplicate-free copy of the given array.
+     *
+     * @param {Array} list The array to deduplicate.
+     * @return {Array} The duplicate-free array.
+     */
+    uniq(list) {
+        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
+    },
+
 };
 
 module.exports = helpers;
