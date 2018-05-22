@@ -101,7 +101,7 @@ describe("modules-loader/dependencies.generateDependencyTree", () => {
             .toMatchObject(expectedTree);
     });
 
-    test("Throw an error on circular dependencies", () => {
+    test("Throws an error on circular dependencies", () => {
         // 1--> 2 --> 3
         // ^          |
         // |          |
@@ -419,6 +419,19 @@ describe("modules-loader/dependencies.getLoadingOrder", () => {
         expect(dependencies.getLoadingOrder(modules)).toEqual(["mod1"]);
     });
 
-    // TODO circular
+    test("Throws an error on circular dependencies", () => {
+        // 1--> 2 --> 3
+        // ^          |
+        // |          |
+        // +----------+
+        const modules = {
+            mod1: { name: "mod1", requires: ["mod2"] },
+            mod2: { name: "mod2", requires: ["mod3"] },
+            mod3: { name: "mod3", requires: ["mod1"] },
+        };
+
+        expect(() => dependencies.getLoadingOrder(modules))
+            .toThrow(/CircularDependencyError/);
+    });
 
 });
