@@ -95,6 +95,7 @@ function getLoadingOrder(modules) {
     let order = [];
 
     modulesList.forEach((moduleName) => {
+        if (order.includes(moduleName)) return;  // Already resolved as an other module dependency
         const moduleDependencyTree = generateDependencyTree(moduleName, modules);
         const moduleDependencyOrder = flattenDependencyTree(moduleDependencyTree);
         order = order.concat(moduleDependencyOrder);
