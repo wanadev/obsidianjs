@@ -2,7 +2,7 @@ const each = require("jest-each");  // eslint-disable-line import/no-extraneous-
 
 const dependencies = require("../../src/modules-loader/dependencies.js");
 
-describe("dependencies.generateDependencyTree", () => {
+describe("modules-loader/dependencies.generateDependencyTree", () => {
 
     each([
 
@@ -122,13 +122,85 @@ describe("dependencies.generateDependencyTree", () => {
 
 });
 
-describe("dependencies.flattenDependencyTree", () => {
+describe("modules-loader/dependencies.flattenDependencyTree", () => {
 
-    // TODO
+    each([
+
+        // ----------------------------------------------------
+
+        //   2
+        //   |
+        //   1
+
+        [
+            "simple case 1",
+
+            {
+                name: "mod2",
+                children: [{
+                    name: "mod1",
+                    children: [],
+                }],
+            },
+
+            2,
+
+            [
+                ["mod1", "mod2"],
+            ],
+
+        ],
+
+        // ----------------------------------------------------
+
+        //   1
+        //  / \
+        // 2   3
+        //  \ /
+        //   4
+
+        [
+            "losange",
+
+            {
+                name: "mod1",
+                children: [
+                    {
+                        name: "mod3",
+                        children: [{
+                            name: "mod4",
+                            children: [],
+                        }],
+                    }, {
+                        name: "mod2",
+                        children: [{
+                            name: "mod4",
+                            children: [],
+                        }],
+                    },
+                ],
+            },
+
+            4,
+
+            [
+                ["mod4", "mod2"],
+                ["mod4", "mod3"],
+                ["mod3", "mod1"],
+                ["mod2", "mod1"],
+            ],
+
+        ],
+
+    ]).test("can flatten dependency tree (%s)", (label, tree, length, constraints) => {
+        const order = dependencies.flattenDependencyTree(tree);
+        expect(order).toHaveLength(length);
+        constraints.forEach(([a, b]) => expect(order.indexOf(a)).toBeLessThan(order.indexOf(b)));
+    });
 
 });
 
-describe("dependencies.getLoadingOrder", () => {
+describe("modules-loader/dependencies.getLoadingOrder", () => {
 
     each([
 
@@ -341,7 +413,7 @@ describe("dependencies.getLoadingOrder", () => {
         const order = dependencies.getLoadingOrder(modules);
         expect(order).toHaveLength(modulesList.length);
         modulesList.forEach(moduleName => expect(order).toContain(moduleName));
-        constraints.forEach(c => expect(order.indexOf(c[0])).toBeLessThan(order.indexOf(c[1])));
+        constraints.forEach(([a, b]) => expect(order.indexOf(a)).toBeLessThan(order.indexOf(b)));
     });
 
     test("ignores required modules that are not listed", () => {

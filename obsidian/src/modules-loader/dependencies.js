@@ -60,18 +60,29 @@ function generateDependencyTree(moduleName, modules) {
 /**
  * Transformes a dependency tree into an ordered list of module.
  *
- * @public
  * @param {Object} tree The tree to flatten
  * @return {string[]} An ordered module list.
  */
 function flattenDependencyTree(tree) {
+    let order = [];
+    let stack = [tree];
+
+    while (stack.length) {
+        const node = stack.pop();
+        order.push(node.name);
+        stack = stack.concat(node.children);
+    }
+
+    order.reverse();
+    order = order.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);  // uniq
+
+    return order;
 }
 
 /**
  * Resolves dependencies between modules and returns the best order of loading
  * for modules.
  *
- * @public
  * @param {Object} modules Catalog of modules on which the resolution will be
  *                         done (``{ name: {name: string, requires: [string]} }``).
  * @return {string[]}
