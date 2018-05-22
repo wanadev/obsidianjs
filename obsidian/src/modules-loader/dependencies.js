@@ -9,7 +9,7 @@
  */
 function generateDependencyTree(moduleName, modules) {
 
-    function _appendChild(node, childName) {
+    function _appendChild(node, childName) {  // TODO move this to an helper
         const childNode = {
             name: childName,
             parent: node,
@@ -19,7 +19,7 @@ function generateDependencyTree(moduleName, modules) {
         return childNode;
     }
 
-    function _isCircular(node, childName) {
+    function _isCircular(node, childName) {  // TODO move this to an helper
         let currentNode = node;
         while (currentNode) {
             if (currentNode.name === childName) return true;
@@ -28,7 +28,7 @@ function generateDependencyTree(moduleName, modules) {
         return false;
     }
 
-    function _printCircularPath(node, childName) {
+    function _printCircularPath(node, childName) {  // TODO move this to an helper
         let path = `[${childName}]`;
         let currentNode = node;
         while (currentNode) {
@@ -64,6 +64,11 @@ function generateDependencyTree(moduleName, modules) {
  * @return {string[]} An ordered module list.
  */
 function flattenDependencyTree(tree) {
+
+    function _uniq(list) {  // TODO move this to an helper
+        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
+    }
+
     let order = [];
     let stack = [tree];
 
@@ -74,7 +79,7 @@ function flattenDependencyTree(tree) {
     }
 
     order.reverse();
-    order = order.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);  // uniq
+    order = _uniq(order);
 
     return order;
 }
@@ -88,6 +93,11 @@ function flattenDependencyTree(tree) {
  * @return {string[]}
  */
 function getLoadingOrder(modules) {
+
+    function _uniq(list) {  // TODO move this to an helper
+        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
+    }
+
     let order = [];
     let stack = Object.keys(modules);
 
@@ -102,7 +112,7 @@ function getLoadingOrder(modules) {
     }
 
     order.reverse();
-    order = order.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);  // uniq
+    order = _uniq(order);
 
     return order;
 }
