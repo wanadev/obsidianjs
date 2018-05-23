@@ -31,7 +31,7 @@ const helpers = {
      * @return {Array} The duplicate-free array.
      */
     uniq(list) {
-        return list.reduce((acc, item) => (acc.includes(item) ? acc : acc.concat(item)), []);
+        return list.filter((item, index, array) => index === array.indexOf(item));
     },
 
 };

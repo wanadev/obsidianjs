@@ -53,6 +53,7 @@ describe("modules-loader/helpers.isCircular", () => {
 
         expect(helpers.isCircular(mod3, "mod1")).toBeTruthy();
         expect(helpers.isCircular(mod2, "mod1")).toBeTruthy();
+        expect(helpers.isCircular(mod3, "mod2")).toBeTruthy();
     });
 
 });

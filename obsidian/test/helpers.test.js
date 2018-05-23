@@ -25,7 +25,7 @@ describe("helpers.toCamelCase", () => {
 
 describe("helpers.uniq", () => {
 
-    test("removes duplicated entrties of the list", () => {
+    test("removes duplicated entries of the list", () => {
         const list = ["mod1", "mod2", "mod1", "mod1", "mod3"];
         const uniqList = helpers.uniq(list);
         expect(uniqList).toEqual(["mod1", "mod2", "mod3"]);
