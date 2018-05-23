@@ -165,7 +165,9 @@ describe("Application.start", () => {
 
         const module = {
             setApp: () => {},
-            _getNamespaced: () => ({}),
+            _getNamespaced: () => ({
+                setApp: () => {},
+            }),
         };
 
         const app = new Application("test", undefined, {
@@ -211,7 +213,9 @@ describe("Application.isStarted", () => {
 
         const module = {
             setApp: () => {},
-            _getNamespaced: () => ({}),
+            _getNamespaced: () => ({
+                setApp: () => {},
+            }),
         };
 
         const app = new Application("test", undefined, {
