@@ -2,7 +2,7 @@ const { appendChild, isCircular, printCircularPath } = require("./helpers.js");
 const { uniq } = require("../helpers.js");
 
 /**
- * Generate dependency tree for the requested module.
+ * Generates the dependency tree of a given module.
  *
  * @param {string} moduleName The name of the module for which the dependency
  *                            tree will be generated.
