@@ -30,7 +30,7 @@ function generateDependencyTree(moduleName, modules) {
 }
 
 /**
- * Transformes a dependency tree into an ordered list of module.
+ * Transforms a dependency tree into an ordered list of modules.
  *
  * @param {Object} tree The tree to flatten
  * @return {string[]} An ordered module list.
