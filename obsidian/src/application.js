@@ -127,15 +127,14 @@ class Application {
     }
 
     /**
-     * Load a module.
+     * Add a module to the current application.
      *
-     * @public
-     * @param {Object} module The module to load (see :doc:`module`).
+     * @param {Object} module The module to add (see :doc:`module`).
      * @param {Object} [params={}] (optional) Additional parameters for the module
      */
-    load(module, params = {}) {
-        if (this[ROOT_APP]) throw new Error("ContextError: you cannot load modules from a module.");
-        if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot load modules once application started.");
+    use(module, params = {}) {
+        if (this[ROOT_APP]) throw new Error("ContextError: you cannot add a modules from a module.");
+        if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot add a modules once application started.");
 
         this[MODULES_LOADER].register(module, params);
     }

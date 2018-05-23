@@ -23,7 +23,7 @@ describe("Application.constructor", () => {
 
 });
 
-describe("Application.load", () => {
+describe("Application.use", () => {
 
     test("registers the given module but do not load it if application have not been started yet", () => {
         const modulesLoader = {
@@ -43,7 +43,7 @@ describe("Application.load", () => {
             modulesLoader,
         });
 
-        app.load(module);
+        app.use(module);
 
         expect(modulesLoader.register).toHaveBeenCalledTimes(1);
         expect(modulesLoader.register).toHaveBeenCalledWith(module, {});
@@ -70,7 +70,7 @@ describe("Application.load", () => {
             modulesLoader,
         });
 
-        app.load(module, params);
+        app.use(module, params);
 
         expect(modulesLoader.register).toHaveBeenCalledTimes(1);
         expect(modulesLoader.register).toHaveBeenCalledWith(module, params);
@@ -81,10 +81,10 @@ describe("Application.load", () => {
             rootApp: {},
         });
 
-        expect(() => app.load({})).toThrow(/ContextError/);
+        expect(() => app.use({})).toThrow(/ContextError/);
     });
 
-    test("throw an error when trying to load a module when applicaiton already started", () => {
+    test("throw an error when trying to add a module when applicaiton already started", () => {
         const app = new Application("test", undefined, {
             modulesLoader: {
                 setApp: () => {},
@@ -94,7 +94,7 @@ describe("Application.load", () => {
 
         app.start();
 
-        expect(() => app.load({})).toThrow(/ApplicationAlreadyStarted/);
+        expect(() => app.use({})).toThrow(/ApplicationAlreadyStarted/);
     });
 
 });
@@ -127,8 +127,8 @@ describe("Application.start", () => {
             modulesLoader,
         });
 
-        app.load(module1);
-        app.load(module2);
+        app.use(module1);
+        app.use(module2);
 
         app.start();
 

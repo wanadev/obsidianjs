@@ -28,4 +28,4 @@ Application Class Reference
 
 .. js:autoclass:: obsidian/src/application.Application
    :short-name:
-   :members: name, namespace, modules, load, unload, start, *
+   :members: name, namespace, modules, use, unload, start, *
