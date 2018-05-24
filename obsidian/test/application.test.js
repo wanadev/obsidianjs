@@ -94,7 +94,7 @@ describe("Application.load", () => {
         expect(() => app.load({})).toThrow(/ContextError/);
     });
 
-    test("throw an error when trying to load a module when applicaiton already started", () => {
+    test("throw an error when trying to load a module when application has already started", () => {
         const modulesLoader = {
             setApp: () => {},
             loadAll: () => Promise.resolve(),
