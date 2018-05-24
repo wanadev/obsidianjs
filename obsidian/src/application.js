@@ -153,14 +153,19 @@ class Application {
     /**
      * Start the application.
      *
-     * @public
+     * @return {Promise.<undefined>} This promise can be usually left unhandled.
      */
     start() {
         if (this[ROOT_APP]) throw new Error("ContextError: you cannot start the application from a module.");
         if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
         this[IS_STARTED] = true;
-        this[MODULES_LOADER].loadAll();
-        // TODO .then fire event
+        return this[MODULES_LOADER].loadAll()
+            .then(() => this.events.emit("ready"))
+            .catch((error) => {
+                // TODO Replace with this.log.error() when implemented
+                console.error("An error occured when starting the application:", error);  // eslint-disable-line no-console
+                throw error;
+            });
     }
 
     /**
