@@ -17,7 +17,7 @@ First add the module to your project::
 
     npm install --save @obsidianjs/iframe-api
 
-Then use it in your application (in your main ``inedex.js``):
+Then use it in your application (in your main ``index.js``):
 
 .. code-block:: javascript
 
@@ -33,8 +33,8 @@ Finally require it in modules that need it:
 .. code-block:: javascript
 
    {
-       "name" "my-module",
-       "requires": "iframe-api",
+       name: "my-module",
+       requires: ["iframe-api"],
 
        load(app) {
            const {iframeApi} = app.modules;
