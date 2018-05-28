@@ -28,7 +28,7 @@ Then use it in your application (in your main ``inedex.js``):
    app.use(iframeApi);
    app.start();
 
-Finally require-it in modules that need it:
+Finally require it in modules that need it:
 
 .. code-block:: javascript
 
