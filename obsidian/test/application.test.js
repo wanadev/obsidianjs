@@ -32,6 +32,10 @@ describe("Application.use", () => {
             load: jest.fn(),
         };
 
+        const events = {
+            emit: jest.fn(),
+        };
+
         const module = {
             name: "test-module",
             requires: [],
@@ -41,6 +45,7 @@ describe("Application.use", () => {
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
         app.use(module);
@@ -57,6 +62,10 @@ describe("Application.use", () => {
             load: jest.fn(),
         };
 
+        const events = {
+            emit: jest.fn(),
+        };
+
         const module = {
             name: "test-module",
             requires: [],
@@ -68,6 +77,7 @@ describe("Application.use", () => {
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
         app.use(module, params);
@@ -85,16 +95,26 @@ describe("Application.use", () => {
     });
 
     test("throw an error when trying to add a module when applicaiton already started", () => {
+        const modulesLoader = {
+            setApp: () => {},
+            loadAll: () => Promise.resolve(),
+        };
+
+        const events = {
+            emit: jest.fn(),
+        };
+
         const app = new Application("test", undefined, {
-            modulesLoader: {
-                setApp: () => {},
-                loadAll: () => {},
-            },
+            modulesLoader,
+            events,
         });
 
-        app.start();
+        expect.assertions(1);
 
-        expect(() => app.use({})).toThrow(/ApplicationAlreadyStarted/);
+        return app.start()
+            .then(() => {
+                expect(() => app.use({})).toThrow(/ApplicationAlreadyStarted/);
+            });
     });
 
 });
@@ -106,7 +126,11 @@ describe("Application.start", () => {
             setApp: () => {},
             register: jest.fn(),
             load: jest.fn(),
-            loadAll: jest.fn(),
+            loadAll: jest.fn().mockReturnValue(Promise.resolve()),
+        };
+
+        const events = {
+            emit: jest.fn(),
         };
 
         const module1 = {
@@ -125,42 +149,58 @@ describe("Application.start", () => {
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
         app.use(module1);
         app.use(module2);
 
-        app.start();
+        expect.assertions(4);
 
-        expect(modulesLoader.register).toHaveBeenCalledTimes(2);
-        expect(modulesLoader.register.mock.calls[0][0]).toBe(module1);
-        expect(modulesLoader.register.mock.calls[1][0]).toBe(module2);
-        expect(modulesLoader.loadAll).toHaveBeenCalledTimes(1);
+        return app.start()
+            .then(() => {
+                expect(modulesLoader.register).toHaveBeenCalledTimes(2);
+                expect(modulesLoader.register.mock.calls[0][0]).toBe(module1);
+                expect(modulesLoader.register.mock.calls[1][0]).toBe(module2);
+                expect(modulesLoader.loadAll).toHaveBeenCalledTimes(1);
+            });
     });
 
     test("thows an error if called twice", () => {
         const modulesLoader = {
             setApp: () => {},
-            loadAll: jest.fn(),
+            loadAll: jest.fn().mockReturnValue(Promise.resolve()),
+        };
+
+        const events = {
+            emit: jest.fn(),
         };
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
-        app.start();
+        expect.assertions(2);
 
-        expect(() => app.start()).toThrow(/ApplicationAlreadyStarted/);
-
-        expect(modulesLoader.loadAll.mock.calls.length).toBe(1);
+        return app.start()
+            .then(() => {
+                expect(() => app.start()).toThrow(/ApplicationAlreadyStarted/);
+                expect(modulesLoader.loadAll.mock.calls.length).toBe(1);
+            });
 
     });
 
     test("not allows to be called from sub-application", () => {
         const modulesLoader = {
             setApp: () => {},
-            loadAll: () => {},
+            loadAll: () => Promise.resolve(),
             _getNamespaced: () => ({}),
+        };
+
+        const events = {
+            emit: jest.fn(),
+            _getNamespaced: () => {},
         };
 
         const module = {
@@ -171,7 +211,7 @@ describe("Application.start", () => {
         const app = new Application("test", undefined, {
             modulesLoader,
             config: module,
-            events: module,
+            events,
             log: module,
         });
 
@@ -187,26 +227,38 @@ describe("Application.isStarted", () => {
     test("indicates that application started (from root application)", () => {
         const modulesLoader = {
             setApp: () => {},
-            loadAll: () => {},
+            loadAll: () => Promise.resolve(),
             _getNamespaced: () => ({}),
+        };
+
+        const events = {
+            emit: jest.fn(),
         };
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
+        expect.assertions(2);
         expect(app.isStarted).toBe(false);
 
-        app.start();
-
-        expect(app.isStarted).toBe(true);
+        return app.start()
+            .then(() => {
+                expect(app.isStarted).toBe(true);
+            });
     });
 
     test("indicates that application started (from sub application)", () => {
         const modulesLoader = {
             setApp: () => {},
-            loadAll: () => {},
+            loadAll: () => Promise.resolve(),
             _getNamespaced: () => ({}),
+        };
+
+        const events = {
+            emit: jest.fn(),
+            _getNamespaced: () => {},
         };
 
         const module = {
@@ -217,17 +269,46 @@ describe("Application.isStarted", () => {
         const app = new Application("test", undefined, {
             modulesLoader,
             config: module,
-            events: module,
+            events,
             log: module,
         });
 
         const subApp = app._createSubApplication("sub");  // eslint-disable-line no-underscore-dangle
 
+        expect.assertions(2);
         expect(subApp.isStarted).toBe(false);
 
-        app.start();
+        return app.start()
+            .then(() => {
+                expect(subApp.isStarted).toBe(true);
+            });
+    });
 
-        expect(subApp.isStarted).toBe(true);
+    test("emits the 'ready' event once application started", () => {
+        const modulesLoader = {
+            setApp: () => {},
+            register: jest.fn(),
+            load: jest.fn(),
+            loadAll: jest.fn().mockReturnValue(Promise.resolve()),
+        };
+
+        const events = {
+            emit: jest.fn(),
+        };
+
+        const app = new Application("test", undefined, {
+            modulesLoader,
+            events,
+        });
+
+        expect.assertions(2);
+
+        return app.start()
+            .then(() => {
+                expect(events.emit).toHaveBeenCalledTimes(1);
+                expect(events.emit).toHaveBeenCalledWith("ready");
+            });
+
     });
 
 });
@@ -242,8 +323,13 @@ describe("Application.modules", () => {
             },
         };
 
+        const events = {
+            emit: jest.fn(),
+        };
+
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
         });
 
         expect(app.modules).toBe(modulesLoader.modules);
@@ -257,12 +343,17 @@ describe("Application.modules", () => {
             },
         };
 
+        const events = {
+            emit: jest.fn(),
+        };
+
         const localModules = {
             x: "y",
         };
 
         const app = new Application("test", undefined, {
             modulesLoader,
+            events,
             rootApp: {},
         }, localModules);
 
