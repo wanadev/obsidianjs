@@ -101,7 +101,7 @@ Direct Requests
                 console.error(error);
             });
 
-.. function:: httpRequest.request(url, params)
+.. function:: httpRequest.request(url, params={})
 
    Make a configurable request.
 
@@ -137,7 +137,124 @@ Direct Requests
 Proxyfied Requests
 ~~~~~~~~~~~~~~~~~~
 
-TODO
+.. function:: httpRequest.getTextProxy(url, params={})
+
+   Simple function to get plain text data through the proxy server.
+
+   :param string url: The URL of the file to download.
+   :param Object params: Additional parameter for the proxy.
+   :param Object params.headers: Custom header  for the request (optional,
+                                 default: ``{}``).
+   :param Array params.allowedMimes: A list of mimetype the proxy is allowed
+                                     to download for this request (optional,
+                                     default: ``[]``).
+   :rtype: Promise.<string>
+
+   ::
+
+        httpRequest.getTextProxy("http://www.example.com/hello.txt")
+            .then(function(result) {
+                console.log(result);  // -> string
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+
+   ::
+
+        httpRequest.getTextProxy("http://www.example.com/hello.txt", {
+            headers: {
+                "x-foo": "bar"
+            },
+            allowedMimes: [
+                "text/plain",
+                "application/x-yaml"
+            ]
+        }).then(...);
+
+.. function:: httpRequest.getJsonProxy(url)
+
+   Simple function to get JSON data through the proxy server.
+
+   :param string url: The URL of the file to download.
+   :param Object params: Additional parameter for the proxy.
+   :param Object params.headers: Custom header  for the request (optional,
+                                 default: ``{}``).
+   :param Array params.allowedMimes: A list of mimetype the proxy is allowed
+                                     to download for this request (optional,
+                                     default: ``[]``).
+   :rtype: Promise.<Object|Array|string|number|boolean>
+
+   ::
+
+        httpRequest.getJsonProxy("http://www.example.com/hello.json")
+            .then(function(result) {
+                console.log(result);  // -> parsed JSON data
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+
+.. function:: httpRequest.getRawProxy(url)
+
+   Simple function to get binary data through the proxy server.
+
+   :param string url: The URL of the file to download.
+   :param Object params: Additional parameter for the proxy.
+   :param Object params.headers: Custom header  for the request (optional,
+                                 default: ``{}``).
+   :param Array params.allowedMimes: A list of mimetype the proxy is allowed
+                                     to download for this request (optional,
+                                     default: ``[]``).
+   :rtype: Promise.<Buffer> (Uint8Array with additional methods)
+
+   ::
+
+        httpRequest.getRawProxy("http://www.example.com/hello.zip")
+            .then(function(result) {
+                console.log(result);  // -> Buffer
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+
+.. function:: httpRequest.request(url, params={})
+
+   Make a configurable request through the proxy server.
+
+   :param string url: The URL of the file to download.
+   :param Object params: Additional parameter for the proxy.
+   :param string params.method: The HTTP method for the request (``GET``,
+                                ``POST``, ``PUT``,...) (optional, default:
+                                ``GET``).
+   :param Object params.headers: Custom header  for the request (optional,
+                                 default: ``{}``).
+   :param Buffer|null params.body: Body of the request (optional, default:
+                                   ``null``).
+   :param Array params.allowedMimes: A list of mimetype the proxy is allowed
+                                     to download for this request (optional,
+                                     default: ``[]``).
+   :rtype: Promise.<Buffer> (Uint8Array with additional methods)
+
+   ::
+
+        httpRequest.requestProxy("http://www.example.com/do-something", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "x-foo": "bar"
+            },
+            body: Buffer.from(JSON.stringify({foo: "bar"})),  // body must be a Buffer or null
+            allowedMimes: ["application/json"]                // Only allows JSON response
+        })
+            .then(function(resultBuffer) {                    // response is also a Buffer
+                var result = JSON.parse(resultBuffer.toString());
+                console.log(result);
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+
 
 
 Server-side Middleware
