@@ -18,6 +18,6 @@
     "obsidian-api": "^1.0.5"
   },
   "peerDependencies": {
-    "@obsidianjs/obsidian": "^1.0.0"
+    "@obsidianjs/obsidian": "0.x"
   }
 }
