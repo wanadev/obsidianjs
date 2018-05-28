@@ -7,7 +7,7 @@ Getting Started
     const hello = require("my-hello-module");
 
     const app = obsidian("my-application");
-    app.load(hello);
+    app.use(hello);
     app.start();
 
 TODO
