@@ -8,11 +8,15 @@ module.exports = {
     requires: [],
 
     load(app) {
-        if (api) return api;
+        if (api) {
+            app.log.warn("Iframe API should be loaded only once!");
+            return api;
+        }
 
         api = new ObsidianApi();
 
         if (app.isStarted) {
+            app.log.warn("Iframe API may not be loaded after the application started!");
             setTimeout(api.ready, 1);  // deferred
         } else {
             app.events.on("ready", api.ready);
