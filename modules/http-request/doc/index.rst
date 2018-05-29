@@ -295,7 +295,7 @@ Complete example using **express** and **body-parser**::
     app.listen(PORT);
 
 For more information, `see the Obsidian HTTP Request documentation
-<https://wanadev.github.io/obsidian-http-request/proxyfied-requests.html>`
+<https://wanadev.github.io/obsidian-http-request/proxyfied-requests.html#implementing-the-proxy-server>`
 
 
 .. _obsidian-http-request: https://wanadev.github.io/obsidian-http-request/
