@@ -21,7 +21,7 @@ Then use it in your application (in your main ``index.js``):
 
 .. code-block:: javascript
 
-   const obsidian = require("@obsidian/obsidian");
+   const obsidian = require("@obsidianjs/obsidian");
    const iframeApi = require("@obsidianjs/iframe-api");
 
    const app = obsidian("my-application");
