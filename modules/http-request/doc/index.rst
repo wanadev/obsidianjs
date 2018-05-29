@@ -15,9 +15,7 @@ First add the module to your project::
 
     npm install --save @obsidianjs/http-request
 
-Then use it in your application (in your main ``index.js``):
-
-.. code-block:: javascript
+Then use it in your application (in your main ``index.js``)::
 
    const obsidian = require("@obsidianjs/obsidian");
    const httpRequest = require("@obsidianjs/http-request");
@@ -26,9 +24,7 @@ Then use it in your application (in your main ``index.js``):
    app.use(httpRequest);
    app.start();
 
-Finally require it in modules that need it:
-
-.. code-block:: javascript
+Finally require it in modules that need it::
 
    {
        name: "my-module",
@@ -257,11 +253,49 @@ Proxyfied Requests
 
 
 
-Server-side Middleware
-----------------------
+Server-side Proxy Middleware
+----------------------------
 
-TODO
+Proxyfied requests requires a server-side proxy. The **http-request** module
+provides a middleware that can be used with express to implement the proxy.
 
+.. function:: proxyMiddleware(params={})
+
+   The middleware factory function.
+
+   :param Object params: Optional parameters.
+   :param number params.maxContentLength: Maximum size of the content
+                                          transfered through the proxy
+                                          (optional, default: 5 MiB).
+   :param number[] params.allowedPorts: List of port the proxy is allowed to
+                                        download content from (optional,
+                                        default: 80 and 443).
+   :param string[] params.allowedMethods: List of HTTP methods the proxy is
+                                          allowed to use (optional, default
+                                          ``GET``).
+
+Complete example using **express** and **body-parser**::
+
+    const express = require("express");
+    const bodyParser = require("body-parser");
+    const proxyMiddleware = require("@obsidianjs/http-request/server/");
+
+    const PORT = process.env.PORT || 3042;
+
+    const app = express();
+
+    app.use("/proxy", bodyParser.raw({type: "application/json"}));
+    app.use("/proxy", proxyMiddleware({
+        maxContentLength: 5 * 1024 * 1024,  // Allows to transfer files of 5 MiB max
+        allowedPorts: [80, 443],            // Allows to download from ports 80 (http) and 443 (https)
+        allowedMethods: ["GET"]             // Allows to forward only GET requests
+    }));
+
+    console.log(`Starting server on 0.0.0.0:${PORT}`);
+    app.listen(PORT);
+
+For more information, `see the Obsidian HTTP Request documentation
+<https://wanadev.github.io/obsidian-http-request/proxyfied-requests.html>`
 
 
 .. _obsidian-http-request: https://wanadev.github.io/obsidian-http-request/
