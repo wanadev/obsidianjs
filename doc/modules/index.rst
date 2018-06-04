@@ -6,3 +6,4 @@ Obsidian Core Modules
    :caption: Contents:
 
    http-request/index
+   iframe-api/index
