@@ -181,7 +181,7 @@ class Application {
             modulesLoader: this[MODULES_LOADER],
             // config: this.config._getNamespaced(namespace),
             events: this.events._getNamespaced(namespace),
-            // log: this.log._getNamespaced(namespace),
+            log: this.log._getNamespaced(),
             rootApp: this,
         }, modules);
     }
