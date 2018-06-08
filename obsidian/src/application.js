@@ -178,7 +178,7 @@ class Application {
      */
     _createSubApplication(namespace, modules) {
         return new Application(this.name, namespace, {
-            modulesLoader: this[MODULES_LOADER],
+            // modulesLoader: this[MODULES_LOADER],
             // config: this.config._getNamespaced(namespace),
             events: this.events._getNamespaced(namespace),
             log: this.log._getNamespaced(),
