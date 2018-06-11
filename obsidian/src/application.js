@@ -44,7 +44,7 @@ class Application {
             [IS_STARTED]: false,
         });
 
-        if (this[MODULES_LOADER]) this[MODULES_LOADER].setApp(this);
+        if (this[MODULES_LOADER] && !this[ROOT_APP]) this[MODULES_LOADER].setApp(this);
         if (this[CONFIG]) this[CONFIG].setApp(this);
         // if (this[EVENTS]) this[EVENTS].setApp(this);
         if (this[LOG]) this[LOG].setApp(this);
@@ -178,7 +178,7 @@ class Application {
      */
     _createSubApplication(namespace, modules) {
         return new Application(this.name, namespace, {
-            // modulesLoader: this[MODULES_LOADER],
+            modulesLoader: this[MODULES_LOADER],
             // config: this.config._getNamespaced(namespace),
             events: this.events._getNamespaced(namespace),
             log: this.log._getNamespaced(),
