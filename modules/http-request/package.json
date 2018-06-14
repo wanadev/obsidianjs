@@ -1,0 +1,24 @@
+{
+  "name": "@obsidianjs/http-request",
+  "version": "1.0.0",
+  "description": "Module to make HTTP requests (AJAX) directly or through a proxy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidianjs",
+    "http",
+    "request",
+    "ajax"
+  ],
+  "author": "Wanadev <https://www.wanadev.fr/>",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "obsidian-http-request": "^1.3.1"
+  },
+  "peerDependencies": {
+    "@obsidianjs/obsidian": "0.x"
+  }
+}
