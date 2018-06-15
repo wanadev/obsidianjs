@@ -3,6 +3,7 @@ build
 
 # Node
 node_modules
+lerna-debug.log
 
 # Python
 *.pyc
