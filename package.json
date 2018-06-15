@@ -9,6 +9,7 @@
     "precommit": "lint-staged"
   },
   "author": "Wanadev",
+  "repository": "git@github.com:wanadev/obsidianjs.git",
   "license": "BSD-3-Clause",
   "devDependencies": {
     "babel-preset-env": "^1.6.1",

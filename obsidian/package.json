@@ -6,5 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wanadev",
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "repository": "git@github.com:wanadev/obsidianjs.git"
 }

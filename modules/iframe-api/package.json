@@ -14,6 +14,7 @@
   ],
   "author": "Wanadev <https://www.wanadev.fr/>",
   "license": "BSD-3-Clause",
+  "repository": "git@github.com:wanadev/obsidianjs.git",
   "dependencies": {
     "obsidian-api": "^1.0.5"
   },
