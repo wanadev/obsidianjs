@@ -100,8 +100,7 @@ class ModulesLoader {
             moduleOverride: modules,
             modules: {},
             config,
-            load: module.load,
-            unload: module.unload,
+            module,
         };
 
         this[MODULES_LIST][moduleData.name] = moduleData;
@@ -152,7 +151,7 @@ class ModulesLoader {
 
         // Load the module
         return Promise.resolve()
-            .then(() => this[MODULES_LIST][moduleName].load(app))
+            .then(() => this[MODULES_LIST][moduleName].module.load(app))
             .catch((error) => {
                 if (error instanceof Error) {
                     error.message = `ModuleLoadingError: ${error.message}`;  // eslint-disable-line no-param-reassign

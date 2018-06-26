@@ -274,6 +274,26 @@ describe("ModulesLoader.load", () => {
             });
     });
 
+    test("has the right context", () => {
+        expect.assertions(1);
+
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load() {
+                expect(this).toBe(testModule);
+            },
+            unload: jest.fn(),
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => ({}) });
+
+        modules.register(testModule);
+
+        return modules.load("test-module");
+    });
+
 });
 
 describe("ModulesLoader.loadAll", () => {
