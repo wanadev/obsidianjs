@@ -135,6 +135,26 @@ describe("ModulesLoader.load", () => {
             });
     });
 
+    test("provides the namespaced app to the module when loading it", () => {
+        const testModule = {
+            name: "test-module",
+            requires: [],
+            load: jest.fn(),
+            unload: jest.fn(),
+        };
+
+        const subApp = {};
+        const modules = new ModulesLoader();
+        modules.setApp({ _createSubApplication: () => subApp });
+
+        modules.register(testModule);
+
+        return modules.load("test-module")
+            .then(() => {
+                expect(testModule.app).toBe(subApp);
+            });
+    });
+
     test("can load a renamed module", () => {
         const testModule = {
             name: "test-module",
