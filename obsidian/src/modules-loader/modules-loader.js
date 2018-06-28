@@ -148,6 +148,7 @@ class ModulesLoader {
 
         // Create the module's app
         const app = this[APP]._createSubApplication(moduleName, dependencies);
+        this[MODULES_LIST][moduleName].module.app = app;
 
         // Load the module
         return Promise.resolve()
