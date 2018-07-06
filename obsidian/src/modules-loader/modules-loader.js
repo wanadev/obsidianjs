@@ -137,13 +137,22 @@ class ModulesLoader {
 
         // Get module's dependencies
         const dependencies = {};
-        for (const dependencyName of this[MODULES_LIST][moduleName].requires) {
-            const dependencyJavascriptName = helpers.toCamelCase(dependencyName);
-            const dependency = this[MODULES][dependencyJavascriptName];
-            if (dependency === undefined) {
-                return Promise.reject(new Error(`UnmetDependency: "${moduleName}" requires "${dependencyName}" but it cannot be found.`));
-            }
-            dependencies[dependencyJavascriptName] = dependency;
+        const unmetDependency = this[MODULES_LIST][moduleName].requires
+            .some((dependencyName) => {
+                const dependencyJavascriptName = helpers.toCamelCase(dependencyName);
+                const dependency = this[MODULES][dependencyJavascriptName];
+
+                if (dependency === undefined) {
+                    return dependencyName;
+                }
+
+                dependencies[dependencyJavascriptName] = dependency;
+
+                return false;
+            });
+
+        if (unmetDependency) {
+            return Promise.reject(new Error(`UnmetDependency: "${moduleName}" requires "${unmetDependency}" but it cannot be found.`));
         }
 
         // Create the module's app
