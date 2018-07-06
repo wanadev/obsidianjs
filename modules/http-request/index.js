@@ -2,7 +2,7 @@ const httpRequest = require("obsidian-http-request");
 
 module.exports = {
 
-    name: "iframe-api",
+    name: "http-request",
     requires: [],
 
     load() {
