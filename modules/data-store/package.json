@@ -1,0 +1,31 @@
+{
+  "name": "@obsidianjs/data-store",
+  "version": "0.1.0",
+  "description": "TODO",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wanadev/obsidianjs.git"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidianjs",
+    "data"
+  ],
+  "author": "Wanadev <https://www.wanadev.fr/>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/wanadev/obsidianjs/issues"
+  },
+  "homepage": "https://github.com/wanadev/obsidianjs#readme",
+  "dependencies": {
+    "abitbol-serializable": "^2.0.0"
+  }
+}
