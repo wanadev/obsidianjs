@@ -1,8 +1,17 @@
 
+import serializer from "abitbol-serializable/lib/serializer";
+import minimatch from "minimatch";
+
+
 /**
  * Stores project's entities and blobs.
  */
 class DataStore {
+
+    constructor() {
+        this.entitiesByPath = {};
+        this.entitiesByUuid = {};
+    }
 
     /**
      * Add an entity to the store.
@@ -13,8 +22,16 @@ class DataStore {
      * @return {undefined}
      */
     addEntity(entity, path = "/") {
+        if (!this.entitiesByPath[path]) {
+            this.entitiesByPath[path] = [];
+        }
+        entity.$data._path = path; // eslint-disable-line
+        this.entitiesByPath[path].push(entity);
+        this.entitiesByUuid[entity.id] = entity;
+        // TODO add "path" property to entity and assign the path value
         // TODO emit an event ("entity-added" with the entity in param)
     }
+
 
     /**
      * Remove an entity to the store.
@@ -23,6 +40,24 @@ class DataStore {
      * @return {undefined}
      */
     removeEntity(entity) {
+        // const id = (entity instanceof String) ? entity : entity.id;
+        let id;
+        let realEntity;
+        if ((typeof entity) === "string") {
+            id = entity;
+            realEntity = this.entitiesByUuid[id];
+        } else {
+            id = entity.id; // eslint-disable-line
+            realEntity = entity;
+        }
+        const path = this.entitiesByUuid[id].getPath();
+        delete this.entitiesByUuid[id];
+        const index = this.entitiesByPath[path].indexOf(realEntity);
+        this.entitiesByPath[path].splice(index, 1);
+        if (this.entitiesByPath[path].length === 0) {
+            delete this.entitiesByPath[path];
+        }
+        delete realEntity.$data._path; // eslint-disable-line
         // TODO emit an event ("entity-removed" with the entity in param)
     }
 
@@ -32,7 +67,7 @@ class DataStore {
      * @param {string} id The entity ID.
      */
     getEntity(id) {
-        // TODO
+        return this.entitiesByUuid[id];
     }
 
     /**
@@ -42,8 +77,21 @@ class DataStore {
      * @param {string} path The path to list (accepts globing).
      * @return {array[string]} The ID of the mathing entities.
      */
-    listEntities(path = "/") {
+    listEntities(path = "/**") {
         // TODO
+        const list = Object.keys(this.entitiesByPath);
+        const filteredList = minimatch.match(list, path);
+        const entityList = [];
+        filteredList.forEach(
+            (keyPath) => {
+                this.entitiesByPath[keyPath].forEach(
+                    (entity) => {
+                        entityList.push(entity);
+                    },
+                );
+            },
+        );
+        return entityList;
     }
 
     /**
@@ -53,7 +101,17 @@ class DataStore {
      * @return {undefined}
      */
     clear() {
-        // TODO emit an event ("store-cleared")
+        const keys = Object.keys(this.entitiesByPath);
+        keys.forEach(
+            (key) => {
+                this.entitiesByPath[key].forEach(
+                    (entity) => {
+                        delete this.entitiesByUuid[entity.id];
+                    },
+                );
+                delete this.entitiesByPath[key];
+            },
+        );
     }
 
     /**
@@ -62,7 +120,8 @@ class DataStore {
      * @return {string} The entities serialized as JSON.
      */
     serializeEntities() {  // → string (JSON)
-        // TODO
+        const serialized = JSON.stringify(serializer.objectSerializer(this.entitiesByPath));
+        return serialized;
     }
 
     /**
@@ -72,8 +131,13 @@ class DataStore {
      * @param {string} serializedEntities The entities serialized as JSON
      * @return {undefined}
      */
-    unserializeEntities(serializeEntities) {
-        // TODO
+    unserializeEntities(serializedEntities) {
+        const unserialized = serializer.objectUnserializer(JSON.parse(serializedEntities));
+        Object.keys(unserialized).forEach((key) => {
+            unserialized[key].forEach((entity) => {
+                this.addEntity(entity, key);
+            });
+        });
     }
 
     // TODO blob parts...
