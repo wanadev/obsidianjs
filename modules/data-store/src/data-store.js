@@ -1,7 +1,7 @@
 import serializer from "abitbol-serializable/lib/serializer";
 import minimatch from "minimatch";
 
-import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH } from "./symbols";
+import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE } from "./symbols";
 
 /**
  * Stores project's entities and blobs.
@@ -25,13 +25,14 @@ class DataStore {
         if (!this[ENTITIES_BY_PATH][path]) {
             this[ENTITIES_BY_PATH][path] = [];
         }
-        entity.$data[ENTITY_PATH] = path; // eslint-disable-line
+        entity.$data[ENTITY_PATH] = path; // eslint-disable-line no-param-reassign
+        entity.$data[ENTITY_STORE] = this; // eslint-disable-line no-param-reassign
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
+
         // TODO add "path" property to entity and assign the path value
         // TODO emit an event ("entity-added" with the entity in param)
     }
-
 
     /**
      * Remove an entity from the store.
@@ -49,14 +50,15 @@ class DataStore {
             id = entity.id; // eslint-disable-line prefer-destructuring
             realEntity = entity;
         }
-        const path = this[ENTITIES_BY_UUID][id].getPath();
+        const path = this[ENTITIES_BY_UUID][id].path; // eslint-disable-line prefer-destructuring
         delete this[ENTITIES_BY_UUID][id];
         const index = this[ENTITIES_BY_PATH][path].indexOf(realEntity);
         this[ENTITIES_BY_PATH][path].splice(index, 1);
         if (this[ENTITIES_BY_PATH][path].length === 0) {
             delete this[ENTITIES_BY_PATH][path];
         }
-        delete realEntity.$data[ENTITY_PATH]; // eslint-disable-line
+        realEntity.$data[ENTITY_PATH].path = null;
+        realEntity.$data[ENTITY_PATH].store = null;
         // TODO emit an event ("entity-removed" with the entity in param)
     }
 
@@ -64,6 +66,7 @@ class DataStore {
      * Get an entity
      *
      * @param {string} id The entity ID.
+     * @return {Entity|undefined}
      */
     getEntity(id) {
         return this[ENTITIES_BY_UUID][id];
@@ -74,7 +77,7 @@ class DataStore {
      * ``"/models/*"``).
      *
      * @param {string} path The path to list (accepts globing).
-     * @return {array[string]} The ID of the mathing entities.
+     * @return {array[Entity]} An array of the matching entities.
      */
     listEntities(path = "/**") {
         const list = Object.keys(this[ENTITIES_BY_PATH]);

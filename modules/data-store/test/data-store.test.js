@@ -5,7 +5,7 @@ const Entity = require("../src/entity");
 
 describe("DataStore.addEntity", () => {
 
-    test("entity is stored into an object", () => {
+    test("stores entity into an object", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");

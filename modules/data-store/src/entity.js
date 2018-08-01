@@ -18,14 +18,17 @@ const Entity = SerializableClass.$extend({
     },
 
     /**
+     * The data-store instance where the entity is stored
      * @property store
      * @readOnly
+     * @type {DataStore}
      */
     getStore() {
         return this.$data[DATA_STORE];
     },
 
     /**
+     * Returns the path where the entity must be stored
      * @property path
      * @readOnly
      * @type string
@@ -35,7 +38,7 @@ const Entity = SerializableClass.$extend({
     },
 
     /**
-     * Destroys the entity from the project
+     * Destroys the entity and removes it from the project
      *
      * @method destroy
      */
