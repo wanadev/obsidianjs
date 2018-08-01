@@ -3,6 +3,7 @@ const Entity = require("../src/entity");
 
 
 describe("DataStore.addEntity", () => {
+
     test("entity is stored into an object", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -16,6 +17,7 @@ describe("DataStore.addEntity", () => {
         expect(dataStore.entitiesByPath).toEqual(object);
         expect(dataStore.entitiesByPath).not.toEqual(object2);
     });
+
     test("many entities in same path", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -33,12 +35,14 @@ describe("DataStore.addEntity", () => {
         };
         expect(dataStore.entitiesByPath).toEqual(object);
     });
+
     test("entity stored in uuid array and with right id", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
         expect(dataStore.entitiesByUuid[entity.id]).toBe(entity);
     });
+
     test("entity in path array and in uuid array are the same", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -47,15 +51,18 @@ describe("DataStore.addEntity", () => {
         expect(dataStore.entitiesByUuid[entity.id]).toBe(dataStore.entitiesByPath["/tata"][index]);
         expect(dataStore.entitiesByPath["/tata"][index]).toBe(entity);
     });
+
     test("entity path is correct", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
         expect(entity.getPath()).toBe("/tata");
     });
+
 });
 
 describe("DataStore.removeEntity", () => {
+
     test("entity is removed from store", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -65,6 +72,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.removeEntity(entity.id);
         expect(dataStore.entitiesByPath["/tata"].indexOf(entity)).toEqual(-1);
     });
+
     test("path is removed if empty", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -75,6 +83,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.removeEntity(entity1.id);
         expect(dataStore.entitiesByPath["/tata"]).toBeUndefined();
     });
+
     test("uuid is removed", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -82,6 +91,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.removeEntity(entity.id);
         expect(dataStore.entitiesByUuid[entity.id]).toBeUndefined();
     });
+
     test("entity path is removed", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -89,6 +99,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.removeEntity(entity.id);
         expect(entity.getPath()).toBeUndefined();
     });
+
     test("can remove entity by giving entity in parameters", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -101,24 +112,29 @@ describe("DataStore.removeEntity", () => {
         dataStore.removeEntity(entity1);
         expect(dataStore.entitiesByPath["/tata"]).toBeUndefined();
     });
+
 });
 
 describe("DataStore.getEntity", () => {
+
     test("entity exists", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity);
         expect(dataStore.getEntity(entity.id)).toBe(entity);
     });
+
     test("path is correct", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
         expect(dataStore.getEntity(entity.id).getPath()).toBe("/tata");
     });
+
 });
 
 describe("DataStore.listEntities", () => {
+
     test("returns all entities", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -130,6 +146,7 @@ describe("DataStore.listEntities", () => {
         const expected = [entity, entity1, entity2];
         expect(dataStore.listEntities()).toEqual(expect.arrayContaining(expected));
     });
+
     test("match path given", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -140,6 +157,7 @@ describe("DataStore.listEntities", () => {
         expect(dataStore.listEntities("/tata")).toEqual(expect.arrayContaining(expected));
         expect(dataStore.listEntities("/tata")).toHaveLength(expected.length);
     });
+
     // TODO find a way to glob "/tata" and "/tata/toto"
 
     // test("match complex globing", () => {
@@ -154,9 +172,11 @@ describe("DataStore.listEntities", () => {
     //     expect(dataStore.listEntities("/tata/**")).toEqual(expect.arrayContaining(expected));
     //     expect(dataStore.listEntities("/tata/**")).toHaveLength(expected.length);
     // });
+
 });
 
 describe("DataStore.clear", () => {
+
     test("everything is cleared", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
@@ -168,6 +188,7 @@ describe("DataStore.clear", () => {
         dataStore.clear();
         expect(dataStore.listEntities()).toEqual([]);
     });
+
 });
 
 
@@ -187,6 +208,7 @@ describe("DataStore.serializeEntities", () => {
 });
 
 describe("DataStore.UnserializeEntities", () => {
+
     test("stores all entity from serialized project", () => {
         const dataStoreSerializer = new DataStore();
         const dataStoreUnserializer = new DataStore();
@@ -212,4 +234,5 @@ describe("DataStore.UnserializeEntities", () => {
         expect(dataStoreUnserializer.entitiesByPath["/tata/titi"].length).toEqual(1);
         expect(dataStoreUnserializer.entitiesByPath["/toto"].length).toEqual(1);
     });
+
 });

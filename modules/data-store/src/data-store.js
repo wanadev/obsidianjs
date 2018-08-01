@@ -16,7 +16,7 @@ class DataStore {
     /**
      * Add an entity to the store.
      *
-     * @param {SerializableClass} entity The entity
+     * @param {Entity} entity The entity
      * @param {string} path Path where the entity will be stored
      *                      (default=``"/"``)
      * @return {undefined}
@@ -34,20 +34,19 @@ class DataStore {
 
 
     /**
-     * Remove an entity to the store.
+     * Remove an entity from the store.
      *
-     * @param {SerializableClass|string} entity The entity or its id
+     * @param {Entity|string} entity The entity or its id
      * @return {undefined}
      */
     removeEntity(entity) {
-        // const id = (entity instanceof String) ? entity : entity.id;
         let id;
         let realEntity;
         if ((typeof entity) === "string") {
             id = entity;
             realEntity = this.entitiesByUuid[id];
         } else {
-            id = entity.id; // eslint-disable-line
+            id = entity.id; // eslint-disable-line prefer-destructuring
             realEntity = entity;
         }
         const path = this.entitiesByUuid[id].getPath();
@@ -78,7 +77,6 @@ class DataStore {
      * @return {array[string]} The ID of the mathing entities.
      */
     listEntities(path = "/**") {
-        // TODO
         const list = Object.keys(this.entitiesByPath);
         const filteredList = minimatch.match(list, path);
         const entityList = [];
@@ -92,6 +90,7 @@ class DataStore {
             },
         );
         return entityList;
+        // TODO find a way to glob "/tata" and "/tata/toto"
     }
 
     /**
@@ -101,16 +100,9 @@ class DataStore {
      * @return {undefined}
      */
     clear() {
-        const keys = Object.keys(this.entitiesByPath);
-        keys.forEach(
-            (key) => {
-                this.entitiesByPath[key].forEach(
-                    (entity) => {
-                        delete this.entitiesByUuid[entity.id];
-                    },
-                );
-                delete this.entitiesByPath[key];
-            },
+        const uuids = Object.keys(this.entitiesByUuid);
+        uuids.forEach(
+            this.removeEntity.bind(this),
         );
     }
 
@@ -120,8 +112,7 @@ class DataStore {
      * @return {string} The entities serialized as JSON.
      */
     serializeEntities() {  // → string (JSON)
-        const serialized = JSON.stringify(serializer.objectSerializer(this.entitiesByPath));
-        return serialized;
+        return JSON.stringify(serializer.objectSerializer(this.entitiesByPath));
     }
 
     /**
@@ -133,9 +124,9 @@ class DataStore {
      */
     unserializeEntities(serializedEntities) {
         const unserialized = serializer.objectUnserializer(JSON.parse(serializedEntities));
-        Object.keys(unserialized).forEach((key) => {
-            unserialized[key].forEach((entity) => {
-                this.addEntity(entity, key);
+        Object.keys(unserialized).forEach((path) => {
+            unserialized[path].forEach((entity) => {
+                this.addEntity(entity, path);
             });
         });
     }

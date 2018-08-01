@@ -6,8 +6,14 @@ const SerializableClass = require("abitbol-serializable");
  * @class obsidian-project.lib.structure
  * @extends abitbol-serializable
  */
-const Structure = SerializableClass.$extend({
-    __name__: "Structure",
+const Entity = SerializableClass.$extend({
+    __name__: "Entity",
+
+    __init__(params) {
+        this.$data._store = null; // eslint-disable-line
+        this.$data._path = null; // eslint-disable-line
+        this.$super(params);
+    },
 
     /**
      * @property store
@@ -18,24 +24,25 @@ const Structure = SerializableClass.$extend({
     },
 
     /**
-     * @property layer
+     * @property path
      * @readOnly
-     * @type obsidian-project.lib.structure[]
+     * @type string
      */
     getPath() {
         return this.$data._path; // eslint-disable-line
     },
 
     /**
+     * Destroys the entity from the project
+     *
      * @method destroy
      */
     destroy() {
-        if (this.project) {
-            this.project.removeStructure(this);
-        }
+        // TODO
     },
+
 });
 
-SerializableClass.$register(Structure);
+SerializableClass.$register(Entity);
 
-module.exports = Structure;
+module.exports = Entity;
