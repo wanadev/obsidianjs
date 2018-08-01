@@ -1,11 +1,8 @@
-
 import serializer from "abitbol-serializable/lib/serializer";
 import minimatch from "minimatch";
-import STORE_SYMBOLS from "./symbols";
 
-const ENTITIES_BY_PATH = STORE_SYMBOLS.ENTITIES_BY_PATH; // eslint-disable-line prefer-destructuring
-const ENTITIES_BY_UUID = STORE_SYMBOLS.ENTITIES_BY_UUID; // eslint-disable-line prefer-destructuring
-const PATH_SYMBOL = STORE_SYMBOLS.PATH; // eslint-disable-line prefer-destructuring
+import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH } from "./symbols";
+
 /**
  * Stores project's entities and blobs.
  */
@@ -28,7 +25,7 @@ class DataStore {
         if (!this[ENTITIES_BY_PATH][path]) {
             this[ENTITIES_BY_PATH][path] = [];
         }
-        entity.$data[PATH_SYMBOL] = path; // eslint-disable-line
+        entity.$data[ENTITY_PATH] = path; // eslint-disable-line
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
         // TODO add "path" property to entity and assign the path value
@@ -59,7 +56,7 @@ class DataStore {
         if (this[ENTITIES_BY_PATH][path].length === 0) {
             delete this[ENTITIES_BY_PATH][path];
         }
-        delete realEntity.$data[PATH_SYMBOL]; // eslint-disable-line
+        delete realEntity.$data[ENTITY_PATH]; // eslint-disable-line
         // TODO emit an event ("entity-removed" with the entity in param)
     }
 

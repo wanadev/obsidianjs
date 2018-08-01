@@ -1,10 +1,7 @@
-import STORE_SYMBOLS from "../src/symbols";
+import { ENTITIES_BY_PATH, ENTITIES_BY_UUID } from "../src/symbols";
 
 const DataStore = require("../src/data-store.js");
 const Entity = require("../src/entity");
-
-const ENTITIES_BY_PATH = STORE_SYMBOLS.ENTITIES_BY_PATH; // eslint-disable-line prefer-destructuring
-const ENTITIES_BY_UUID = STORE_SYMBOLS.ENTITIES_BY_UUID; // eslint-disable-line prefer-destructuring
 
 describe("DataStore.addEntity", () => {
 

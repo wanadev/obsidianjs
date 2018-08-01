@@ -1,7 +1,5 @@
-const STORE_SYMBOLS = {
-    ENTITIES_BY_PATH: Symbol("entities_by_path"),
-    ENTITIES_BY_UUID: Symbol("entities_by_uuid"),
-    STORE: Symbol("store"),
-    PATH: Symbol("path"),
-};
-export default STORE_SYMBOLS;
+
+export const ENTITIES_BY_PATH = Symbol("entities_by_path");
+export const ENTITIES_BY_UUID = Symbol("entities_by_uuid");
+export const DATA_STORE = Symbol("store");
+export const ENTITY_PATH = Symbol("path");

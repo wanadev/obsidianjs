@@ -1,9 +1,6 @@
-import STORE_SYMBOLS from "./symbols";
+import { DATA_STORE, ENTITY_PATH } from "./symbols";
 
 const SerializableClass = require("abitbol-serializable");
-
-const STORE = STORE_SYMBOLS.STORE; // eslint-disable-line prefer-destructuring
-const PATH = STORE_SYMBOLS.PATH; // eslint-disable-line prefer-destructuring
 
 /**
  * A structure that can be added to a ProjectManager.
@@ -15,8 +12,8 @@ const Entity = SerializableClass.$extend({
     __name__: "Entity",
 
     __init__(params) {
-        this.$data[STORE] = null;
-        this.$data[PATH] = null;
+        this.$data[DATA_STORE] = null;
+        this.$data[ENTITY_PATH] = null;
         this.$super(params);
     },
 
@@ -25,7 +22,7 @@ const Entity = SerializableClass.$extend({
      * @readOnly
      */
     getStore() {
-        return this.$data[STORE];
+        return this.$data[DATA_STORE];
     },
 
     /**
@@ -34,7 +31,7 @@ const Entity = SerializableClass.$extend({
      * @type string
      */
     getPath() {
-        return this.$data[PATH];
+        return this.$data[ENTITY_PATH];
     },
 
     /**
