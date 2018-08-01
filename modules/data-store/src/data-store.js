@@ -1,16 +1,19 @@
 
 import serializer from "abitbol-serializable/lib/serializer";
 import minimatch from "minimatch";
+import STORE_SYMBOLS from "./symbols";
 
-
+const ENTITIES_BY_PATH = STORE_SYMBOLS.ENTITIES_BY_PATH; // eslint-disable-line prefer-destructuring
+const ENTITIES_BY_UUID = STORE_SYMBOLS.ENTITIES_BY_UUID; // eslint-disable-line prefer-destructuring
+const PATH_SYMBOL = STORE_SYMBOLS.PATH; // eslint-disable-line prefer-destructuring
 /**
  * Stores project's entities and blobs.
  */
 class DataStore {
 
     constructor() {
-        this.entitiesByPath = {};
-        this.entitiesByUuid = {};
+        this[ENTITIES_BY_PATH] = {};
+        this[ENTITIES_BY_UUID] = {};
     }
 
     /**
@@ -22,12 +25,12 @@ class DataStore {
      * @return {undefined}
      */
     addEntity(entity, path = "/") {
-        if (!this.entitiesByPath[path]) {
-            this.entitiesByPath[path] = [];
+        if (!this[ENTITIES_BY_PATH][path]) {
+            this[ENTITIES_BY_PATH][path] = [];
         }
-        entity.$data._path = path; // eslint-disable-line
-        this.entitiesByPath[path].push(entity);
-        this.entitiesByUuid[entity.id] = entity;
+        entity.$data[PATH_SYMBOL] = path; // eslint-disable-line
+        this[ENTITIES_BY_PATH][path].push(entity);
+        this[ENTITIES_BY_UUID][entity.id] = entity;
         // TODO add "path" property to entity and assign the path value
         // TODO emit an event ("entity-added" with the entity in param)
     }
@@ -44,19 +47,19 @@ class DataStore {
         let realEntity;
         if ((typeof entity) === "string") {
             id = entity;
-            realEntity = this.entitiesByUuid[id];
+            realEntity = this[ENTITIES_BY_UUID][id];
         } else {
             id = entity.id; // eslint-disable-line prefer-destructuring
             realEntity = entity;
         }
-        const path = this.entitiesByUuid[id].getPath();
-        delete this.entitiesByUuid[id];
-        const index = this.entitiesByPath[path].indexOf(realEntity);
-        this.entitiesByPath[path].splice(index, 1);
-        if (this.entitiesByPath[path].length === 0) {
-            delete this.entitiesByPath[path];
+        const path = this[ENTITIES_BY_UUID][id].getPath();
+        delete this[ENTITIES_BY_UUID][id];
+        const index = this[ENTITIES_BY_PATH][path].indexOf(realEntity);
+        this[ENTITIES_BY_PATH][path].splice(index, 1);
+        if (this[ENTITIES_BY_PATH][path].length === 0) {
+            delete this[ENTITIES_BY_PATH][path];
         }
-        delete realEntity.$data._path; // eslint-disable-line
+        delete realEntity.$data[PATH_SYMBOL]; // eslint-disable-line
         // TODO emit an event ("entity-removed" with the entity in param)
     }
 
@@ -66,7 +69,7 @@ class DataStore {
      * @param {string} id The entity ID.
      */
     getEntity(id) {
-        return this.entitiesByUuid[id];
+        return this[ENTITIES_BY_UUID][id];
     }
 
     /**
@@ -77,12 +80,12 @@ class DataStore {
      * @return {array[string]} The ID of the mathing entities.
      */
     listEntities(path = "/**") {
-        const list = Object.keys(this.entitiesByPath);
+        const list = Object.keys(this[ENTITIES_BY_PATH]);
         const filteredList = minimatch.match(list, path);
         const entityList = [];
         filteredList.forEach(
             (keyPath) => {
-                this.entitiesByPath[keyPath].forEach(
+                this[ENTITIES_BY_PATH][keyPath].forEach(
                     (entity) => {
                         entityList.push(entity);
                     },
@@ -100,7 +103,7 @@ class DataStore {
      * @return {undefined}
      */
     clear() {
-        const uuids = Object.keys(this.entitiesByUuid);
+        const uuids = Object.keys(this[ENTITIES_BY_UUID]);
         uuids.forEach(
             this.removeEntity.bind(this),
         );
@@ -112,7 +115,7 @@ class DataStore {
      * @return {string} The entities serialized as JSON.
      */
     serializeEntities() {  // → string (JSON)
-        return JSON.stringify(serializer.objectSerializer(this.entitiesByPath));
+        return JSON.stringify(serializer.objectSerializer(this[ENTITIES_BY_PATH]));
     }
 
     /**

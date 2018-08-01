@@ -1,6 +1,10 @@
+import STORE_SYMBOLS from "../src/symbols";
+
 const DataStore = require("../src/data-store.js");
 const Entity = require("../src/entity");
 
+const ENTITIES_BY_PATH = STORE_SYMBOLS.ENTITIES_BY_PATH; // eslint-disable-line prefer-destructuring
+const ENTITIES_BY_UUID = STORE_SYMBOLS.ENTITIES_BY_UUID; // eslint-disable-line prefer-destructuring
 
 describe("DataStore.addEntity", () => {
 
@@ -14,8 +18,8 @@ describe("DataStore.addEntity", () => {
         const object2 = {
             "/toto": [entity],
         };
-        expect(dataStore.entitiesByPath).toEqual(object);
-        expect(dataStore.entitiesByPath).not.toEqual(object2);
+        expect(dataStore[ENTITIES_BY_PATH]).toEqual(object);
+        expect(dataStore[ENTITIES_BY_PATH]).not.toEqual(object2);
     });
 
     test("many entities in same path", () => {
@@ -33,23 +37,23 @@ describe("DataStore.addEntity", () => {
             "/tata/titi": [entity2],
             "/toto": [entity3],
         };
-        expect(dataStore.entitiesByPath).toEqual(object);
+        expect(dataStore[ENTITIES_BY_PATH]).toEqual(object);
     });
 
     test("entity stored in uuid array and with right id", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
-        expect(dataStore.entitiesByUuid[entity.id]).toBe(entity);
+        expect(dataStore[ENTITIES_BY_UUID][entity.id]).toBe(entity);
     });
 
     test("entity in path array and in uuid array are the same", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
-        const index = dataStore.entitiesByPath["/tata"].indexOf(entity);
-        expect(dataStore.entitiesByUuid[entity.id]).toBe(dataStore.entitiesByPath["/tata"][index]);
-        expect(dataStore.entitiesByPath["/tata"][index]).toBe(entity);
+        const index = dataStore[ENTITIES_BY_PATH]["/tata"].indexOf(entity);
+        expect(dataStore[ENTITIES_BY_UUID][entity.id]).toBe(dataStore[ENTITIES_BY_PATH]["/tata"][index]);
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"][index]).toBe(entity);
     });
 
     test("entity path is correct", () => {
@@ -70,7 +74,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.addEntity(entity, "/tata");
         dataStore.addEntity(entity1, "/tata");
         dataStore.removeEntity(entity.id);
-        expect(dataStore.entitiesByPath["/tata"].indexOf(entity)).toEqual(-1);
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"].indexOf(entity)).toEqual(-1);
     });
 
     test("path is removed if empty", () => {
@@ -81,7 +85,7 @@ describe("DataStore.removeEntity", () => {
         dataStore.addEntity(entity1, "/tata");
         dataStore.removeEntity(entity.id);
         dataStore.removeEntity(entity1.id);
-        expect(dataStore.entitiesByPath["/tata"]).toBeUndefined();
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toBeUndefined();
     });
 
     test("uuid is removed", () => {
@@ -89,7 +93,7 @@ describe("DataStore.removeEntity", () => {
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
         dataStore.removeEntity(entity.id);
-        expect(dataStore.entitiesByUuid[entity.id]).toBeUndefined();
+        expect(dataStore[ENTITIES_BY_UUID][entity.id]).toBeUndefined();
     });
 
     test("entity path is removed", () => {
@@ -107,10 +111,10 @@ describe("DataStore.removeEntity", () => {
         dataStore.addEntity(entity, "/tata");
         dataStore.addEntity(entity1, "/tata");
         dataStore.removeEntity(entity);
-        expect(dataStore.entitiesByPath["/tata"].indexOf(entity)).toEqual(-1);
-        expect(dataStore.entitiesByUuid[entity.id]).toBeUndefined();
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"].indexOf(entity)).toEqual(-1);
+        expect(dataStore[ENTITIES_BY_UUID][entity.id]).toBeUndefined();
         dataStore.removeEntity(entity1);
-        expect(dataStore.entitiesByPath["/tata"]).toBeUndefined();
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toBeUndefined();
     });
 
 });
@@ -227,12 +231,12 @@ describe("DataStore.UnserializeEntities", () => {
         ];
         const serializedData = dataStoreSerializer.serializeEntities();
         dataStoreUnserializer.unserializeEntities(serializedData);
-        const keys = Object.keys(dataStoreUnserializer.entitiesByPath);
+        const keys = Object.keys(dataStoreUnserializer[ENTITIES_BY_PATH]);
         expect(keys).toEqual(expect.arrayContaining(object));
         expect(keys.length).toEqual(object.length);
-        expect(dataStoreUnserializer.entitiesByPath["/tata"].length).toEqual(2);
-        expect(dataStoreUnserializer.entitiesByPath["/tata/titi"].length).toEqual(1);
-        expect(dataStoreUnserializer.entitiesByPath["/toto"].length).toEqual(1);
+        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/tata"].length).toEqual(2);
+        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/tata/titi"].length).toEqual(1);
+        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/toto"].length).toEqual(1);
     });
 
 });
