@@ -57,8 +57,8 @@ class DataStore {
         if (this[ENTITIES_BY_PATH][path].length === 0) {
             delete this[ENTITIES_BY_PATH][path];
         }
-        realEntity.$data[ENTITY_PATH].path = null;
-        realEntity.$data[ENTITY_PATH].store = null;
+        realEntity.$data[ENTITY_PATH] = null;
+        realEntity.$data[ENTITY_STORE] = null;
         // TODO emit an event ("entity-removed" with the entity in param)
     }
 
