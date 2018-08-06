@@ -1,10 +1,12 @@
+const DataStore = require("./src/data-store");
+
 export default {
 
     name: "data-store",
     requires: [],
 
     load() {
-        // TODO
+        return new DataStore();
     },
 
     unload() {

@@ -47,8 +47,9 @@ DataStore API
    :short-name:
    :members:
 
-Entities
--------------
+Entity Class API
+----------------
+
 .. js:autoclass:: modules/data-store/src/entity.Entity
    :short-name:
    :members:
