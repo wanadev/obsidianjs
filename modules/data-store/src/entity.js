@@ -3,9 +3,8 @@ import { DATA_STORE, ENTITY_PATH } from "./symbols";
 const SerializableClass = require("abitbol-serializable");
 
 /**
- * A structure that can be added to a ProjectManager.
+ * A structure that can be added to a DataStore.
  *
- * @class obsidian-project.lib.structure
  * @extends abitbol-serializable
  */
 const Entity = SerializableClass.$extend({
