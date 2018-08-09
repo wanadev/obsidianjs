@@ -1,20 +1,18 @@
 data-store
 ==========
 
-This modules integrates the obsidian-project_ library to the ObsidianJS
-framework.
-
 The **data-store** module allows you to manage entities which are serializable classes.
-It can store them and generate a final JSON file which contains all serializable 
-information from the stored entities. You can also provide a JSON to the data-store 
+It can store them and generate a final JSON file which contains all serializable
+information from the stored entities. You can also provide a JSON to the data-store
 and it will unserialize it and create the entities corresponding.
 
 Using This Module
--------------
+-----------------
+
 First add the module to your project::
 
     npm install --save @obsidianjs/data-store
-	
+
 Then use it in your application (in your main ``index.js``)::
 
    const obsidian = require("@obsidianjs/obsidian");
@@ -53,5 +51,3 @@ Entity Class API
 .. js:autoclass:: modules/data-store/src/entity.Entity
    :short-name:
    :members:
-
-.. _obsidian-project: https://github.com/wanadev/obsidian-project
