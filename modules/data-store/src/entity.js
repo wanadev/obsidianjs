@@ -5,6 +5,7 @@ const SerializableClass = require("abitbol-serializable");
 /**
  * A structure that can be added to a DataStore.
  *
+ * @class Entity
  * @extends abitbol-serializable
  */
 const Entity = SerializableClass.$extend({
@@ -18,9 +19,9 @@ const Entity = SerializableClass.$extend({
 
     /**
      * The data-store instance where the entity is stored
-     * @property store
+     * @member store
      * @readOnly
-     * @type {DataStore}
+     * @type DataStore
      */
     getStore() {
         return this.$data[DATA_STORE];
@@ -28,7 +29,7 @@ const Entity = SerializableClass.$extend({
 
     /**
      * Returns the path where the entity must be stored
-     * @property path
+     * @member path
      * @readOnly
      * @type string
      */
@@ -38,8 +39,6 @@ const Entity = SerializableClass.$extend({
 
     /**
      * Destroys the entity and removes it from the project
-     *
-     * @method destroy
      */
     destroy() {
         // TODO

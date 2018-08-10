@@ -176,3 +176,4 @@ js_source_path.extend(
         for p in glob.glob("../../modules/*/src")]
 )
 root_for_relative_js_paths = "./"
+jsdoc_config_path = "doc/jsdoc.conf.json"

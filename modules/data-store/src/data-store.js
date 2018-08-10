@@ -77,7 +77,7 @@ class DataStore {
      * ``"/models/*"``).
      *
      * @param {string} path The path to list (accepts globing).
-     * @return {array[Entity]} An array of the matching entities.
+     * @return {Entity[]} An array of the matching entities.
      */
     listEntities(path = "/**") {
         const list = Object.keys(this[ENTITIES_BY_PATH]);
