@@ -1,7 +1,9 @@
-import serializer from "abitbol-serializable/lib/serializer";
-import minimatch from "minimatch";
+const serializer = require("abitbol-serializable/lib/serializer");
+const minimatch = require("minimatch");
 
-import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE } from "./symbols";
+const {
+    ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE,
+} = require("./symbols");
 
 /**
  * Stores project's entities and blobs.

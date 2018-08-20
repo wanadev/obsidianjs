@@ -16,7 +16,7 @@ First add the module to your project::
 Then use it in your application (in your main ``index.js``)::
 
    const obsidian = require("@obsidianjs/obsidian");
-   const httpRequest = require("@obsidianjs/data-store");
+   const dataStore = require("@obsidianjs/data-store");
 
    const app = obsidian("my-application");
    app.use(dataStore);
