@@ -60,7 +60,7 @@ describe("DataStore.addEntity", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.addEntity(entity, "/tata");
-        expect(entity.$data[ENTITY_STORE]).toEqual(dataStore);
+        expect(entity.$data[ENTITY_STORE]).toBe(dataStore);
     });
 
 });
