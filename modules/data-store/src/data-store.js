@@ -31,7 +31,6 @@ class DataStore {
         entity.$data[ENTITY_STORE] = this; // eslint-disable-line no-param-reassign
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
-
         // TODO add "path" property to entity and assign the path value
         // TODO emit an event ("entity-added" with the entity in param)
     }

@@ -1,4 +1,4 @@
-const { DATA_STORE, ENTITY_PATH } = require("./symbols");
+const { ENTITY_STORE, ENTITY_PATH } = require("./symbols");
 
 const SerializableClass = require("abitbol-serializable");
 
@@ -12,7 +12,7 @@ const Entity = SerializableClass.$extend({
     __name__: "Entity",
 
     __init__(params) {
-        this.$data[DATA_STORE] = null;
+        this.$data[ENTITY_STORE] = null;
         this.$data[ENTITY_PATH] = null;
         this.$super(params);
     },
@@ -24,7 +24,7 @@ const Entity = SerializableClass.$extend({
      * @type DataStore
      */
     getStore() {
-        return this.$data[DATA_STORE];
+        return this.$data[ENTITY_STORE];
     },
 
     /**
