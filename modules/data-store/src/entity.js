@@ -1,4 +1,4 @@
-import { DATA_STORE, ENTITY_PATH } from "./symbols";
+const { DATA_STORE, ENTITY_PATH } = require("./symbols");
 
 const SerializableClass = require("abitbol-serializable");
 
