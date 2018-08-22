@@ -1,8 +1,8 @@
 {
   "lerna": "2.9.0",
   "packages": [
-    "obsidian",
-    "modules/*"
+    "modules/*",
+    "obsidian"
   ],
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

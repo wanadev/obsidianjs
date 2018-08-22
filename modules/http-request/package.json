@@ -1,6 +1,6 @@
 {
   "name": "@obsidianjs/http-request",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Module to make HTTP requests (AJAX) directly or through a proxy",
   "main": "index.js",
   "scripts": {
