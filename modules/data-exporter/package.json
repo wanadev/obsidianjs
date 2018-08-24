@@ -1,0 +1,24 @@
+{
+  "name": "@obsidianjs/data-exporter",
+  "version": "0.0.0",
+  "description": "Export / Import data from / to @obsidianjs/data-store in the Obsidian File format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidianjs",
+    "export"
+  ],
+  "author": "Wanadev <https://www.wanadev.fr/>",
+  "repository": "git@github.com:wanadev/obsidianjs.git",
+  "license": "BSD-3-Clause",
+  "peerDependencies": {
+    "@obsidianjs/obsidian": "0.x",
+    "@obsidianjs/data-store": "0.x"
+  },
+  "dependencies": {
+    "obsidian-file": "^2.0.4"
+  }
+}
