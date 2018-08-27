@@ -113,10 +113,10 @@ class DataStore {
     /**
      * Serialize all stored entities.
      *
-     * @return {string} The entities serialized as JSON.
+     * @return {Object} The serialized entities.
      */
     serializeEntities() {  // → string (JSON)
-        return JSON.stringify(serializer.objectSerializer(this[ENTITIES_BY_PATH]));
+        return serializer.objectSerializer(this[ENTITIES_BY_PATH]);
     }
 
     /**
@@ -127,7 +127,7 @@ class DataStore {
      * @return {undefined}
      */
     unserializeEntities(serializedEntities) {
-        const unserialized = serializer.objectUnserializer(JSON.parse(serializedEntities));
+        const unserialized = serializer.objectUnserializer(serializedEntities);
         Object.keys(unserialized).forEach((path) => {
             unserialized[path].forEach((entity) => {
                 this.addEntity(entity, path);
