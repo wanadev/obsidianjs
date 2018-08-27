@@ -204,45 +204,44 @@ describe("DataStore.clear", () => {
 
 describe("DataStore.serializeEntities", () => {
 
-    test("returns a JSON string", () => {
+    test("returns serialized entities", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         const entity1 = new Entity({ id: "entity-1" });
         dataStore.addEntity(entity, "/tata");
         dataStore.addEntity(entity1, "/tata/toto");
         const serialized = dataStore.serializeEntities();
-        expect(typeof serialized).toBe("string");
-        expect(typeof JSON.parse(serialized)).toBe("object");
+        expect(typeof serialized).toBe("object");
     });
 
 });
 
 describe("DataStore.unserializeEntities", () => {
 
-    test("unserializes and add all entity from serialized JSON to the store", () => {
-        const dataStoreSerializer = new DataStore();
-        const dataStoreUnserializer = new DataStore();
-        const entity = new Entity({ id: "entity-0" });
-        const entity1 = new Entity({ id: "entity-1" });
-        const entity2 = new Entity({ id: "entity-2" });
-        const entity3 = new Entity({ id: "entity-3" });
-        dataStoreSerializer.addEntity(entity, "/tata");
-        dataStoreSerializer.addEntity(entity1, "/tata");
-        dataStoreSerializer.addEntity(entity3, "/toto");
-        dataStoreSerializer.addEntity(entity2, "/tata/titi");
-        const object = [
-            "/tata",
-            "/tata/titi",
-            "/toto",
-        ];
-        const serializedData = dataStoreSerializer.serializeEntities();
-        dataStoreUnserializer.unserializeEntities(serializedData);
-        const keys = Object.keys(dataStoreUnserializer[ENTITIES_BY_PATH]);
-        expect(keys).toEqual(expect.arrayContaining(object));
-        expect(keys.length).toEqual(object.length);
-        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/tata"]).toHaveLength(2);
-        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/tata/titi"]).toHaveLength(1);
-        expect(dataStoreUnserializer[ENTITIES_BY_PATH]["/toto"]).toHaveLength(1);
+    test("unserializes enities and add them to the store", () => {
+        const serializedData = {
+            "/tata": [{
+                __name__: "Entity",
+                id: "entity-0",
+            }, {
+                __name__: "Entity",
+                id: "entity-1",
+            }],
+            "/toto": [{
+                __name__: "Entity",
+                id: "entity-3",
+            }],
+            "/tata/titi": [{
+                __name__: "Entity",
+                id: "entity-2",
+            }],
+        };
+
+        const dataStore = new DataStore();
+        dataStore.unserializeEntities(serializedData);
+        expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toHaveLength(2);
+        expect(dataStore[ENTITIES_BY_PATH]["/tata/titi"]).toHaveLength(1);
+        expect(dataStore[ENTITIES_BY_PATH]["/toto"]).toHaveLength(1);
     });
 
 });
