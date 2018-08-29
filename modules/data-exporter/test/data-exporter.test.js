@@ -10,12 +10,14 @@ describe("DataExporter.export", () => {
     test("returns a Buffer", () => {
         const dataExpoter = new DataExporter();
         const project = dataExpoter.export();
+
         expect(project).toBeInstanceOf(Buffer);
     });
 
     test("exports a valid Obsidian Project File", () => {
         const dataExpoter = new DataExporter();
         const project = dataExpoter.export();
+
         expect(ObisidianProjectFile.isObsidianProjectFile(project)).toBeTruthy();
         expect(() => new ObisidianProjectFile(project)).not.toThrow();
     });
@@ -24,6 +26,7 @@ describe("DataExporter.export", () => {
         const dataExpoter = new DataExporter();
         const projectBuffer = dataExpoter.export();
         const project = new ObisidianProjectFile(projectBuffer);
+
         expect(project.project).toEqual({
             "/a": [{
                 __name__: "Entity",
@@ -40,6 +43,7 @@ describe("DataExporter.export", () => {
         const dataExpoter = new DataExporter();
         const projectBuffer = dataExpoter.export(metadata);
         const project = new ObisidianProjectFile(projectBuffer);
+
         expect(project.metadata).toEqual(metadata);
     });
 
@@ -47,6 +51,7 @@ describe("DataExporter.export", () => {
         const dataExpoter = new DataExporter();
         const projectBuffer = dataExpoter.export(undefined, { type: "TESTTYPE" });
         const project = new ObisidianProjectFile(projectBuffer);
+
         expect(project.type).toEqual("TESTTYPE");
     });
 
@@ -57,6 +62,7 @@ describe("DataExporter.exportAsBlob", () => {
     test("returns a Blob", () => {
         const dataExpoter = new DataExporter();
         const project = dataExpoter.exportAsBlob();
+
         expect(project).toBeInstanceOf(Blob);
     });
 
@@ -67,6 +73,7 @@ describe("DataExporter.exportAsData64", () => {
     test("returns a data64-encoded string", () => {
         const dataExpoter = new DataExporter();
         const project = dataExpoter.exportAsData64();
+
         expect(project).toMatch(/^[a-zA-Z0-9_+/-]+=*$/);
     });
 
@@ -86,14 +93,18 @@ describe("DataExporter.import", () => {
         const projectBuffer = project.exportAsBlob();
         const dataExpoter = new DataExporter();
         dataExpoter.import(projectBuffer);
+
         expect(self.app.modules.dataStore.unserializeEntities).lastCalledWith(projectData);
     });
 
     test("clears the data-store content when importing project", () => {
+        self.app.modules.dataStore.clear.mockClear();
+
         const project = new ObisidianProjectFile();
         const projectBuffer = project.exportAsBlob();
         const dataExpoter = new DataExporter();
         dataExpoter.import(projectBuffer);
+
         expect(self.app.modules.dataStore.clear).toHaveBeenCalledTimes(1);
     });
 
@@ -102,11 +113,14 @@ describe("DataExporter.import", () => {
 describe("DataExporter.importFromBlob", () => {
 
     test("imports an Obsidian Project File from a Blob", () => {
+        self.app.modules.dataStore.unserializeEntities.mockClear();
         expect.assertions(1);
+
         const project = new ObisidianProjectFile();
         const projectBuffer = project.exportAsBlob();
         const projectBlob = new Blob([projectBuffer], { type: "application/x-obsidian-project" });
         const dataExpoter = new DataExporter();
+
         return dataExpoter.importFromBlob(projectBlob)
             .then(() => {
                 expect(self.app.modules.dataStore.unserializeEntities).toHaveBeenCalledTimes(1);
@@ -118,11 +132,14 @@ describe("DataExporter.importFromBlob", () => {
 describe("DataExporter.importFromData64", () => {
 
     test("imports an Obsidian Project File from a data64-encoded string", () => {
+        self.app.modules.dataStore.unserializeEntities.mockClear();
+
         const project = new ObisidianProjectFile();
         const projectBuffer = project.exportAsBlob();
         const projectData64 = projectBuffer.toString("base64");
         const dataExpoter = new DataExporter();
         dataExpoter.importFromData64(projectData64);
+
         expect(self.app.modules.dataStore.unserializeEntities).toHaveBeenCalledTimes(1);
     });
 

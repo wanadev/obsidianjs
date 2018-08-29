@@ -30,10 +30,16 @@ class DataExporter {
      *                 format of the ``blobIndex`` section (see Obsidian Project File spec).
      * @return {Buffer} The Obsidian Project File as a Node.js Buffer.
      */
-    export(metadata = {}, options = {}) {
-        // TODO Also merge options from config when available
+    export(metadata = {}, options = {}) {  // eslint-disable-line class-methods-use-this
+        const { dataStore } = self.app.modules;
         const mergedOptions = Object.assign({}, DEFAULT_CONFIG, options);
-        // TODO
+        // TODO Also merge options from config when available
+        // TODO Also merge metadata when data-store implement them
+        const project = new ObisidianProjectFile();
+        project.type = mergedOptions.type;
+        project.metadata = metadata;
+        project.project = dataStore.serializeEntities();
+        return project.exportAsBlob(mergedOptions);
     }
 
     /**
@@ -55,8 +61,13 @@ class DataExporter {
      *
      * @param {Buffer} obsidianProjectFile The Obsidian Project File as a Node.js Buffer.
      */
-    import(obsidianProjectFile) {
-        // TODO
+    import(obsidianProjectFile) {  // eslint-disable-line class-methods-use-this
+        const { dataStore } = self.app.modules;
+
+        const project = new ObisidianProjectFile(obsidianProjectFile);
+
+        dataStore.clear();
+        dataStore.unserializeEntities(project.project);
     }
 
     /**
