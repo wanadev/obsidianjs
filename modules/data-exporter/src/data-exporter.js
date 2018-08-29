@@ -85,14 +85,27 @@ class DataExporter {
      * @return {Promise.<undefined>}
      */
     importFromBlob(obsidianProjectFile) {
-        // TODO
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = reject;
+            reader.onloadend = () => {
+                if (reader.readyState !== 2) {  // 2 -> DONE
+                    return;
+                }
+                const projectBuffer = Buffer.from(reader.result);
+                this.import(projectBuffer);
+                resolve();
+            };
+            reader.readAsArrayBuffer(obsidianProjectFile);
+        });
     }
 
     /**
      * Same as the :js:meth:`import` method but takes a data64-encoded string.
      */
     importFromData64(obsidianProjectFile) {
-        // TODO
+        const projectBuffer = Buffer.from(obsidianProjectFile, "base64");
+        this.import(projectBuffer);
     }
 
 }
