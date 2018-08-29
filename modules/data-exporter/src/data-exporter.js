@@ -1,7 +1,9 @@
 const ObisidianProjectFile = require("obsidian-file");
 
+const self = require("../index.js");
+
 const DEFAULT_CONFIG = {
-    projectType: "GENERIC",
+    type: "GENERIC",
     metadataFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
     projectFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
     blobIndexFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
@@ -59,6 +61,13 @@ class DataExporter {
 
     /**
      * Same as the :js:meth:`import` method but takes a Blob.
+     *
+     * .. WARNING::
+     *
+     *    Reading Blobs is an asynchronous operation, so this method is
+     *    asynchronous and returns a promise.
+     *
+     * @return {Promise.<undefined>}
      */
     importFromBlob(obsidianProjectFile) {
         // TODO

@@ -20,7 +20,7 @@
     "function-paren-newline": ["error", "consistent"]
   },
   "overrides": [{
-    "files": ["*.test.js"],
+    "files": ["*.test.js", "**/__mocks__/*.js"],
     "env": {
       "jest": true
     }
