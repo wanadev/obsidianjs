@@ -46,14 +46,18 @@ class DataExporter {
      * Same as the :js:meth:`export` method but returns a Blob.
      */
     exportAsBlob(metadata = {}, options = {}) {
-        // TODO
+        const projectBuffer = this.export(metadata, options);
+        const projectBlob = new Blob([projectBuffer], { type: ObisidianProjectFile.MIMETYPE });
+        return projectBlob;
     }
 
     /**
      * Same as the :js:meth:`export` method but returns a data64-encoded string.
      */
     exportAsData64(metadata = {}, options = {}) {
-        // TODO
+        const projectBuffer = this.export(metadata, options);
+        const projctData64 = projectBuffer.toString("base64");
+        return projctData64;
     }
 
     /**
