@@ -144,3 +144,25 @@ describe("DataExporter.importFromData64", () => {
     });
 
 });
+
+describe("DataExporter additional tests", () => {
+
+    test("It can import exported Buffers", () => {
+        const dataExpoter = new DataExporter();
+        const projectBuffer = dataExpoter.export();
+        dataExpoter.import(projectBuffer);
+    });
+
+    test("It can import exported Blobs", () => {
+        const dataExpoter = new DataExporter();
+        const projectBlob = dataExpoter.exportAsBlob();
+        return dataExpoter.importFromBlob(projectBlob);
+    });
+
+    test("It can import exported data64-encoded strings", () => {
+        const dataExpoter = new DataExporter();
+        const projectData64 = dataExpoter.exportAsData64();
+        dataExpoter.importFromData64(projectData64);
+    });
+
+});
