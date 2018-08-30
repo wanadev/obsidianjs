@@ -19,4 +19,4 @@ Documentation
 Changelog
 ---------
 
-TODO
+* **1.0.0:** Initial release

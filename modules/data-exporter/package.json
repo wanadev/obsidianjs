@@ -1,6 +1,6 @@
 {
   "name": "@obsidianjs/data-exporter",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Export / Import data from / to @obsidianjs/data-store in the Obsidian File format",
   "main": "index.js",
   "scripts": {
