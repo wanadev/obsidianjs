@@ -5,6 +5,7 @@ Obsidian Core Modules
    :maxdepth: 2
    :caption: Contents:
 
+   data-exporter/index
    data-store/index
    http-request/index
    iframe-api/index
