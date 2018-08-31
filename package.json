@@ -6,7 +6,8 @@
     "test": "jest --coverage --coverageDirectory=build/coverage",
     "test-watch": "jest --watch",
     "coverage": "npm test && opn build/coverage/lcov-report/index.html",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "publish-doc": "npm run build-doc && node ./scripts/publish-doc.js"
   },
   "author": "Wanadev",
   "repository": "git@github.com:wanadev/obsidianjs.git",
@@ -16,6 +17,7 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.14.0",
+    "gh-pages": "^1.2.0",
     "husky": "^0.14.3",
     "jest": "^22.4.4",
     "jest-each": "^0.3.1",
