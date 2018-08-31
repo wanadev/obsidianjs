@@ -1,0 +1,7 @@
+foobar
+======
+
+.. js:autofunction:: example
+
+
+.. js:autofunction:: example2
