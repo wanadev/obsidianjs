@@ -19,4 +19,5 @@ Documentation
 Changelog
 ---------
 
-* **1.0.0:** Initial release.
+* **0.1.4:** Fixes wrong export in server/index.js (#13)
+* **0.1.0:** Initial release.
