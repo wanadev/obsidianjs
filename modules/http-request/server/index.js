@@ -1,3 +1,3 @@
-const proxyMiddleware = require("obsidian-http-request/server/http-proxy"); // eslint-disable-line import/no-unresolved
+const proxyMiddleware = require("obsidian-http-request/server/http-proxy");
 
 module.exports = proxyMiddleware;
