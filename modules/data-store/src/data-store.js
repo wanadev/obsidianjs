@@ -1,6 +1,8 @@
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
 
+const self = require("../index.js");
+
 const {
     ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE,
 } = require("./symbols");
@@ -31,8 +33,7 @@ class DataStore {
         entity.$data[ENTITY_STORE] = this; // eslint-disable-line no-param-reassign
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
-        // TODO add "path" property to entity and assign the path value
-        // TODO emit an event ("entity-added" with the entity in param)
+        self.app.event.emit("entity-added", entity);
     }
 
     /**
@@ -60,7 +61,7 @@ class DataStore {
         }
         realEntity.$data[ENTITY_PATH] = null;
         realEntity.$data[ENTITY_STORE] = null;
-        // TODO emit an event ("entity-removed" with the entity in param)
+        self.app.event.emit("entity-removed", entity);
     }
 
     /**
