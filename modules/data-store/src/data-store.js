@@ -1,7 +1,7 @@
+import self from "../index";
+
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
-
-const self = require("../index.js");
 
 const {
     ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE,
@@ -10,7 +10,7 @@ const {
 /**
  * Stores project's entities and blobs.
  */
-class DataStore {
+export default class DataStore {
 
     constructor() {
         this[ENTITIES_BY_PATH] = {};
@@ -33,7 +33,7 @@ class DataStore {
         entity.$data[ENTITY_STORE] = this; // eslint-disable-line no-param-reassign
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
-        self.app.event.emit("entity-added", entity);
+        self.app.events.emit("entity-added", entity);
     }
 
     /**
@@ -61,7 +61,7 @@ class DataStore {
         }
         realEntity.$data[ENTITY_PATH] = null;
         realEntity.$data[ENTITY_STORE] = null;
-        self.app.event.emit("entity-removed", entity);
+        self.app.events.emit("entity-removed", entity);
     }
 
     /**
@@ -140,4 +140,3 @@ class DataStore {
 
 }
 
-module.exports = DataStore;
