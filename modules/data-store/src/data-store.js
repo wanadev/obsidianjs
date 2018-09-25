@@ -1,4 +1,4 @@
-import self from "../index";
+const self = require("../index.js");
 
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
@@ -61,7 +61,7 @@ export default class DataStore {
         }
         realEntity.$data[ENTITY_PATH] = null;
         realEntity.$data[ENTITY_STORE] = null;
-        self.app.events.emit("entity-removed", entity);
+        self.app.events.emit("entity-removed", realEntity);
     }
 
     /**
