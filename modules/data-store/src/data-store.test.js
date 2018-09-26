@@ -1,7 +1,11 @@
 import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_STORE } from "../src/symbols";
 
-const DataStore = require("../src/data-store.js");
-const Entity = require("../src/entity");
+
+jest.mock("../index.js");
+
+const DataStore = require("./data-store.js").default;
+const self = require("../index.js");
+const Entity = require("./entity.js");
 
 describe("DataStore.addEntity", () => {
 
@@ -63,6 +67,12 @@ describe("DataStore.addEntity", () => {
         expect(entity.$data[ENTITY_STORE]).toBe(dataStore);
     });
 
+    test("runs 'entity-added' event", () => {
+        const dataStore = new DataStore();
+        const entity = new Entity({ id: "entity-0" });
+        dataStore.addEntity(entity, "/tata");
+        expect(self.app.events.emit).lastCalledWith("entity-added", entity);
+    });
 });
 
 describe("DataStore.removeEntity", () => {
@@ -123,6 +133,15 @@ describe("DataStore.removeEntity", () => {
         expect(dataStore[ENTITIES_BY_UUID][entity.id]).toBeUndefined();
         dataStore.removeEntity(entity1);
         expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toBeUndefined();
+    });
+
+    test("runs 'entity-removed' event", () => {
+        self.app.events.emit.mockClear();
+        const dataStore = new DataStore();
+        const entity = new Entity({ id: "entity-0" });
+        dataStore.addEntity(entity, "/tata");
+        dataStore.removeEntity(entity.id);
+        expect(self.app.events.emit).lastCalledWith("entity-removed", entity);
     });
 
 });
