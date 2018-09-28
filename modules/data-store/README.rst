@@ -16,5 +16,6 @@ Documentation
 Changelog
 ---------
 
+* **0.2.0:** Send events when adding and removing an Entity from the store
 * **0.1.0:** Initial release.
 
