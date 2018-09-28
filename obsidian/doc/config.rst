@@ -3,4 +3,4 @@ Config
 
 .. js:autoclass:: obsidian/src/config.Config
    :short-name:
-   :members:
+   :members: get, set, dump, load, *
