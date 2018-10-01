@@ -9,5 +9,7 @@ describe("Sentry forward log", () => {
         const sentry = new Sentry();
 
         self.app.log.error("My test error !");
+
+        expect(sentry.forwardLog).toHaveBeenCalledTimes(1);
     });
-})
+});

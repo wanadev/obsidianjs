@@ -6,7 +6,7 @@ const self = require("../index.js");
 export default class Sentry {
 
     constructor(sentryKey) {
-        this.ravenClient = Raven
+        this.ravenClient = raven
             .config(sentryKey,
                 {
                     autoBreadcrumbs: true,
@@ -18,11 +18,12 @@ export default class Sentry {
         self.app.events.on("log", (level, namespace, args) => {
             if (level === "error"
                 || level === "fatal") {
-                raven.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
+                this.ravenClient.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
                     {
-                        level
+                        level,
                     });
             }
         });
     }
+
 }
