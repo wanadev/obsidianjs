@@ -1,15 +1,14 @@
-jest.mock("../index.js");
+const Raven = require("raven-js");
 
-const self = require("../index.js");
-const Sentry = require("./sentry");
+// jest.mock("../index.js");
+jest.mock("../__mocks__/raven-js.js");
+
 
 describe("Sentry forward log", () => {
 
     test("send the error to the sentry server", () => {
-        const sentry = new Sentry();
+        Raven.captureException("bla");
 
-        self.app.log.error("My test error !");
-
-        expect(sentry.forwardLog).toHaveBeenCalledTimes(1);
+        expect(Raven.captureException).toHaveBeenCalledTimes(1);
     });
 });
