@@ -17,7 +17,12 @@
       "ignoreEOLComments": true
     }],
     "no-continue": ["off"],
-    "function-paren-newline": ["error", "consistent"]
+    "function-paren-newline": ["error", "consistent"],
+    "no-underscore-dangle": 0,
+    "no-plusplus": ["warn", {
+      "allowForLoopAfterthoughts": true
+    }],
+    "no-param-reassign": 1
   },
   "overrides": [{
     "files": ["*.test.js", "**/__mocks__/*.js"],
