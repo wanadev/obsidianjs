@@ -15,6 +15,7 @@
   "repository": "git@github.com:wanadev/obsidianjs.git",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "raven-js": "^3.27.0"
+    "raven-js": "^3.27.0",
+    "uuid": "^3.3.2"
   }
 }
