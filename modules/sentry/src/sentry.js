@@ -10,9 +10,10 @@ export default class Sentry {
      * Initialize the sentry module
      * @param {string} sentryKey DSN of the sentry project
      * @param {Object} options
-     * @param {boolean} options.disable disable sentry exception capturing
+     * @param {boolean} options.disable disable sentry
      * @param {string[]} options.capturedLevels levels of logs captured by sentry
-     * @param {Object} options.userInfo infos that will be added to errors sent to the server
+     * @param {Object} options.userInfo additionnals info about the user app version,
+     * branch, graphics card, ...
      * @param {string} options.userInfo.appVersion
      */
     constructor(sentryKey, options = {
@@ -30,8 +31,8 @@ export default class Sentry {
                     {
                         autoBreadcrumbs: true,
                         logger: "obsidianjs/sentry",
-                    }).install();
-
+                    })
+                .install();
             this.getUserUUID();
             this.options.userInfo.userUUID = this.userUUID;
 
@@ -55,7 +56,6 @@ export default class Sentry {
                 {
                     level,
                     tags: [namespace],
-                    userUUID: this.userUUID,
                 });
         }
     }
