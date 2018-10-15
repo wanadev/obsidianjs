@@ -27,7 +27,7 @@ describe("Sentry forward log", () => {
     });
 });
 
-describe("Sentry user UUID", () => {
+/* describe("Sentry user UUID", () => {
     test("sentry create UUID", () => {
         const sentryInstance = new Sentry("", { disable: true });
 
@@ -35,4 +35,4 @@ describe("Sentry user UUID", () => {
 
         expect(sentryInstance.userUUID).toBeUndefined();
     });
-});
+}); */
