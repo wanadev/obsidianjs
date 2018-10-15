@@ -18,12 +18,16 @@ export default class Sentry {
      */
     constructor(sentryKey, options = {
         disable: false,
-        capturedLevels: null,
+        capturedLevels: [],
         userInfo: {
             appVersion: null,
         },
     }) {
         this.options = options;
+
+        if (!this.options.capturedLevels) {
+            this.options.capturedLevels = [];
+        }
 
         if (!this.options.disable) {
             this.ravenClient = Raven
@@ -52,7 +56,7 @@ export default class Sentry {
      */
     forwardLog(level, namespace, args) {
         if (this.options.capturedLevels.includes(level)) {
-            this.ravenClient.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
+            Raven.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
                 {
                     level,
                     tags: [namespace],
@@ -72,7 +76,6 @@ export default class Sentry {
 
             window.localStorage.sentryUUID = uuidv4();
             this.userUUID = window.localStorage.sentryUUID;
-
         } catch (e) {
             self.app.log.error(e);
         }

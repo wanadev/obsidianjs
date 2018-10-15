@@ -1,7 +1,7 @@
 {
   "name": "@obsidianjs/sentry",
   "version": "1.0.0",
-  "description": "Listen to the log event and forward logs to a sentry server",
+  "description": "Listen to log event and forward logs to sentry server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
