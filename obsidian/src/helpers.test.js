@@ -32,3 +32,64 @@ describe("helpers.uniq", () => {
     });
 
 });
+
+describe("helpers.objectGet", () => {
+
+    const obj = {
+        foo: 42,
+        bar: {
+            baz: {
+                val: 1337,
+            },
+        },
+        undef: undefined,
+    };
+
+    test("can get a simple path", () => {
+        expect(helpers.objectGet(obj, "foo")).toEqual(42);
+    });
+
+    test("returns undefined if the path does not exist", () => {
+        expect(helpers.objectGet(obj, "fizz")).toBe(undefined);
+    });
+
+    test("returns the default value if the path does not exist", () => {
+        const marker = {};
+        expect(helpers.objectGet(obj, "fizz", marker)).toBe(marker);
+    });
+
+    test("returns the value even if it is set to undefined", () => {
+        expect(helpers.objectGet(obj, "undef", 13)).toBe(undefined);
+    });
+
+    test("can get a more complicated path", () => {
+        expect(helpers.objectGet(obj, "bar.baz.val")).toEqual(1337);
+    });
+
+    test("returns undefined if the path does not exist (with a more complicated path)", () => {
+        expect(helpers.objectGet(obj, "fizz.buzz")).toBe(undefined);
+    });
+
+});
+
+describe("helpers.objectSet", () => {
+
+    test("can set a simple path", () => {
+        const obj = {};
+        helpers.objectSet(obj, "foo", 42);
+        expect(obj).toEqual({ foo: 42 });
+    });
+
+    test("can set a more complicated path", () => {
+        const obj = { foo: {} };
+        helpers.objectSet(obj, "foo.bar", 42);
+        expect(obj).toEqual({ foo: { bar: 42 } });
+    });
+
+    test("creates missing parent objects", () => {
+        const obj = {};
+        helpers.objectSet(obj, "foo.bar.baz", 42);
+        expect(obj).toEqual({ foo: { bar: { baz: 42 } } });
+    });
+
+});
