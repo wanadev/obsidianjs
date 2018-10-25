@@ -79,6 +79,18 @@ const helpers = {
         currentObj[lastKey] = value;
     },
 
+    /**
+     * Returns true if the string starts with prefix, false otherwise.
+     *
+     * @param {string} string The string to check
+     * @param {string} prefix
+     *
+     * @return {boolean}
+     */
+    startsWith(string, prefix) {
+        return string.indexOf(prefix) === 0;
+    },
+
 };
 
 module.exports = helpers;

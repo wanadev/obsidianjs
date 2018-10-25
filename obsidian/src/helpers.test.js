@@ -93,3 +93,15 @@ describe("helpers.objectSet", () => {
     });
 
 });
+
+describe("helpers.startsWith", () => {
+
+    test("returns true if the string starts with the given prefix", () => {
+        expect(helpers.startsWith("foobarbaz", "foo")).toBeTruthy();
+    });
+
+    test("returns false if the string does not start with the given prefix", () => {
+        expect(helpers.startsWith("foobarbaz", "bar")).toBeFalsy();
+    });
+
+});
