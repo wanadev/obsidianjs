@@ -122,6 +122,16 @@ const helpers = {
         return object1;
     },
 
+    /**
+     * Clone an object.
+     *
+     * @param {Object} object The object to clone
+     * @return {Object} the cloned object
+     */
+    cloneDeep(object) {
+        return JSON.parse(JSON.stringify(object));
+    },
+
 };
 
 module.exports = helpers;

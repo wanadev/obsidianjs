@@ -224,3 +224,25 @@ describe("helpers.mergeDeep", () => {
     });
 
 });
+
+
+describe("helpers.cloneDeep", () => {
+
+    test("clones the given object", () => {
+        const object = {
+            a: {
+                b: {
+                    c: 1,
+                },
+            },
+        };
+
+        const result = helpers.cloneDeep(object);
+
+        expect(result).toEqual(object);
+        expect(result).not.toBe(object);
+        expect(result.a).not.toBe(object.a);
+        expect(result.a.b).not.toBe(object.a.b);
+    });
+
+});
