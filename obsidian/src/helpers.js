@@ -91,6 +91,37 @@ const helpers = {
         return string.indexOf(prefix) === 0;
     },
 
+    /**
+     * Merges object2 into object1.
+     *
+     * @param {Object} object1 The destination object (will be modified)
+     * @param {Object} object2 The object to merge.
+     *
+     * @return {Object} object1
+     */
+    mergeDeep(object1, object2) {
+
+        function _isObject(obj) {  // eslint-disable-line no-underscore-dangle
+            return typeof obj === "object" &&
+                   !Array.isArray(obj) &&
+                   !(obj instanceof Date) &&
+                   !(obj instanceof RegExp);
+        }
+
+        Object.keys(object2).forEach((key) => {
+            if (_isObject(object2[key])) {
+                if (!_isObject(object1[key])) {
+                    object1[key] = {};  // eslint-disable-line no-param-reassign
+                }
+                helpers.mergeDeep(object1[key], object2[key]);
+            } else {
+                object1[key] = object2[key];  // eslint-disable-line no-param-reassign
+            }
+        });
+
+        return object1;
+    },
+
 };
 
 module.exports = helpers;

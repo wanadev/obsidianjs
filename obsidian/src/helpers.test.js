@@ -105,3 +105,122 @@ describe("helpers.startsWith", () => {
     });
 
 });
+
+describe("helpers.mergeDeep", () => {
+
+    test("merges two simple objects", () => {
+        const object1 = {
+            a: 1,
+            b: 2,
+        };
+        const object2 = {
+            b: 4,
+            c: 3,
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual({
+            a: 1,
+            b: 4,
+            c: 3,
+        });
+    });
+
+    test("merges recursively objects", () => {
+        const object1 = {
+            a: {
+                foo: 1,
+                b: {
+                    bar: 2,
+                },
+            },
+        };
+        const object2 = {
+            a: {
+                b: {
+                    baz: 3,
+                },
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual({
+            a: {
+                foo: 1,
+                b: {
+                    bar: 2,
+                    baz: 3,
+                },
+            },
+        });
+    });
+
+    test("returns object1", () => {
+        const object1 = {};
+        const result = helpers.mergeDeep(object1, {});
+        expect(result).toBe(object1);
+    });
+
+    test("does not merge arrays (replace them)", () => {
+        const object1 = {
+            a: [1, 2],
+        };
+        const object2 = {
+            a: [3, 4],
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("can override non object properties with object", () => {
+        const object1 = {
+            a: 1,
+        };
+        const object2 = {
+            a: {
+                b: 2,
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("handles dates", () => {
+        const object1 = {
+            date: new Date(),
+        };
+
+        const object2 = {
+            date: {
+                now: new Date(),
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("handles regexp", () => {
+        const object1 = {
+            re: new RegExp("^foo$"),
+        };
+
+        const object2 = {
+            re: {
+                re: new RegExp("^bar"),
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+});
