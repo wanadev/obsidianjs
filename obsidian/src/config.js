@@ -68,6 +68,13 @@ class Config {
      * @return {Object} The dumped config
      */
     dump(onlyCustom = false) {
+        if (onlyCustom) {
+            return helpers.cloneDeep(this[CUSTOM_CONFIG]);
+        }
+        return helpers.mergeDeep(
+            helpers.cloneDeep(this[BASE_CONFIG]),
+            helpers.cloneDeep(this[CUSTOM_CONFIG]),
+        );
     }
 
     /**
@@ -78,6 +85,11 @@ class Config {
      *                                 (default = ``false``)
      */
     load(config, custom = false) {
+        if (custom) {
+            this[CUSTOM_CONFIG] = helpers.mergeDeep(this[CUSTOM_CONFIG], config);
+        } else {
+            this[BASE_CONFIG] = helpers.mergeDeep(this[BASE_CONFIG], config);
+        }
     }
 
     /**
