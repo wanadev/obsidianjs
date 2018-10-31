@@ -1,14 +1,49 @@
 const Config = require("./config.js");
 
-describe("Config.get", () => {
+describe("Config.set / Config.get", () => {
 
-    // TODO
+    test("can set and get a value", () => {
+        const config = new Config();
+        config.set("@app.testValue", 42);
+        expect(config.get("@app.testValue")).toEqual(42);
+    });
 
-});
+    test("can set and get a value in sub objects", () => {
+        const config = new Config();
+        config.set("@app.obj1.obj2.testValue", 42);
+        expect(config.get("@app.obj1.obj2.testValue")).toEqual(42);
+    });
 
-describe("Config.set", () => {
+    test("returns undefined if the did not exist", () => {
+        const config = new Config();
+        expect(config.get("@app.foo")).toBe(undefined);
+    });
 
-    // TODO
+    test("returns the provided default value if the path did not exist", () => {
+        const config = new Config();
+        expect(config.get("@app.foo", "default")).toEqual("default");
+    });
+
+    test("(.get) returns values from base config", () => {
+        const config = new Config();
+        config.load({
+            app: {
+                foo: "bar",
+            },
+        });
+        expect(config.get("@app.foo")).toEqual("bar");
+    });
+
+    test("(.get) returns values from custom config in priority", () => {
+        const config = new Config();
+        config.set("@app.foo", "baz!");
+        config.load({
+            app: {
+                foo: "bar",
+            },
+        });
+        expect(config.get("@app.foo")).toEqual("baz!");
+    });
 
 });
 

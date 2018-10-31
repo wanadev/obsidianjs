@@ -46,6 +46,16 @@ class Config {
      * @return the requested config
      */
     get(path = "", default_ = undefined) {
+        const absPath = this._resolvePath(path);  // eslint-disable-line no-underscore-dangle
+        const marker = Symbol("marker");
+        let value = helpers.objectGet(this[CUSTOM_CONFIG], absPath, marker);
+        if (value === marker) {
+            value = helpers.objectGet(this[BASE_CONFIG], absPath, marker);
+        }
+        if (value === marker) {
+            value = default_;
+        }
+        return value;
     }
 
     /**
@@ -55,6 +65,8 @@ class Config {
      * @param value The value to set
      */
     set(path, value) {
+        const absPath = this._resolvePath(path);  // eslint-disable-line no-underscore-dangle
+        helpers.objectSet(this[CUSTOM_CONFIG], absPath, value);
     }
 
     /**
@@ -99,7 +111,7 @@ class Config {
      * @param {string} path The path to resolve
      * @return {string} the resolved path
      */
-    _resolvePath(path) { // eslint-disable-line class-methods-use-this
+    _resolvePath(path) {
         // Absolute app or obsidian config
         if (helpers.startsWith(path, "@obsidian") || helpers.startsWith(path, "@app")) {
             return path.slice(1);
