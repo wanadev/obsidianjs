@@ -145,7 +145,7 @@ class Application {
      * @public
      * @param {string|Object} module The module (object or name) to unload.
      */
-    unload(module) {
+    unload(module) {  // eslint-disable-line
         throw new Error("NotImplementedError");  // TODO
     }
 
@@ -179,9 +179,9 @@ class Application {
     _createSubApplication(namespace, modules) {
         return new Application(this.name, namespace, {
             modulesLoader: this[MODULES_LOADER],
-            // config: this.config._getNamespaced(namespace),
-            events: this.events._getNamespaced(namespace),
-            log: this.log._getNamespaced(),
+            config: this.config._getNamespaced(),  // eslint-disable-line no-underscore-dangle
+            events: this.events._getNamespaced(namespace),  // eslint-disable-line no-underscore-dangle,max-len
+            log: this.log._getNamespaced(),  // eslint-disable-line no-underscore-dangle
             rootApp: this,
         }, modules);
     }
