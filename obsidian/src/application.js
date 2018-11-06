@@ -152,12 +152,16 @@ class Application {
     /**
      * Start the application.
      *
+     * @param {Object} config Application's confguration
      * @return {Promise.<undefined>} This promise can be usually left unhandled.
      */
-    start() {
+    start(config = {}) {
         if (this[ROOT_APP]) throw new Error("ContextError: you cannot start the application from a module.");
         if (this[IS_STARTED]) throw new Error("ApplicationAlreadyStarted: you cannot start application twice.");
         this[IS_STARTED] = true;
+        if (this[CONFIG]) {
+            this[CONFIG].load(config);
+        }
         return this[MODULES_LOADER].loadAll()
             .then(() => this.events.emit("ready"))
             .catch((error) => {
