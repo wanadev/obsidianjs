@@ -106,7 +106,7 @@ class ModulesLoader {
         if (module.config) {
             this[APP].config.load({
                 modules: {
-                    [helpers.toCamelCase(module.name)]: module.config,
+                    [helpers.toCamelCase(moduleData.name)]: module.config,
                 },
             });
         }
