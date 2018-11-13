@@ -383,6 +383,44 @@ describe("ModulesLoader.load", () => {
         return modules.load("test-module");
     });
 
+    test("Load the module additional config if available", () => {
+        const app = {
+            config: {
+                load: jest.fn(),
+            },
+            _createSubApplication: () => {},
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp(app);
+
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: () => {},
+            unload: () => {},
+        };
+
+        modules.register(module1, {
+            config: {
+                foo: "bar",
+                fizz: "buzz",
+            },
+        });
+
+        modules.load("module1");
+
+        expect(app.config.load).toHaveBeenCalledTimes(1);
+        expect(app.config.load).toHaveBeenCalledWith({
+            modules: {
+                module1: {
+                    foo: "bar",
+                    fizz: "buzz",
+                },
+            },
+        });
+    });
+
 });
 
 describe("ModulesLoader.loadAll", () => {

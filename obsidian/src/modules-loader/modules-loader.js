@@ -84,7 +84,7 @@ class ModulesLoader {
     register(module, {
         name = null,
         modules = {},
-        config = {},
+        config = null,
     } = {}) {
         if (!module.name) throw new Error("InvalidObsidianModule: missing 'name' property");
         if (!module.requires) throw new Error("InvalidObsidianModule: missing 'requires' property");
@@ -166,6 +166,15 @@ class ModulesLoader {
         // Create the module's app
         const app = this[APP]._createSubApplication(moduleName, dependencies);  // eslint-disable-line no-underscore-dangle,max-len
         this[MODULES_LIST][moduleName].module.app = app;
+
+        // Set the module's additional config
+        if (this[MODULES_LIST][moduleName].config) {
+            this[APP].config.load({
+                modules: {
+                    [moduleJavascriptName]: this[MODULES_LIST][moduleName].config,
+                },
+            });
+        }
 
         // Load the module
         return Promise.resolve()
