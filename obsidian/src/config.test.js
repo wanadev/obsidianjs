@@ -190,3 +190,67 @@ describe("Config._resolvePath", () => {
     });
 
 });
+
+describe("Config._getNamespaced", () => {
+
+    test("returns a namespaced instance of the config class", () => {
+        const config = new Config();
+        config.setApp({
+            namespace: "obsidian",
+        });
+        const subConfig = config._getNamespaced();  // eslint-disable-line no-underscore-dangle
+        subConfig.setApp({
+            namespace: "module1",
+        });
+
+        expect(subConfig).toBeInstanceOf(Config);
+    });
+
+    test("get / set work as expected", () => {
+        const config = new Config();
+        config.setApp({
+            namespace: "obsidian",
+        });
+        const subConfig = config._getNamespaced();  // eslint-disable-line no-underscore-dangle
+        subConfig.setApp({
+            namespace: "module1",
+        });
+
+        subConfig.set("foo", "bar");
+
+        expect(config.get("@module1.foo")).toEqual("bar");
+
+        config.set("@app.test", "xxx");
+
+        expect(subConfig.get("@app.test")).toEqual("xxx");
+
+    });
+
+    test("load / dump work as expected", () => {
+        const config = new Config();
+        config.setApp({
+            namespace: "obsidian",
+        });
+        const subConfig = config._getNamespaced();  // eslint-disable-line no-underscore-dangle
+        subConfig.setApp({
+            namespace: "module1",
+        });
+
+        subConfig.load({
+            modules: {
+                module1: {
+                    foo: "bar",
+                },
+            },
+        });
+
+        expect(subConfig.dump().modules).toEqual({
+            module1: {
+                foo: "bar",
+            },
+        });
+
+        expect(subConfig.dump()).toEqual(config.dump());
+    });
+
+});

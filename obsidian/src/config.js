@@ -46,11 +46,12 @@ class Config {
      * @return the requested config
      */
     get(path = "", default_ = undefined) {
+        const root = this[ROOT] || this;
         const absPath = this._resolvePath(path);  // eslint-disable-line no-underscore-dangle
         const marker = Symbol("marker");
-        let value = helpers.objectGet(this[CUSTOM_CONFIG], absPath, marker);
+        let value = helpers.objectGet(root[CUSTOM_CONFIG], absPath, marker);
         if (value === marker) {
-            value = helpers.objectGet(this[BASE_CONFIG], absPath, marker);
+            value = helpers.objectGet(root[BASE_CONFIG], absPath, marker);
         }
         if (value === marker) {
             value = default_;
@@ -65,8 +66,9 @@ class Config {
      * @param value The value to set
      */
     set(path, value) {
+        const root = this[ROOT] || this;
         const absPath = this._resolvePath(path);  // eslint-disable-line no-underscore-dangle
-        helpers.objectSet(this[CUSTOM_CONFIG], absPath, value);
+        helpers.objectSet(root[CUSTOM_CONFIG], absPath, value);
     }
 
     /**
@@ -80,12 +82,13 @@ class Config {
      * @return {Object} The dumped config
      */
     dump(onlyCustom = false) {
+        const root = this[ROOT] || this;
         if (onlyCustom) {
-            return helpers.cloneDeep(this[CUSTOM_CONFIG]);
+            return helpers.cloneDeep(root[CUSTOM_CONFIG]);
         }
         return helpers.mergeDeep(
-            helpers.cloneDeep(this[BASE_CONFIG]),
-            helpers.cloneDeep(this[CUSTOM_CONFIG]),
+            helpers.cloneDeep(root[BASE_CONFIG]),
+            helpers.cloneDeep(root[CUSTOM_CONFIG]),
         );
     }
 
@@ -97,10 +100,11 @@ class Config {
      *                                 (default = ``false``)
      */
     load(config, custom = false) {
+        const root = this[ROOT] || this;
         if (custom) {
-            this[CUSTOM_CONFIG] = helpers.mergeDeep(this[CUSTOM_CONFIG], config);
+            root[CUSTOM_CONFIG] = helpers.mergeDeep(root[CUSTOM_CONFIG], config);
         } else {
-            this[BASE_CONFIG] = helpers.mergeDeep(this[BASE_CONFIG], config);
+            root[BASE_CONFIG] = helpers.mergeDeep(root[BASE_CONFIG], config);
         }
     }
 
