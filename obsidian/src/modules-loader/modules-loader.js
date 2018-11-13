@@ -103,6 +103,14 @@ class ModulesLoader {
             module,
         };
 
+        if (module.config) {
+            this[APP].config.load({
+                modules: {
+                    [helpers.toCamelCase(module.name)]: module.config,
+                },
+            });
+        }
+
         this[MODULES_LIST][moduleData.name] = moduleData;
     }
 

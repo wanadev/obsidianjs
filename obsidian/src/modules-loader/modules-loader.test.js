@@ -111,6 +111,40 @@ describe("ModulesLoader.register", () => {
         }).toThrow(/InvalidObsidianModule/);
     });
 
+    test("Load the module default's config if available", () => {
+        const app = {
+            config: {
+                load: jest.fn(),
+            },
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp(app);
+
+        const module1 = {
+            name: "module1",
+            requires: [],
+            config: {
+                foo: "bar",
+                fizz: "buzz",
+            },
+            load: () => {},
+            unload: () => {},
+        };
+
+        modules.register(module1);
+
+        expect(app.config.load).toHaveBeenCalledTimes(1);
+        expect(app.config.load).toHaveBeenCalledWith({
+            modules: {
+                module1: {
+                    foo: "bar",
+                    fizz: "buzz",
+                },
+            },
+        });
+    });
+
 });
 
 describe("ModulesLoader.load", () => {
