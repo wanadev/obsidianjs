@@ -164,7 +164,7 @@ class ModulesLoader {
         }
 
         // Create the module's app
-        const app = this[APP]._createSubApplication(moduleName, dependencies);
+        const app = this[APP]._createSubApplication(moduleName, dependencies);  // eslint-disable-line no-underscore-dangle,max-len
         this[MODULES_LIST][moduleName].module.app = app;
 
         // Load the module
@@ -198,7 +198,7 @@ class ModulesLoader {
      * @param {string} moduleName The module name.
      * @return A promise.
      */
-    unload(moduleName) {
+    unload(moduleName) {  // eslint-disable-line
         throw new Error("NotImpelemntedError");  // return (promise)
     }
 
