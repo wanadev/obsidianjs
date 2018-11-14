@@ -208,7 +208,7 @@ class ModulesLoader {
      * @return A promise.
      */
     unload(moduleName) {  // eslint-disable-line
-        throw new Error("NotImpelemntedError");  // return (promise)
+        throw new Error("NotImplementedError");  // return (promise)
     }
 
     /**
