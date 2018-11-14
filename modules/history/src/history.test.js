@@ -1,8 +1,7 @@
 jest.mock("../index.js");
 
 const History = require("./history.js").default;
-// const DataStore = require("../../data-store/data-store.js");
-// const Entity = require("../../data-store/entity.js");
+
 
 // const ObisidianProjectFile = require("obsidian-file/lib/ObsidianProjectFile.js");
 
@@ -81,24 +80,43 @@ describe("history/history.position", () => {
 });
 
 
+describe("DataStore.serializeEntities", () => {
+
+    test("returns serialized entities", () => {
+        // const dataStore = new DataStore();
+        // const entity = new Entity({
+        //     id: "entity-0"
+        // });
+        // const entity1 = new Entity({
+        //     id: "entity-1"
+        // });
+        // dataStore.addEntity(entity, "/tata");
+        // dataStore.addEntity(entity1, "/tata/toto");
+        // const serialized = dataStore.serializeEntities();
+        // expect(typeof serialized).toBe("object");
+    });
+
+});
+
+
 describe("history/history.snapshot", () => {
-    // const serializedData = {
-    //     "/tata": [{
-    //         __name__: "Entity",
-    //         id: "entity-0",
-    //     }, {
-    //         __name__: "Entity",
-    //         id: "entity-1",
-    //     }],
-    //     "/toto": [{
-    //         __name__: "Entity",
-    //         id: "entity-3",
-    //     }],
-    //     "/tata/titi": [{
-    //         __name__: "Entity",
-    //         id: "entity-2",
-    //     }],
-    // };
+
+    test("snapshot does not throw error", () => {
+        const history = new History();
+        expect(history.snapshot.not.toThrow());
+    });
+
+    // const dataStore = new DataStore();
+    // const entity = new Entity({
+    //     id: "entity-0"
+    // });
+    // const entity1 = new Entity({
+    //     id: "entity-1"
+    // });
+    // const history = new History();
+    // dataStore.addEntity(entity, "/tata");
+    // dataStore.addEntity(entity1, "/tata/toto");
+
     // const projectData = {
     //     "/a": [{
     //         __name__: "Entity",
@@ -111,6 +129,7 @@ describe("history/history.snapshot", () => {
     // const dataExpoter = new DataExporter();
     // dataExpoter.import(projectBuffer);
 
+    // history.snapshot()
     // expect(self.app.modules.dataStore.unserializeEntities).lastCalledWith(projectData);
     test("Snapshot after adding object", () => {
         // const history = new History();
@@ -135,7 +154,9 @@ describe("history/history.snapshot", () => {
     });
 
     test("Handle after being back in history, new snapshot take new head", () => {
-        // If we have a stack of 5 history, when we get back to -3 and we take a new snapshot, make sure old -2 and -1 are deleted
+        // If we have a stack of 5 history, when we get back to -3 and we take a new snapshot,
+        // make sure old -2 and -1 are deleted
+
         // a = project;
         // history.snapshot();
         // change project
@@ -168,6 +189,35 @@ describe("history/history.snapshot", () => {
 });
 
 
+// describe("DataStore.unserializeEntities", () => {
+
+//     test("unserializes enities and add them to the store", () => {
+//         const serializedData = {
+//             "/tata": [{
+//                 __name__: "Entity",
+//                 id: "entity-0",
+//             }, {
+//                 __name__: "Entity",
+//                 id: "entity-1",
+//             }],
+//             "/toto": [{
+//                 __name__: "Entity",
+//                 id: "entity-3",
+//             }],
+//             "/tata/titi": [{
+//                 __name__: "Entity",
+//                 id: "entity-2",
+//             }],
+//         };
+
+//         const dataStore = new DataStore();
+//         dataStore.unserializeEntities(serializedData);
+//         expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toHaveLength(2);
+//         expect(dataStore[ENTITIES_BY_PATH]["/tata/titi"]).toHaveLength(1);
+//         expect(dataStore[ENTITIES_BY_PATH]["/toto"]).toHaveLength(1);
+//     });
+
+// });
 describe("history/history.go", () => {
 
     test("Handle if go do nothing when asking for +1 when we are on first position", () => {

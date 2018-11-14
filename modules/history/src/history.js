@@ -2,13 +2,15 @@ const self = require("../index.js");
 
 /**
  * History module allows you to manage an historic.
- * It use data-store module to stack entities on 'snapshot' method and restore them using 'go' method
+ * It use data-store module to stack entities on 'snapshot' method
+ * and restore them using 'go' method
  * History module can be use to implement system like Undo/Redo, Ctrl+Z / Ctrl+Y
  */
-export default class History {
+class History {
 
     constructor(options = {}) {
-        this.maxLength = options.maxLength || 50; // max Length of historic, above that oldest snapshots are deleted
+         // max Length of historic, above that oldest snapshots are deleted
+        this.maxLength = options.maxLength || 50;
         this._pointer = -1;
         this._snapshots = [];
     }
@@ -16,9 +18,8 @@ export default class History {
     /**
      * Max amount of snapshots stored by the history.
      *
-     * @property maxLength
      * @readOnly
-     * @type {Number}
+     * @return {Number} max Length of historic, above that oldest snapshots are deleted
      */
     getMaxLength() {
         return this.maxLength;
@@ -27,9 +28,8 @@ export default class History {
     /**
      * Currently stored snapshots count.
      *
-     * @property length
      * @readOnly
-     * @type {Number}
+     * @return {Number} current history length
      */
     getLength() {
         return this._snapshots.length;
@@ -39,9 +39,8 @@ export default class History {
      * Tell if current pointed element is first in historic
      * It means we can't go any forward
      *
-     * @method isFirst
      * @readOnly
-     * @type {Boolean}
+     * @return {Boolean}
      */
     isFirst() {
         return (this._pointer === -1);
@@ -51,9 +50,8 @@ export default class History {
      * Tell if current pointed element is last in historic.
      * It means we can't go any backward
      *
-     * @method isLast
      * @readOnly
-     * @type {Boolean}
+     * @return {Boolean}
      */
     isLast() {
         return (this._pointer === this.maxLength - 1);
@@ -61,8 +59,7 @@ export default class History {
 
     /**
      * Remove all snapshots from history.
-     *
-     * @method clear
+     * @return {undefined}
      */
     clear() {
         this._snapshots.length = 0;
@@ -72,14 +69,15 @@ export default class History {
     /**
      * Take a snapshot of the current state of the project and put it into the history.
      * This snapshot will become the new head, all upbranch ones will be removed.
+     * @return {undefined}
      *
-     * @method snapshot
      */
     snapshot() {
         let snapshot = {};
+        const dataExporter = self.app.modules.dataExporter;
+        snapshot = dataExporter.export();
         this._snapshots.splice(0, this._pointer, snapshot);
         this._pointer = 0;
-
         this._cropLength();
     }
 
@@ -88,8 +86,9 @@ export default class History {
      * Positive delta is forwards, negative one is backwards.
      * This will change the current project to the saved version.
      *
-     * @method go
-     * @param {Number} delta
+     * @param {Number} delta state you want to reach, can be negative or positive
+     *                       (will be croped by history length)
+     * @return {undefined}
      */
     go(delta) {
         delta = this.simulate(delta);
@@ -104,8 +103,7 @@ export default class History {
 
     /**
      * Go backwards in history.
-     *
-     * @method back
+     * @return {undefined}
      */
     back() {
         return this.go(-1);
@@ -113,8 +111,7 @@ export default class History {
 
     /**
      * Go forwards in history.
-     *
-     * @method forward
+     * @return {undefined}
      */
     forward() {
         return this.go(1);
@@ -125,7 +122,6 @@ export default class History {
      * Returns the effective delta that will occur.
      * Therefore, a return value of 0 means nothing will change.
      *
-     * @method simulate
      * @param {Number} delta
      * @return {Number} Effective delta that will occur.
      */
@@ -148,8 +144,7 @@ export default class History {
 
     /**
      * Reapply the currently pointed snapshot over the project.
-     *
-     * @method applyCurrentSnapshot
+     * @return {undefined}
      */
     applyCurrentSnapshot() {
         if (this._pointer < 0) {
@@ -158,6 +153,8 @@ export default class History {
 
         let snapshot = this._snapshots[this._pointer];
 
+        const dataExporter = self.app.modules.dataExporter;
+        snapshot = dataExporter.import(snapshot);
 
         // Remove all structures that should not exist
         // for (var id in structuresCache) {
@@ -200,8 +197,8 @@ export default class History {
     /**
      * Crop the snapshots array to the max length.
      *
-     * @method _cropLength
      * @private
+     * @return {undefined}
      */
     _cropLength() {
         if (this._snapshots.length <= this.maxLength) {
@@ -211,3 +208,5 @@ export default class History {
     }
 
 }
+
+module.exports = History;
