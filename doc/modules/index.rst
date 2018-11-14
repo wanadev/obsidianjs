@@ -7,5 +7,6 @@ Obsidian Core Modules
 
    data-exporter/index
    data-store/index
+   history/index
    http-request/index
    iframe-api/index
