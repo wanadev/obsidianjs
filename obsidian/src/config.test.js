@@ -14,7 +14,7 @@ describe("Config.set / Config.get", () => {
         expect(config.get("@app.obj1.obj2.testValue")).toEqual(42);
     });
 
-    test("returns undefined if the did not exist", () => {
+    test("returns undefined if the path did not exist", () => {
         const config = new Config();
         expect(config.get("@app.foo")).toBe(undefined);
     });
