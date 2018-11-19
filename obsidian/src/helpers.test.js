@@ -32,3 +32,217 @@ describe("helpers.uniq", () => {
     });
 
 });
+
+describe("helpers.objectGet", () => {
+
+    const obj = {
+        foo: 42,
+        bar: {
+            baz: {
+                val: 1337,
+            },
+        },
+        undef: undefined,
+    };
+
+    test("can get a simple path", () => {
+        expect(helpers.objectGet(obj, "foo")).toEqual(42);
+    });
+
+    test("returns undefined if the path does not exist", () => {
+        expect(helpers.objectGet(obj, "fizz")).toBe(undefined);
+    });
+
+    test("returns the default value if the path does not exist", () => {
+        const marker = {};
+        expect(helpers.objectGet(obj, "fizz", marker)).toBe(marker);
+    });
+
+    test("returns the value even if it is set to undefined", () => {
+        expect(helpers.objectGet(obj, "undef", 13)).toBe(undefined);
+    });
+
+    test("can get a more complicated path", () => {
+        expect(helpers.objectGet(obj, "bar.baz.val")).toEqual(1337);
+    });
+
+    test("returns undefined if the path does not exist (with a more complicated path)", () => {
+        expect(helpers.objectGet(obj, "fizz.buzz")).toBe(undefined);
+    });
+
+});
+
+describe("helpers.objectSet", () => {
+
+    test("can set a simple path", () => {
+        const obj = {};
+        helpers.objectSet(obj, "foo", 42);
+        expect(obj).toEqual({ foo: 42 });
+    });
+
+    test("can set a more complicated path", () => {
+        const obj = { foo: {} };
+        helpers.objectSet(obj, "foo.bar", 42);
+        expect(obj).toEqual({ foo: { bar: 42 } });
+    });
+
+    test("creates missing parent objects", () => {
+        const obj = {};
+        helpers.objectSet(obj, "foo.bar.baz", 42);
+        expect(obj).toEqual({ foo: { bar: { baz: 42 } } });
+    });
+
+});
+
+describe("helpers.startsWith", () => {
+
+    test("returns true if the string starts with the given prefix", () => {
+        expect(helpers.startsWith("foobarbaz", "foo")).toBeTruthy();
+    });
+
+    test("returns false if the string does not start with the given prefix", () => {
+        expect(helpers.startsWith("foobarbaz", "bar")).toBeFalsy();
+    });
+
+});
+
+describe("helpers.mergeDeep", () => {
+
+    test("merges two simple objects", () => {
+        const object1 = {
+            a: 1,
+            b: 2,
+        };
+        const object2 = {
+            b: 4,
+            c: 3,
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual({
+            a: 1,
+            b: 4,
+            c: 3,
+        });
+    });
+
+    test("merges recursively objects", () => {
+        const object1 = {
+            a: {
+                foo: 1,
+                b: {
+                    bar: 2,
+                },
+            },
+        };
+        const object2 = {
+            a: {
+                b: {
+                    baz: 3,
+                },
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual({
+            a: {
+                foo: 1,
+                b: {
+                    bar: 2,
+                    baz: 3,
+                },
+            },
+        });
+    });
+
+    test("returns object1", () => {
+        const object1 = {};
+        const result = helpers.mergeDeep(object1, {});
+        expect(result).toBe(object1);
+    });
+
+    test("does not merge arrays (replace them)", () => {
+        const object1 = {
+            a: [1, 2],
+        };
+        const object2 = {
+            a: [3, 4],
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("can override non object properties with object", () => {
+        const object1 = {
+            a: 1,
+        };
+        const object2 = {
+            a: {
+                b: 2,
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("handles dates", () => {
+        const object1 = {
+            date: new Date(),
+        };
+
+        const object2 = {
+            date: {
+                now: new Date(),
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+    test("handles regexp", () => {
+        const object1 = {
+            re: new RegExp("^foo$"),
+        };
+
+        const object2 = {
+            re: {
+                re: new RegExp("^bar"),
+            },
+        };
+
+        helpers.mergeDeep(object1, object2);
+
+        expect(object1).toEqual(object2);
+    });
+
+});
+
+
+describe("helpers.cloneDeep", () => {
+
+    test("clones the given object", () => {
+        const object = {
+            a: {
+                b: {
+                    c: 1,
+                },
+            },
+        };
+
+        const result = helpers.cloneDeep(object);
+
+        expect(result).toEqual(object);
+        expect(result).not.toBe(object);
+        expect(result.a).not.toBe(object.a);
+        expect(result.a.b).not.toBe(object.a.b);
+    });
+
+});

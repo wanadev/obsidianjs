@@ -222,6 +222,43 @@ describe("Application.start", () => {
         expect(() => subApp.start()).toThrow(/ContextError/);
     });
 
+    test("loads given config", () => {
+        const modulesLoader = {
+            setApp: () => {},
+            register: jest.fn(),
+            load: jest.fn(),
+            loadAll: jest.fn().mockReturnValue(Promise.resolve()),
+        };
+
+        const config = {
+            load: jest.fn(),
+            setApp: () => {},
+        };
+
+        const events = {
+            emit: jest.fn(),
+        };
+
+        const app = new Application("test", undefined, {
+            modulesLoader,
+            config,
+            events,
+        });
+
+        const cfg = {
+            app: {
+                foo: 42,
+            },
+        };
+
+        expect.assertions(1);
+
+        return app.start(cfg)
+            .then(() => {
+                expect(config.load).toHaveBeenCalledWith(cfg);
+            });
+    });
+
 });
 
 describe("Application.isStarted", () => {
@@ -265,6 +302,7 @@ describe("Application.isStarted", () => {
 
         const module = {
             setApp: () => {},
+            load: () => {},
             _getNamespaced: () => ({
                 setApp: () => {},
             }),
