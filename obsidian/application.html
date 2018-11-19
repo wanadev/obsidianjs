@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Obsidian Framework  documentation" href="../index.html"/>
-        <link rel="up" title="Obsidian Framework" href="index.html"/>
-        <link rel="next" title="Config" href="config.html"/>
-        <link rel="prev" title="Obsidian Framework" href="index.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Config" href="config.html" />
+    <link rel="prev" title="Obsidian Framework" href="index.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -115,7 +106,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Obsidian Framework</a>
@@ -123,9 +114,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -234,13 +226,15 @@ factory function.</p>
 <dl class="attribute">
 <dt id="Application.name">
 <code class="descclassname">Application.</code><code class="descname">name</code><a class="headerlink" href="#Application.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The application name.</p>
+<dd><p><strong>type:</strong> string</p>
+<p>The application name.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="Application.namespace">
 <code class="descclassname">Application.</code><code class="descname">namespace</code><a class="headerlink" href="#Application.namespace" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current namespace (usually, the current module name).</p>
+<dd><p><strong>type:</strong> string</p>
+<p>The current namespace (usually, the current module name).</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -288,13 +282,19 @@ the modules you required. See <a class="reference internal" href="module.html"><
 
 <dl class="function">
 <dt id="Application.start">
-<code class="descclassname">Application.</code><code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Application.start" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Application.</code><code class="descname">start</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#Application.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the application.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>Promise.&lt;undefined&gt;</strong> – This promise can be usually left unhandled.</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>config</strong> (<em>Object</em>) – Application’s confguration</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Promise.&lt;undefined&gt;</strong> – This promise can be usually left unhandled.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -303,25 +303,29 @@ the modules you required. See <a class="reference internal" href="module.html"><
 <dl class="attribute">
 <dt id="Application.config">
 <code class="descclassname">Application.</code><code class="descname">config</code><a class="headerlink" href="#Application.config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles application configuration. See <a class="reference internal" href="config.html"><span class="doc">Config</span></a>.</p>
+<dd><p><strong>type:</strong> Config</p>
+<p>Handles application configuration. See <a class="reference internal" href="config.html"><span class="doc">Config</span></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="Application.events">
 <code class="descclassname">Application.</code><code class="descname">events</code><a class="headerlink" href="#Application.events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles application events. See <a class="reference internal" href="events.html"><span class="doc">Events</span></a>.</p>
+<dd><p><strong>type:</strong> Events</p>
+<p>Handles application events. See <a class="reference internal" href="events.html"><span class="doc">Events</span></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="Application.isStarted">
 <code class="descclassname">Application.</code><code class="descname">isStarted</code><a class="headerlink" href="#Application.isStarted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicate whether the application is started or not.</p>
+<dd><p><strong>type:</strong> boolean</p>
+<p>Indicate whether the application is started or not.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="Application.log">
 <code class="descclassname">Application.</code><code class="descname">log</code><a class="headerlink" href="#Application.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles application logging. See <a class="reference internal" href="logging.html"><span class="doc">Logging</span></a>.</p>
+<dd><p><strong>type:</strong> Logging</p>
+<p>Handles application logging. See <a class="reference internal" href="logging.html"><span class="doc">Logging</span></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -331,9 +335,7 @@ the modules you required. See <a class="reference internal" href="module.html"><
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -351,11 +353,11 @@ the modules you required. See <a class="reference internal" href="module.html"><
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Wanadev.
+        &copy; Copyright 2018, Wanadev
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -370,35 +372,23 @@ the modules you required. See <a class="reference internal" href="module.html"><
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
