@@ -15,7 +15,7 @@ Obsidian configuration is splitted in 3 categories:
 * ``app``: this is your application global configuration,
 * ``modules``: module-specific configuration.
 
-When you export the obsidian configuration, you will obtain a object that
+When you export the obsidian configuration, you will obtain an object that
 contains those 3 categories:
 
 .. code-block:: json
