@@ -111,6 +111,75 @@ describe("ModulesLoader.register", () => {
         }).toThrow(/InvalidObsidianModule/);
     });
 
+    test("Load the module default's config if available", () => {
+        const app = {
+            config: {
+                load: jest.fn(),
+            },
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp(app);
+
+        const module1 = {
+            name: "module1",
+            requires: [],
+            config: {
+                foo: "bar",
+                fizz: "buzz",
+            },
+            load: () => {},
+            unload: () => {},
+        };
+
+        modules.register(module1);
+
+        expect(app.config.load).toHaveBeenCalledTimes(1);
+        expect(app.config.load).toHaveBeenCalledWith({
+            modules: {
+                module1: {
+                    foo: "bar",
+                    fizz: "buzz",
+                },
+            },
+        });
+    });
+
+    test("Load the module default's config at the right place if the module is renamed", () => {
+        const app = {
+            config: {
+                load: jest.fn(),
+            },
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp(app);
+
+        const module1 = {
+            name: "module1",
+            requires: [],
+            config: {
+                foo: "bar",
+                fizz: "buzz",
+            },
+            load: () => {},
+            unload: () => {},
+        };
+
+        modules.register(module1, { name: "module2" });
+
+        expect(app.config.load).toHaveBeenCalledTimes(1);
+        expect(app.config.load).toHaveBeenCalledWith({
+            modules: {
+                module2: {
+                    foo: "bar",
+                    fizz: "buzz",
+                },
+            },
+        });
+    });
+
+
 });
 
 describe("ModulesLoader.load", () => {
@@ -312,6 +381,44 @@ describe("ModulesLoader.load", () => {
         modules.register(testModule);
 
         return modules.load("test-module");
+    });
+
+    test("Load the module additional config if available", () => {
+        const app = {
+            config: {
+                load: jest.fn(),
+            },
+            _createSubApplication: () => {},
+        };
+
+        const modules = new ModulesLoader();
+        modules.setApp(app);
+
+        const module1 = {
+            name: "module1",
+            requires: [],
+            load: () => {},
+            unload: () => {},
+        };
+
+        modules.register(module1, {
+            config: {
+                foo: "bar",
+                fizz: "buzz",
+            },
+        });
+
+        modules.load("module1");
+
+        expect(app.config.load).toHaveBeenCalledTimes(1);
+        expect(app.config.load).toHaveBeenCalledWith({
+            modules: {
+                module1: {
+                    foo: "bar",
+                    fizz: "buzz",
+                },
+            },
+        });
     });
 
 });
