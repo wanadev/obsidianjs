@@ -4,5 +4,8 @@ module.exports = {
         log: {
             error: jest.fn(),
         },
+        config: {
+            get: () => true,
+        },
     },
 };
