@@ -320,7 +320,7 @@ describe("history/history.snapshot", () => {
 
 });
 
-describe("history/history._applyCurrentSnapshotInObject", () => {
+describe("history/history.applyCurrentSnapshotInObject", () => {
     test("Handle delete property", () => {
         const objectA = {};
         objectA["/a"] = getEntity(1);
@@ -330,7 +330,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/a"] = getEntity(1);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle add property", () => {
@@ -342,8 +342,8 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/b"] = getEntity(2);
 
         const history = new History();
-        // console.log(history._applyCurrentSnapshotInObject(objectA, objectB));
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        // console.log(history.applyCurrentSnapshotInObject(objectA, objectB));
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle delete child property", () => {
@@ -357,7 +357,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/a/a"] = getEntity(2);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle add child property", () => {
@@ -371,7 +371,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/a/b"] = getEntity(3);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle modify property", () => {
@@ -382,7 +382,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/a"] = getEntity(2);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle modify children property", () => {
@@ -395,7 +395,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/a/a"] = getEntity(1);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 
     test("Handle apply current snapshot functionnal test", () => {
@@ -412,7 +412,7 @@ describe("history/history._applyCurrentSnapshotInObject", () => {
         objectB["/c"] = getEntity(3);
 
         const history = new History();
-        expect(history._applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
     });
 });
 

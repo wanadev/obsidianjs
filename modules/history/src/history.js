@@ -92,7 +92,7 @@ class History {
         snapshot.layers = dataStore.serializeEntities();
         this.snapshots.splice(0, this.pointer, snapshot);
         this.pointer = 0;
-        this._cropLength();
+        this.cropLength();
         self.app.events.emit("history-snapshot", this.pointer, this.snapshots.length, this.maxLength);
     }
 
@@ -159,6 +159,26 @@ class History {
     }
 
     /**
+     * Reapply the currently pointed snapshot over the project.
+     * @return {undefined}
+     */
+    applyCurrentSnapshot() {
+        if (this.pointer < 0) {
+            return;
+        }
+
+        const snapshot = this.snapshots[this.pointer];
+
+        const {
+            dataStore,
+        } = self.app.modules;
+        // current state
+        let structuresCache = dataStore.serializeEntities() || {};
+        structuresCache = this.applyCurrentSnapshotInObject(structuresCache, snapshot.layers);
+        dataStore.unserializeEntities(structuresCache);
+    }
+
+    /**
      * Intern function which compares and apply change recursively on 2 structures.
      * Adding/deleting/modifying properties on current structure to match with snapshot structure.
      * Only structureCurrent will be changed.
@@ -166,7 +186,7 @@ class History {
      * @param  {Object} structureSnapshot Structure of the snapshot project that you want to apply
      * @return {Object} structureCurrent
      */
-    _applyCurrentSnapshotInObject(structureCurrent, structureSnapshot) {
+    applyCurrentSnapshotInObject(structureCurrent, structureSnapshot) {
         if (structureCurrent) {
             // Remove all properties that should not exist
             Object.keys(structureCurrent).forEach((keyStructureCurrent) => {
@@ -193,7 +213,7 @@ class History {
                 }
                 // Else property exist in both structure and the property have children
                 // then we look recursively for their child
-                return this._applyCurrentSnapshotInObject(structureCurrent[keySnapshot], structureSnapshot[keySnapshot]); // eslint-disable-line max-len
+                return this.applyCurrentSnapshotInObject(structureCurrent[keySnapshot], structureSnapshot[keySnapshot]); // eslint-disable-line max-len
 
             });
         }
@@ -202,71 +222,13 @@ class History {
     }
 
     /**
-     * Reapply the currently pointed snapshot over the project.
-     * @return {undefined}
-     */
-    applyCurrentSnapshot() {
-        if (this.pointer < 0) {
-            return;
-        }
-
-        const snapshot = this.snapshots[this.pointer];
-
-        const {
-            dataStore,
-        } = self.app.modules;
-        // current state
-        let structuresCache = dataStore.serializeEntities() || {};
-        structuresCache = this._applyCurrentSnapshotInObject(structuresCache, snapshot.layers);
-        dataStore.unserializeEntities(structuresCache);
-
-
-        // Remove all structures that should not exist
-        // for (var id in structuresCache) {
-        //     if (!snapshotStructuresCache[id]) {
-        //         structuresCache[id].destroy();
-        //     }
-        // }
-
-        // Add all structures that should exist
-        // for (id in snapshotStructuresCache) {
-        //     if (!structuresCache[id]) {
-        //         var cachedStructure = snapshotStructuresCache[id];
-        //         var unserialStruct = serializer.objectUnserializer(cachedStructure.structure);
-        //         this._pm.addStructure(unserialStruct, cachedStructure.layerName);
-        //     }
-        // }
-
-        // Move structure to the layer they belong to and apply unserialized data
-        // for (var layerName in snapshot.layers) {
-        //     var snapshotLayer = snapshot.layers[layerName];
-        //     for (var i = 0; i < snapshotLayer.length; i++) {
-        //         var snapshotStructure = snapshotLayer[i];
-        //         var structure = structuresCache[snapshotStructure.id];
-
-        //         // Change the layer if moved and reorder it anyway
-        //         this._pm.setStructureLayer(snapshotStructure.id, layerName);
-        //         this._pm.setStructureIndex(snapshotStructure.id, i);
-
-        //         // Apply structure data for properties that have changed
-        //         for (var propName in snapshotStructure) {
-        //             var snapshotProp = snapshotStructure[propName];
-        //             var prop = serializer.objectSerializer(structure[propName]);
-        //             if (!lodash.isEqual(snapshotProp, prop)) {
-        //                 structure[propName] = serializer.objectUnserializer(snapshotProp);
-        //             }
-        //         }
-        //     }
-        // }
-    }
-
-    /**
+     * Intern function
      * Crop the snapshots array to the max length.
      *
      * @private
      * @return {undefined}
      */
-    _cropLength() {
+    cropLength() {
         if (this.snapshots.length <= this.maxLength) {
             return;
         }
