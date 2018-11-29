@@ -9,3 +9,4 @@ Obsidian Core Modules
    data-store/index
    http-request/index
    iframe-api/index
+   sentry/index

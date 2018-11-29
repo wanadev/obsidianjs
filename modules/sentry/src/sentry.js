@@ -4,7 +4,7 @@ const uuidv4 = require("uuid/v4");
 const self = require("../index.js");
 
 
-export default class Sentry {
+class Sentry {
 
     /**
      * Initialize the sentry module
@@ -12,7 +12,6 @@ export default class Sentry {
      * @param {string[]} options.capturedLevels levels of logs captured by sentry
      * @param {Object} options.userInfos additionnals info about the user app version,
      * branch, graphics card, ...
-     * @param {string} options.userInfo.appVersion
      */
     constructor(options = {
         capturedLevels: ["fatal"],
@@ -46,6 +45,8 @@ export default class Sentry {
 
     /**
      * Connect to the sentry server
+     * Set a sentry context
+     * Plug log to the forwardLog function
      */
     setupSentry() {
         this.ravenClient = Raven
@@ -66,6 +67,7 @@ export default class Sentry {
 
     /**
     * Get the info that would be send to the sentry server when logging something
+    * @returns {*} return options.userInfos
     */
     getUserInfos() {
         return this.options.userInfos;
@@ -96,6 +98,7 @@ export default class Sentry {
 
     /**
      * Get the levels of logs sent to the sentry server
+     * @returns {[]} return options.capturedLevels
      */
     getLogLevels() {
         return this.options.capturedLevels;
@@ -138,7 +141,7 @@ export default class Sentry {
     }
 
     /**
-     * set additional infos sent through errors to the sentry server
+     * Set additional infos sent through errors to the sentry server
      */
     setSentryUserContext() {
         if (!self.app.config.get("@obsidian.debug")) {
@@ -148,6 +151,8 @@ export default class Sentry {
 
     /**
      * Access the user UUID on the localStorage or create one
+     * @returns {string|Error} A string containing the past user UUID or a newly generated user UUID
+     * In case of troubles accessing the localStorage, this returns an Error
      */
     static getUserUUID() {
         try {
@@ -164,3 +169,5 @@ export default class Sentry {
     }
 
 }
+
+export default Sentry;
