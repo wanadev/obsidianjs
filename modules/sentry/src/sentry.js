@@ -120,7 +120,7 @@ class Sentry {
      * @returns {string} A string containing the past user UUID or a newly generated one
      */
     getUserUUID() {
-        let uuid = null;
+        let uuid = this.userUUID;
 
         if (!this.userUUID) {
             try {
@@ -133,8 +133,6 @@ class Sentry {
             } catch (e) {
                 uuid = uuidv4();
             }
-        } else {
-            uuid = this.userUUID;
         }
 
         return uuid;
