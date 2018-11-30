@@ -8,69 +8,36 @@ class Sentry {
 
     /**
      * Initialize the sentry module
-     * @param {Object} options
-     * @param {string[]} options.capturedLevels levels of logs captured by sentry
-     * @param {Object} options.userInfos additionnals info about the user app version,
-     * branch, graphics card, ...
      */
-    constructor(options = {
-        capturedLevels: ["fatal"],
-        userInfos: {
-            appVersion: null,
-        },
-    }) {
-        this.initializeOptions(options);
+    constructor() {
+        this.userUUID = this.getUserUUID();
+        this.setLogLevels(self.app.config.get("capturedLevels"));
 
         if (!self.app.config.get("@obsidian.debug")) {
-            this.setupSentry();
+            this.ravenClient = Raven
+                .config(self.app.config.get("dsnKey"),
+                    {
+                        autoBreadcrumbs: true,
+                        logger: "obsidianjs/sentry",
+                    });
+
+            if (this.ravenClient) {
+                this.ravenClient.install();
+                this.setUserInfos(self.app.config.get("userInfos"));
+
+                self.app.events.on("log", (level, namespace, args) => {
+                    this.forwardLog(level, namespace, args);
+                });
+            }
         }
     }
-
-    /**
-     * Initialize the modules options
-     * Set the user UUID
-     * @param {*} options
-     */
-    initializeOptions(options) {
-        this.options = options;
-        if (!this.options.capturedLevels
-            || this.options.capturedLevels.length === 0) {
-            this.options.capturedLevels = ["fatal"];
-        }
-        if (!this.options.userInfos) {
-            this.options.userInfos = {};
-        }
-        this.options.userInfos.userUUID = Sentry.getUserUUID();
-    }
-
-    /**
-     * Connect to the sentry server
-     * Set a sentry context
-     * Plug log to the forwardLog function
-     */
-    setupSentry() {
-        this.ravenClient = Raven
-            .config(self.app.config.get("dsnKey"),
-                {
-                    autoBreadcrumbs: true,
-                    logger: "obsidianjs/sentry",
-                })
-            .install();
-
-        this.setUserInfos(this.options.userInfos);
-
-        self.app.events.on("log", (level, namespace, args) => {
-            this.forwardLog(level, namespace, args);
-        });
-    }
-
 
     /**
     * Get the info that would be send to the sentry server when logging something
     * @returns {*} return options.userInfos
     */
     getUserInfos() {
-        return this.options.userInfos;
+        return this.userInfos;
     }
 
     /**
@@ -78,8 +45,8 @@ class Sentry {
     * @param {*} newUserInfos
     */
     setUserInfos(newUserInfos) {
-        this.options.userInfos = newUserInfos;
-        this.options.userInfos.userUUID = Sentry.getUserUUID();
+        this.userInfos = newUserInfos;
+        this.userInfos.userUUID = this.userUUID;
 
         this.setSentryUserContext();
     }
@@ -90,7 +57,7 @@ class Sentry {
      * @param {*} additionalUserInfos
      */
     addUserInfos(additionalUserInfos) {
-        Object.assign(this.options.userInfos, additionalUserInfos);
+        Object.assign(this.userInfos, additionalUserInfos);
 
         this.setSentryUserContext();
     }
@@ -98,10 +65,10 @@ class Sentry {
 
     /**
      * Get the levels of logs sent to the sentry server
-     * @returns {[]} return options.capturedLevels
+     * @returns {string[]} return options.capturedLevels
      */
     getLogLevels() {
-        return this.options.capturedLevels;
+        return this.capturedLevels;
     }
 
     /**
@@ -109,7 +76,8 @@ class Sentry {
      * @param {string[]} logLevels
      */
     setLogLevels(logLevels) {
-        this.options.capturedLevels = logLevels;
+        this.capturedLevels = [];
+        this.addLogLevels(logLevels);
     }
 
     /**
@@ -118,8 +86,8 @@ class Sentry {
      */
     addLogLevels(logLevels) {
         logLevels.forEach((level) => {
-            if (!this.options.capturedLevels.includes(level)) {
-                this.options.capturedLevels.push(level);
+            if (!this.capturedLevels.includes(level)) {
+                this.capturedLevels.push(level);
             }
         });
     }
@@ -131,7 +99,7 @@ class Sentry {
      * @param {*[]} args
      */
     forwardLog(level, namespace, args) {
-        if (this.options.capturedLevels.includes(level)) {
+        if (this.capturedLevels.includes(level)) {
             Raven.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
                 {
                     level,
@@ -144,28 +112,32 @@ class Sentry {
      * Set additional infos sent through errors to the sentry server
      */
     setSentryUserContext() {
-        if (!self.app.config.get("@obsidian.debug")) {
-            Raven.setUserContext(this.options.userInfos);
-        }
+        Raven.setUserContext(this.userInfos);
     }
 
     /**
      * Access the user UUID on the localStorage or create one
-     * @returns {string|Error} A string containing the past user UUID or a newly generated user UUID
-     * In case of troubles accessing the localStorage, this returns an Error
+     * @returns {string} A string containing the past user UUID or a newly generated one
      */
-    static getUserUUID() {
-        try {
-            if (window.localStorage.sentryUUID) {
-                return window.localStorage.sentryUUID;
-            }
+    getUserUUID() {
+        let uuid = null;
 
-            window.localStorage.sentryUUID = uuidv4();
-            return window.localStorage.sentryUUID;
-        } catch (e) {
-            self.app.log.error(e);
-            return Error("Cannot access the UUID of this user, there was an error while trying to access local storage !");
+        if (!this.userUUID) {
+            try {
+                if (window.localStorage.sentryUUID) {
+                    uuid = window.localStorage.sentryUUID;
+                } else {
+                    uuid = uuidv4();
+                    window.localStorage.sentryUUID = uuid;
+                }
+            } catch (e) {
+                uuid = uuidv4();
+            }
+        } else {
+            uuid = this.userUUID;
         }
+
+        return uuid;
     }
 
 }
