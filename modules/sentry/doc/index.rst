@@ -42,9 +42,9 @@ Finally require it in modules that need it::
 Config
 ---------
 
-* ``apiKey`` The DNS key brought by sentry on project base
-* ``logLevels`` The levels of logs the application will forward to the sentry server
-* ``options.userInfos`` An object with what you inside it. This object will be added to informations sent to the sentry server.
+* ``dsnKey`` The DNS key brought by sentry on project base
+* ``capturedLevels`` The levels of logs the application will forward to the sentry server
+* ``userInfos`` An object with what you inside it. This object will be added to informations sent to the sentry server.
 
 
 Module API
