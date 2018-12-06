@@ -8,9 +8,9 @@ const self = require("../index.js");
  */
 class History {
 
-    constructor(options = {}) {
+    constructor() {
         // max Length of history, above that oldest snapshots are deleted
-        this.maxLength = options.maxLength || 50;
+        this.maxLength = (self.app.config) ? self.app.config.get("maxLength") : 50;
         this.pointer = -1;
         this.snapshots = [];
     }

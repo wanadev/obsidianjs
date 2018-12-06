@@ -238,7 +238,7 @@ describe("history/history.snapshot", () => {
 
         const history = new History();
         history.snapshot();
-        expect(self.app.events.emit).lastCalledWith("history-snapshot", 0, 1, 50);
+        expect(self.app.events.emit).lastCalledWith("history-snapshot", 0, 1, history.maxLength);
     });
 
     test("Handle after being back in history, new snapshot take new head", () => {
@@ -303,7 +303,6 @@ describe("history/history.snapshot", () => {
         objectC["/c"] = getEntity(3);
         objectC["/c/a"] = getEntity(31);
 
-
         self.app.modules.dataStore.serializeEntities = jest.fn()
             .mockReturnValueOnce(objectA)
             .mockReturnValueOnce(objectB)
@@ -316,6 +315,7 @@ describe("history/history.snapshot", () => {
         history.snapshot(); // c
         // a have been croped
         expect(history.snapshots[history.maxLength - 1].layers).toEqual(objectB);
+        expect(history.snapshots.length).toEqual(history.maxLength);
     });
 
 });
@@ -459,7 +459,7 @@ describe("history/history.go", () => {
         history.snapshot();
         history.snapshot();
         history.go(-1);
-        expect(self.app.events.emit).lastCalledWith("history-go", 1, 50);
+        expect(self.app.events.emit).lastCalledWith("history-go", 1, history.maxLength);
     });
 
     // test("Handle if go do nothing when asking for +1 when we are on first position", () => {

@@ -3,6 +3,14 @@ module.exports = {
         events: {
             emit: jest.fn(),
         },
+        config: {
+            get: (seekedValue) => {
+                if (seekedValue === "maxLength") {
+                    return 50;
+                }
+                return undefined;
+            },
+        },
         modules: {
             dataStore: {
                 serializeEntities: jest.fn()
