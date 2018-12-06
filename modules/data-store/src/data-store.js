@@ -10,7 +10,7 @@ const {
 /**
  * Stores project's entities and blobs.
  */
-export default class DataStore {
+class DataStore {
 
     constructor() {
         this[ENTITIES_BY_PATH] = {};
@@ -140,3 +140,4 @@ export default class DataStore {
 
 }
 
+export default DataStore;
