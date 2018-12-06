@@ -1,7 +1,7 @@
 {
   "name": "@obsidianjs/history",
   "version": "0.1.0",
-  "description": "History module allows you to manage an historic.",
+  "description": "History module allows you to manage an history for your project.",
   "main": "index.js",
   "directories": {
     "doc": "doc"

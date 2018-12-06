@@ -1,7 +1,7 @@
 const self = require("../index.js");
 
 /**
- * History module allows you to manage an historic.
+ * History module allows you to manage an history for your project.
  * It use data-store module to stack entities on 'snapshot' method
  * and restore them using 'go' method
  * History module can be use to implement system like Undo/Redo, Ctrl+Z / Ctrl+Y
@@ -9,7 +9,7 @@ const self = require("../index.js");
 class History {
 
     constructor(options = {}) {
-        // max Length of historic, above that oldest snapshots are deleted
+        // max Length of history, above that oldest snapshots are deleted
         this.maxLength = options.maxLength || 50;
         this.pointer = -1;
         this.snapshots = [];
@@ -18,7 +18,7 @@ class History {
     /**
      * Set Max amount of snapshots stored by the history.
      *
-     * @param {Number} max Length of historic, above that oldest snapshots are deleted
+     * @param {Number} max Length of history, above that oldest snapshots are deleted
      */
     setMaxLength(maxLength) {
         if (Number.isNaN(Number(maxLength)) || maxLength <= 0) {
@@ -31,7 +31,7 @@ class History {
      * Max amount of snapshots stored by the history.
      *
      * @readOnly
-     * @return {Number} max Length of historic, above that oldest snapshots are deleted
+     * @return {Number} max Length of history, above that oldest snapshots are deleted
      */
     getMaxLength() {
         return this.maxLength;
@@ -48,7 +48,7 @@ class History {
     }
 
     /**
-     * Tell if current pointed element is first in historic
+     * Tell if current pointed element is first in history
      * It means we can't go any forward
      *
      * @readOnly
@@ -59,7 +59,7 @@ class History {
     }
 
     /**
-     * Tell if current pointed element is last in historic.
+     * Tell if current pointed element is last in history.
      * It means we can't go any backward
      *
      * @readOnly
