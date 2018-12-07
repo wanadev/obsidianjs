@@ -1,5 +1,5 @@
 stonejs
-===================
+=======
 
 This modules integrates the stonejs library to the ObsidianJS
 framework.
@@ -12,7 +12,7 @@ The purpose of **stonejs** is to provide internationalization to your Javascript
 Documentation
 -------------
 
-* https://wanadev.github.io/obsidianjs/modules/http-request/
+* https://wanadev.github.io/obsidianjs/modules/stonejs/
 
 
 Changelog

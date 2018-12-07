@@ -1,5 +1,5 @@
 stonejs
-===================
+=======
 
 This modules integrates the stonejs library to the ObsidianJS
 framework.
@@ -25,13 +25,13 @@ Then use it in your application (in your main ``index.js``)::
 
 
 Config
----------
+------
 
 * ``initialLang`` The initial langage of the application default to "C"
 
 
 Stonejs API
-----------------
+-----------
 
 Functions
 ~~~~~~~~~
