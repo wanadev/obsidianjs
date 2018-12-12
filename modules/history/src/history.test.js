@@ -79,21 +79,39 @@ describe("history/history.maxLength", () => {
 });
 
 describe("history/history.position", () => {
+    test("No snapshot means pointer is not first and is not last", () => {
+        const history = new History();
+        expect(history.isFirst()).toBe(false);
+        expect(history.isLast()).toBe(false);
+    });
+
+    test("Only one snapshot means pointer is first and is last", () => {
+        const history = new History();
+        history.snapshot();
+        expect(history.isFirst()).toBe(true);
+        expect(history.isLast()).toBe(true);
+    });
+
+    test("History isFirst method does not get impacted by new snapshot", () => {
+        const history = new History();
+        history.snapshot();
+        history.snapshot();
+        expect(history.isFirst()).toBe(true);
+    });
+
     test("History isFirst method", () => {
         const history = new History();
-        expect(history.isFirst()).toBe(true);
         const maxLength = 3;
         history.maxLength = maxLength;
         for (let i = 0; i < maxLength; i++) {
             history.snapshot();
         }
-        history.go(maxLength);
+        history.go(-maxLength);
         expect(history.isFirst()).toBe(false);
     });
 
     test("History isLast method", () => {
         const history = new History();
-        expect(history.isLast()).toBe(false);
         const maxLength = 3;
         history.maxLength = maxLength;
         for (let i = 0; i < maxLength; i++) {
@@ -448,7 +466,9 @@ describe("history/history.go", () => {
     test("Check Go zero do nothing", () => {
         const history = new History();
         history.snapshot();
-        const { pointer } = history; // not lisible
+        const {
+            pointer,
+        } = history; // not lisible
         history.go(0);
         expect(history.pointer).toEqual(pointer);
     });

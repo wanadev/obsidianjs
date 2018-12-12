@@ -50,23 +50,25 @@ class History {
     /**
      * Tell if current pointed element is first in history
      * It means we can't go any forward
+     * It means pointer is on last snapshot taken
      *
      * @readOnly
      * @return {Boolean}
      */
     isFirst() {
-        return (this.pointer === -1);
+        return (this.pointer === 0);
     }
 
     /**
      * Tell if current pointed element is last in history.
      * It means we can't go any backward
+     * It means pointer is on first snapshot taken
      *
      * @readOnly
      * @return {Boolean}
      */
     isLast() {
-        return (this.pointer === this.maxLength - 1);
+        return (this.pointer === this.snapshots.length - 1 && this.snapshots.length > 0);
     }
 
     /**
