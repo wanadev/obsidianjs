@@ -1,6 +1,6 @@
-jest.mock("../index.js");
+jest.mock("./index.js");
 
-const self = require("../index.js");
+const self = require("./index.js");
 
 describe("self.app.events.emit('locale-changed', currentLocale)", () => {
     test("Emits an event when we are changing the the locale", () => {
