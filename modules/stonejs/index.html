@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stonejs &mdash; Obsidian Framework  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="iframe-api" href="../iframe-api/index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Obsidian Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">HowTo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../obsidian/index.html">Obsidian Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Obsidian Core Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../data-exporter/index.html">data-exporter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data-store/index.html">data-store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http-request/index.html">http-request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../iframe-api/index.html">iframe-api</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">stonejs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-this-module">Using This Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config">Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stonejs-api">Stonejs API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-lazystring-class">The LazyString Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#events">Events</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Obsidian Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Obsidian Core Modules</a> &raquo;</li>
+        
+      <li>stonejs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/stonejs/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="stonejs">
+<h1>stonejs<a class="headerlink" href="#stonejs" title="Permalink to this headline">¶</a></h1>
+<p>This modules integrates the stonejs library to the ObsidianJS framework.</p>
+<p>The purpose of <strong>stonejs</strong> is to provide internationalization to your
+Javascript application.</p>
+<div class="section" id="using-this-module">
+<h2>Using This Module<a class="headerlink" href="#using-this-module" title="Permalink to this headline">¶</a></h2>
+<p>First add the module to your project:</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span>npm install --save @obsidianjs/stonejs
+</pre></div>
+</div>
+<p>Then use it in your application (in your main <code class="docutils literal notranslate"><span class="pre">index.js</span></code>):</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">obsidian</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@obsidianjs/obsidian&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">stonejs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@obsidianjs/stonejs&quot;</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">obsidian</span><span class="p">(</span><span class="s2">&quot;my-application&quot;</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">stonejs</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="config">
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">initialLang</span></code> The initial langage of the application default to “<code class="docutils literal notranslate"><span class="pre">C</span></code>”</li>
+</ul>
+</div>
+<div class="section" id="stonejs-api">
+<h2>Stonejs API<a class="headerlink" href="#stonejs-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="stonejs.gettext">
+<code class="descclassname">stonejs.</code><code class="descname">gettext</code><span class="sig-paren">(</span><em>string</em>, <em>replacements={}</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.gettext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates the given string to the current language.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>string</strong> (<em>string</em>) – The string to translate.</li>
+<li><strong>replacements</strong> (<em>Object</em>) – an object containing replacements for the string (optional, see example below).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">string</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The translated string.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">text1</span> <span class="o">=</span> <span class="nx">stonejs</span><span class="p">.</span><span class="nx">gettext</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">text2</span> <span class="o">=</span> <span class="nx">stonejs</span><span class="p">.</span><span class="nx">gettext</span><span class="p">(</span><span class="s2">&quot;Hello {name}&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;John&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>You may not use this function from this module. It is better to import
+direclty stonejs and using it this way:</p>
+<div class="last highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;stonejs&quot;</span><span class="p">).</span><span class="nx">gettext</span>
+
+<span class="kd">var</span> <span class="nx">text1</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.lazyGettext">
+<code class="descclassname">stonejs.</code><code class="descname">lazyGettext</code><span class="sig-paren">(</span><em>string</em>, <em>replacements={}</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.lazyGettext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as stonejs.gettext but returns a <a class="reference internal" href="#stonejs.LazyString" title="stonejs.LazyString"><code class="xref js js-class docutils literal notranslate"><span class="pre">stonejs.LazyString()</span></code></a>
+instead of a String.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>You may not use this function from this module. It is better to import
+direclty stonejs and using it this way:</p>
+<div class="last highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;stonejs&quot;</span><span class="p">).</span><span class="nx">lazyGettext</span>
+
+<span class="kd">var</span> <span class="nx">text1</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.addCatalogs">
+<code class="descclassname">stonejs.</code><code class="descname">addCatalogs</code><span class="sig-paren">(</span><em>catalogs</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.addCatalogs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds one (or more if you merged multiple languages into one file) string catalog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>catalogs</strong> (<em>Object</em>) – An object containing translated strings (catalogs
+can be built using <a class="reference external" href="https://github.com/flozz/stonejs-tools">stronejs-tools</a>).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">stonejs</span><span class="p">.</span><span class="nx">addCatalogs</span><span class="p">(</span><span class="nx">catalogs</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.getLocale">
+<code class="descclassname">stonejs.</code><code class="descname">getLocale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.getLocale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current locale (aka target language for the gettext and
+lazyGettext functions). The default locale is <code class="docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code> (it means no
+translation: simply returns the string as it is in the source).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The current locale.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">locale</span> <span class="o">=</span> <span class="nx">stonejs</span><span class="p">.</span><span class="nx">getLocale</span><span class="p">();</span>
+<span class="c1">// &quot;c&quot;, &quot;en&quot;, &quot;fr&quot;, ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.setLocale">
+<code class="descclassname">stonejs.</code><code class="descname">setLocale</code><span class="sig-paren">(</span><em>locale</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.setLocale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the current locale (aka the target language for the gettext and
+lazyGettext functions).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use the <a class="reference internal" href="#stonejs.setBestMatchingLocale" title="stonejs.setBestMatchingLocale"><code class="xref js js-func docutils literal notranslate"><span class="pre">stonejs.setBestMatchingLocale()</span></code></a> function to set
+the best language for the user.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>locale</strong> (<em>string</em>) – The locale code (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;en&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;fr&quot;</span></code>, …)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Events:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#locale-changed" title="locale-changed"><code class="xref js js-data docutils literal notranslate"><span class="pre">locale-changed</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">stonejs</span><span class="p">.</span><span class="nx">setLocale</span><span class="p">(</span><span class="s2">&quot;fr&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.setBestMatchingLocale">
+<code class="descclassname">stonejs.</code><code class="descname">setBestMatchingLocale</code><span class="sig-paren">(</span><em>locales</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.setBestMatchingLocale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and set the best language for the user (depending on available
+catalogs and given language list).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>locales</strong> (<em>string|Array</em>) – (optional) The locale(s) to choose from (e.g.
+<code class="docutils literal notranslate"><span class="pre">&quot;fr&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;fr&quot;,</span> <span class="pre">&quot;fr_FR&quot;,</span> <span class="pre">&quot;en_US&quot;]</span></code>).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Events:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#locale-changed" title="locale-changed"><code class="xref js js-data docutils literal notranslate"><span class="pre">locale-changed</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">stonejs</span><span class="p">.</span><span class="nx">setBestMatchingLocale</span><span class="p">();</span>  <span class="c1">// Automaticaly set the best language (from informations given by the browser)</span>
+<span class="nx">setBestMatchingLocale</span><span class="p">(</span><span class="s2">&quot;fr&quot;</span><span class="p">);</span>    <span class="c1">// Finds the catalog that best match &quot;fr&quot; (&quot;fr&quot;, &quot;fr_FR&quot;, fr_*,...)</span>
+<span class="nx">setBestMatchingLocale</span><span class="p">([</span><span class="s2">&quot;fr&quot;</span><span class="p">,</span> <span class="s2">&quot;en_US&quot;</span><span class="p">,</span> <span class="s2">&quot;en_UK&quot;</span><span class="p">]);</span>    <span class="c1">// Finds the best available catalog from the given list</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.findBestMatchingLocale">
+<code class="descclassname">stonejs.</code><code class="descname">findBestMatchingLocale</code><span class="sig-paren">(</span><em>locales</em>, <em>catalogs</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.findBestMatchingLocale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return the given locale that best matches the given catalogs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>locales</strong> (<em>string|Array</em>) – The locale(s) to choose from (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;fr&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;fr&quot;,</span> <span class="pre">&quot;fr_FR&quot;,</span> <span class="pre">&quot;en_US&quot;]</span></code>).</li>
+<li><strong>catalogs</strong> (<em>Array</em>) – the list of available catalogs (e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;fr_FR&quot;,</span> <span class="pre">&quot;en&quot;]</span></code>).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">stonejs</span><span class="p">.</span><span class="nx">findBestMatchingLocale</span><span class="p">([</span><span class="s2">&quot;fr&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;pt_BR&quot;</span><span class="p">,</span> <span class="s2">&quot;fr_CA&quot;</span><span class="p">,</span> <span class="s2">&quot;fr_FR&quot;</span><span class="p">]);</span>  <span class="c1">// -&gt; &quot;fr_FR&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.guessUserLanguage">
+<code class="descclassname">stonejs.</code><code class="descname">guessUserLanguage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.guessUserLanguage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to guess the user language (based on the browser’s preferred languages).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string:</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The user’s language.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">locale</span> <span class="o">=</span> <span class="nx">stonejs</span><span class="p">.</span><span class="nx">guessUserLanguage</span><span class="p">();</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.enableDomScan">
+<code class="descclassname">stonejs.</code><code class="descname">enableDomScan</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.enableDomScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows stonejs.js to scan all the DOM to find translatable strings (and to translate them).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>enable</strong> (<em>boolean</em>) – Enable the scan of the DOM if true, disable it otherwise.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">stonejs</span><span class="p">.</span><span class="nx">enableDomScan</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This feature should probably not be used with ObsidianJS projects.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="stonejs.updateDomTranslation">
+<code class="descclassname">stonejs.</code><code class="descname">updateDomTranslation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.updateDomTranslation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the DOM translation if DOM scan was enabled with
+stonejs.enableDomScan (re-scan and re-translate all strings).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method should probably not be used with ObsidianJS projects.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="the-lazystring-class">
+<h3>The LazyString Class<a class="headerlink" href="#the-lazystring-class" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="stonejs.LazyString">
+<em class="property">class </em><code class="descclassname">stonejs.</code><code class="descname">LazyString</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#stonejs.LazyString" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">stonejs.LazyString</span></code> is an object returned by the
+<a class="reference internal" href="#stonejs.lazyGettext" title="stonejs.lazyGettext"><code class="xref js js-func docutils literal notranslate"><span class="pre">stonejs.lazyGettext()</span></code></a> function. It behaves like a standard String
+object (same API) but its value changes if you change the locale with
+<a class="reference internal" href="#stonejs.setLocale" title="stonejs.setLocale"><code class="xref js js-func docutils literal notranslate"><span class="pre">stonejs.setLocale()</span></code></a> function.</p>
+<p>This is useful when you have to define translatable strings before the
+string catalog was loaded, or to automatically re-translate strings each
+time the locale is changed.</p>
+<p>You can find an example of its use in the PhotonUI documentation:</p>
+<p><a class="reference external" href="http://wanadev.github.io/PhotonUI/doc/widgets/translation.html">http://wanadev.github.io/PhotonUI/doc/widgets/translation.html</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="events">
+<h3>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="locale-changed">
+<code class="descname">locale-changed</code><a class="headerlink" href="#locale-changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triggered  when the locale changes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Callback:</th><td class="field-body"><dl class="first last function">
+<dt id="function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>newLocale</em><span class="sig-paren">)</span><a class="headerlink" href="#function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>newLocale</strong> (<em>string</em>) – The new locale</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="nx">app</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;@stonejs.locale-changed&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">newLocale</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../iframe-api/index.html" class="btn btn-neutral" title="iframe-api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Wanadev
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
