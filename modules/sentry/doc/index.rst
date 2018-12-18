@@ -1,5 +1,5 @@
 sentry
-=============
+======
 
 Using This Module
 -----------------
@@ -34,7 +34,7 @@ Finally require it in modules that need it::
 
 
 Config
----------
+------
 
 * ``dsnKey`` The DNS key brought by sentry on project base
 * ``capturedLevels`` The levels of logs the application will forward to the sentry server
