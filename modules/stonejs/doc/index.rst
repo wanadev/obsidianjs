@@ -112,7 +112,7 @@ Functions
 
     :param string locale: The locale code (e.g. ``"en"``, ``"fr"``, ...)
 
-    :events: :data:`stonejs.locale-changed`
+    :events: :data:`locale-changed`
 
     ::
 
@@ -126,7 +126,7 @@ Functions
     :param string|Array locales: (optional) The locale(s) to choose from (e.g.
                                  ``"fr"``, ``["fr", "fr_FR", "en_US"]``).
 
-    :events: :data:`stonejs.locale-changed`
+    :events: :data:`locale-changed`
 
     ::
 
@@ -202,7 +202,7 @@ The LazyString Class
 Events
 ~~~~~~
 
-.. data:: stonejs.locale-changed
+.. data:: locale-changed
 
    Triggered  when the locale changes.
 
