@@ -112,6 +112,8 @@ Functions
 
     :param string locale: The locale code (e.g. ``"en"``, ``"fr"``, ...)
 
+    :events: :data:`stonejs.locale-changed`
+
     ::
 
         stonejs.setLocale("fr");
@@ -123,6 +125,8 @@ Functions
 
     :param string|Array locales: (optional) The locale(s) to choose from (e.g.
                                  ``"fr"``, ``["fr", "fr_FR", "en_US"]``).
+
+    :events: :data:`stonejs.locale-changed`
 
     ::
 
@@ -181,9 +185,10 @@ The LazyString Class
 
 .. class:: stonejs.LazyString(string)
 
-    ``stonejs.LazyString`` is an object returned by the :js:func:`stonejs.lazyGettext`
-    function. It behaves like a standard String object (same API) but its value
-    changes if you change the locale with stonejs.setLocale function.
+    ``stonejs.LazyString`` is an object returned by the
+    :js:func:`stonejs.lazyGettext` function. It behaves like a standard String
+    object (same API) but its value changes if you change the locale with
+    :func:`stonejs.setLocale` function.
 
     This is useful when you have to define translatable strings before the
     string catalog was loaded, or to automatically re-translate strings each
@@ -197,6 +202,18 @@ The LazyString Class
 Events
 ~~~~~~
 
-stonejs-locale-changed, newLocale
+.. data:: stonejs.locale-changed
 
-    This event is fired each time the locale changes (using the stonejs.setLocale function).
+   Triggered  when the locale changes.
+
+   :callback:
+
+       .. function:: function(newLocale)
+
+           :param string newLocale: The new locale
+
+   ::
+
+      app.events.on("@stonejs.locale-changed", (newLocale) => {
+          // ...
+      })
