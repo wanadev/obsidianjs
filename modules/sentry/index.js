@@ -5,7 +5,7 @@ module.exports = {
 
     config: {
         dsnKey: null,
-        capturedLevels: ["fatal"],
+        capturedLevels: ["error"],
         userInfos: {},
     },
 

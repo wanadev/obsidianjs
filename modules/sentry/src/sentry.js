@@ -4,11 +4,17 @@ const uuidv4 = require("uuid/v4");
 const self = require("../index.js");
 
 
+/**
+ * The sentry module controller.
+ *
+ * .. WARNING::
+ *
+ *    You do not need to use this API most of time: once this module is loaded
+ *    with proper configuration, it will just work and you do not need to
+ *    access it.
+ */
 class Sentry {
 
-    /**
-     * Initialize the sentry module
-     */
     constructor() {
         this.userUUID = this.getUserUUID();
         this.setLogLevels(self.app.config.get("capturedLevels"));
@@ -33,17 +39,19 @@ class Sentry {
     }
 
     /**
-    * Get the info that would be send to the sentry server when logging something
-    * @returns {*} return options.userInfos
-    */
+     * Get the :data:`userInfos` object.
+     *
+     * @returns {Object} The userInfo object.
+     */
     getUserInfos() {
         return this.userInfos;
     }
 
     /**
-    * Set the info send to the sentry server when logging something
-    * @param {*} newUserInfos
-    */
+     * Set the :data:`userInfos` object.
+     *
+     * @param {Object} newUserInfos
+     */
     setUserInfos(newUserInfos) {
         this.userInfos = newUserInfos;
         this.userInfos.userUUID = this.userUUID;
@@ -51,10 +59,10 @@ class Sentry {
         this.setSentryUserContext();
     }
 
-
     /**
-     * Add properties to the userInfos
-     * @param {*} additionalUserInfos
+     * Add properties to the :data:`userInfos` object.
+     *
+     * @param {Object} additionalUserInfos
      */
     addUserInfos(additionalUserInfos) {
         Object.assign(this.userInfos, additionalUserInfos);
@@ -64,15 +72,17 @@ class Sentry {
 
 
     /**
-     * Get the levels of logs sent to the sentry server
-     * @returns {string[]} return options.capturedLevels
+     * Get the levels of logs sent to the Sentry server (see :data:`capturedLevels`).
+     *
+     * @returns {string[]}
      */
     getLogLevels() {
         return this.capturedLevels;
     }
 
     /**
-     * Change the levels of logs that are sent to the sentry server
+     * Change the levels of logs that are sent to the Sentry server (see :data:`capturedLevels`).
+     *
      * @param {string[]} logLevels
      */
     setLogLevels(logLevels) {
@@ -81,7 +91,8 @@ class Sentry {
     }
 
     /**
-     * Add levels of logs that are sent to the sentry server
+     * Add levels of logs that are sent to the sentry server (see :data:`capturedLevels`).
+     *
      * @param {string[]} logLevels
      */
     addLogLevels(logLevels) {
@@ -94,9 +105,11 @@ class Sentry {
 
     /**
      * Forward the log of obsidian core the a sentry server
+     *
+     * @private
      * @param {string} level
      * @param {string} namespace
-     * @param {*[]} args
+     * @param {array} args
      */
     forwardLog(level, namespace, args) {
         if (this.capturedLevels.includes(level)) {
@@ -109,15 +122,18 @@ class Sentry {
     }
 
     /**
-     * Set additional infos sent through errors to the sentry server
+     * Update the sentry user context
+     *
+     * @private
      */
     setSentryUserContext() {
         Raven.setUserContext(this.userInfos);
     }
 
     /**
-     * Access the user UUID on the localStorage or create one
-     * @returns {string} A string containing the past user UUID or a newly generated one
+     * Get the user UUID.
+     *
+     * @returns {string} The user UUID.
      */
     getUserUUID() {
         let uuid = this.userUUID;
