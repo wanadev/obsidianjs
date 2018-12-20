@@ -10,3 +10,4 @@ Obsidian Core Modules
    http-request/index
    iframe-api/index
    sentry/index
+   stonejs/index
