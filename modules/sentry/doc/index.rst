@@ -26,7 +26,6 @@ Then use it in your application (in your main ``index.js``)::
        config: {
            dsnKey: "https://<key>@<server>/<project>",
            capturedLevels: [
-               "fatal",
                "error",
                "warning",
            ],
