@@ -47,7 +47,7 @@ describe("Logging.info", () => {
 
 describe("Logging.warn", () => {
 
-    test("Emit a 'log' event with right level and namespace when called from application", () => {
+    test("Emits a 'log' event with right level and namespace when called from application", () => {
         const app = {
             name: "test-app",
             namespace: "obsidian",  // ROOT
