@@ -10,7 +10,7 @@ module.exports = {
     },
 
     load() {
-        const Sentry = require("./src/sentry.js");  // eslint-disable-line global-require
+        const Sentry = require("./src/sentry.js").default;  // eslint-disable-line global-require
         return new Sentry();
     },
 
