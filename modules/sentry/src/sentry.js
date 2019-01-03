@@ -31,7 +31,7 @@ class Sentry {
                 this.ravenClient.install();
                 this.setUserInfos(self.app.config.get("userInfos"));
 
-                self.app.events.on("log", (level, namespace, args) => {
+                self.app.events.on("@obsidian.log", (level, namespace, args) => {
                     this.forwardLog(level, namespace, args);
                 });
             }
