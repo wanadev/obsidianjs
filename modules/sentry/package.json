@@ -1,6 +1,6 @@
 {
   "name": "@obsidianjs/sentry",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Listen to log event and forward logs to sentry server",
   "main": "index.js",
   "scripts": {
