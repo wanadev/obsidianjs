@@ -15,22 +15,50 @@ const resolveEventPath = (eventPath, namespace) => (eventPath[0] === "@"
  */
 class Events {
 
+    /**
+     * @constructor
+     */
     constructor() {
         this[LISTENERS] = {};
     }
 
+    /**
+     * Subscribe to an event at a given path.
+     *
+     * @param {string} eventPath The path of the event.
+     * @param {function} listener The event handler.
+     */
     on(eventPath, listener) {
         this[ON](ROOT_NAMESPACE, eventPath, listener);
     }
 
+    /**
+     * Subscribe to a one-time event at a given path.
+     *
+     * @todo not implemented yet
+     * @param {string} eventPath The path of the event.
+     * @param {function} listener The event handler.
+     */
     once(eventPath, listener) {
         this[ONCE](ROOT_NAMESPACE, eventPath, listener);
     }
 
+    /**
+     * Unsubscribe to an event at a given path.
+     *
+     * @param {string} eventPath The path of the event.
+     * @param {function} listener The event handler.
+     */
     removeListener(eventPath, listener) {
         this[REMOVE_LISTENER](ROOT_NAMESPACE, eventPath, listener);
     }
 
+    /**
+     * Emit an event at a given path.
+     *
+     * @param {string} eventPath The path of the event.
+     * @param {...*} [args] The arguments to pass to the handlers.
+     */
     emit(eventPath, ...args) {
         this[EMIT](ROOT_NAMESPACE, eventPath, ...args);
     }
@@ -46,7 +74,7 @@ class Events {
         this[LISTENERS][eventId].push(listener);
     }
 
-    [ONCE](namespace, eventPath, listener) {
+    [ONCE](namespace, eventPath, listener) { // eslint-disable-line
         throw new Error("NotImplementedError");
     }
 
