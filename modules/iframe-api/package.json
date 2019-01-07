@@ -1,6 +1,6 @@
 {
   "name": "@obsidianjs/iframe-api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "API between ObsidianJS application and the page that integrates it through an iframe",
   "main": "index.js",
   "scripts": {
