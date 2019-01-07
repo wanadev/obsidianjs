@@ -19,7 +19,7 @@ module.exports = {
             app.log.warn("Iframe API may not be loaded after the application started!");
             setTimeout(api.ready, 1);  // deferred
         } else {
-            app.events.on("ready", api.ready);
+            app.events.on("@obsidian.ready", api.ready);
         }
 
         return api;
