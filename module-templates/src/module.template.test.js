@@ -5,6 +5,6 @@ const self = require("../index.js");
 
 describe("", () => {
     test("", () => {
-        const {{name}} = new {{pascalCase name}}();
+        const {{camelCase name}} = new {{pascalCase name}}();
     });
 });
