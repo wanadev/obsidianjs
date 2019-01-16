@@ -4,3 +4,4 @@ modules/*/node_modules/*
 __env__/*
 build/*
 scripts/publish-doc.js
+module-templates/
