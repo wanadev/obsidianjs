@@ -1,4 +1,5 @@
 const self = require("../index.js");
+const historyHelper = require("./history-helper.js");
 
 /**
  * History module allows you to manage an history for your project.
@@ -49,7 +50,7 @@ class History {
 
     /**
      * Tell if current pointed element is first in history
-     * It means we can't go any forward
+     * It means we can't go any further forward
      * It means pointer is on last snapshot taken
      *
      * @readOnly
@@ -61,7 +62,7 @@ class History {
 
     /**
      * Tell if current pointed element is last in history.
-     * It means we can't go any backward
+     * It means we can't go any further backward
      * It means pointer is on first snapshot taken
      *
      * @readOnly
@@ -105,33 +106,29 @@ class History {
      *
      * @param {Number} delta state you want to reach, can be negative or positive
      *                       (will be croped by history length)
-     * @return {undefined}
      */
     go(delta) {
         const effectiveDelta = this.simulate(delta);
-        if (effectiveDelta === 0) {
+        if (!effectiveDelta) { // Nothing happens
             return;
         }
-
-        this.pointer -= effectiveDelta;
+        this.pointer += effectiveDelta;
         this.applyCurrentSnapshot();
         self.app.events.emit("history-go", this.pointer, this.maxLength);
     }
 
     /**
      * Go backwards in history.
-     * @return {undefined}
      */
     back() {
-        return this.go(1);
+        this.go(1);
     }
 
     /**
      * Go forwards in history.
-     * @return {undefined}
      */
     forward() {
-        return this.go(-1);
+        this.go(-1);
     }
 
     /**
@@ -143,20 +140,18 @@ class History {
      * @return {Number} Effective delta that will occur.
      */
     simulate(testedDelta) {
-        let delta = testedDelta;
-        delta = (delta !== undefined) ? delta : -1;
-        if (this.pointer < 0) {
+        const delta = testedDelta;
+        if (this.pointer < 0 || !delta) {
             return 0;
         }
-
-        if (delta > 0) {
-            if (delta > this.pointer) {
-                delta = this.pointer;
+        if (delta > 0) { // Means we go back in history
+            if (delta > (this.snapshots.length - this.pointer - 1)) {
+                return 0; // means that we go out of major bound so we should not move
             }
-        } else if (-delta > (this.snapshots.length - this.pointer - 1)) {
-            delta = -(this.snapshots.length - this.pointer - 1);
+        } else if (this.pointer + delta < 0) {
+            // Means that we go out of minor bound so we should not move
+            return 0;
         }
-
         return delta;
     }
 
@@ -166,61 +161,18 @@ class History {
      */
     applyCurrentSnapshot() {
         if (this.pointer < 0) {
+            self.app.log.warn("You want to apply screenshot on a negative pointer");
             return;
         }
-
         const snapshot = this.snapshots[this.pointer];
-
         const {
             dataStore,
         } = self.app.modules;
         // current state
-        let structuresCache = dataStore.serializeEntities() || {};
-        structuresCache = this.applyCurrentSnapshotInObject(structuresCache, snapshot.layers);
-        dataStore.unserializeEntities(structuresCache);
-    }
-
-    /**
-     * Intern function which compares and apply change recursively on 2 structures.
-     * Adding/deleting/modifying properties on current structure to match with snapshot structure.
-     * Only structureCurrent will be changed.
-     * @param  {Object} structureCurrent  Structure of the current project exported by data-store
-     * @param  {Object} structureSnapshot Structure of the snapshot project that you want to apply
-     * @return {Object} structureCurrent
-     */
-    applyCurrentSnapshotInObject(structureCurrent, structureSnapshot) {
-        if (structureCurrent) {
-            // Remove all properties that should not exist
-            Object.keys(structureCurrent).forEach((keyStructureCurrent) => {
-                // Case property exist only in current structure and not in snapshot
-                if (!structureSnapshot[keyStructureCurrent]) {
-                    delete structureCurrent[keyStructureCurrent]; // eslint-disable-line no-param-reassign, max-len
-                }
-            });
-        }
-
-        if (structureSnapshot) {
-            Object.keys(structureSnapshot).forEach((keySnapshot) => {
-                if (typeof structureCurrent[keySnapshot] === "undefined") {
-                    // Case property exist only in snapshot
-                    // Add all properties that should exist
-                    structureCurrent[keySnapshot] = structureSnapshot[keySnapshot]; // eslint-disable-line no-param-reassign, max-len
-                    return structureCurrent;
-                }
-                // Case property exist in both current structure and snapshot structure
-                if (typeof structureSnapshot[keySnapshot] !== "object" || Object.keys(structureSnapshot[keySnapshot]).length === 0) {
-                    // Modify properties that have changed and that does not contain any child
-                    structureCurrent[keySnapshot] = structureSnapshot[keySnapshot]; // eslint-disable-line no-param-reassign, max-len
-                    return structureCurrent;
-                }
-                // Else property exist in both structure and the property have children
-                // then we look recursively for their child
-                return this.applyCurrentSnapshotInObject(structureCurrent[keySnapshot], structureSnapshot[keySnapshot]); // eslint-disable-line max-len
-
-            });
-        }
-
-        return structureCurrent;
+        const structuresCache = dataStore.serializeEntities() || {};
+        const clonedStructuresCache = historyHelper.cloneObject(structuresCache);
+        const structureSnapshot = historyHelper.cloneObject(snapshot.layers);
+        historyHelper.applySnapshotDifference(clonedStructuresCache, structureSnapshot);
     }
 
     /**

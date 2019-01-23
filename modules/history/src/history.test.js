@@ -1,14 +1,43 @@
 jest.mock("../index.js");
 
 const History = require("./history.js");
+const HistoryHelper = require("./history-helper.js");
 const self = require("../index.js");
+const SerializableClass = require("abitbol-serializable");
 
-function getEntity(id = Math.floor(Math.random() * 1000)) {
-    return {
+const Entity = SerializableClass.$extend({
+    __name__: "Entity",
+    getProp1: jest.fn(),
+    setProp1: jest.fn(),
+});
+
+
+function getEntity(id = Math.floor(Math.random() * 1000), prop1 = "toto") {
+    const newEntity = {
         __name__: "Entity",
         id,
+        prop1,
     };
+    return newEntity;
 }
+
+beforeAll(() => {
+    SerializableClass.$register(Entity);
+});
+
+beforeEach(() => {
+    self.app.modules.dataStore.serializeEntities.mockClear();
+    self.app.modules.dataStore.getEntity.mockClear();
+    self.app.modules.dataStore.addEntity.mockClear();
+    self.app.modules.dataStore.removeEntity.mockClear();
+    self.app.events.emit.mockClear();
+    Entity.prototype.getProp1.mockClear();
+    Entity.prototype.setProp1.mockClear();
+    self.app.modules.dataStore.getEntity.mockReturnValue(new Entity());
+    Entity.prototype.getProp1.mockReturnValue(
+        "toto",
+    );
+});
 
 describe("history/history.getLength", () => {
     test("history initialisation", () => {
@@ -106,7 +135,7 @@ describe("history/history.position", () => {
         for (let i = 0; i < maxLength; i++) {
             history.snapshot();
         }
-        history.go(-maxLength);
+        history.go(maxLength - 1);
         expect(history.isFirst()).toBe(false);
     });
 
@@ -117,7 +146,7 @@ describe("history/history.position", () => {
         for (let i = 0; i < maxLength; i++) {
             history.snapshot();
         }
-        history.go(-maxLength);
+        history.go(maxLength - 1);
         expect(history.isLast()).toBe(true);
     });
 });
@@ -162,7 +191,7 @@ describe("history/history.simulate", () => {
         const history = new History();
         history.snapshot();
         history.snapshot();
-        expect(history.simulate(Number.MIN_SAFE_INTEGER)).toBe(-1);
+        expect(history.simulate(Number.MIN_SAFE_INTEGER)).toBe(0);
     });
 
     test("Simulate big number to return first position when pointer is in middle", () => {
@@ -181,7 +210,6 @@ describe("history/history.simulate", () => {
 });
 
 describe("history/history.snapshot", () => {
-
     test("Snapshot does not throw error", () => {
         const history = new History();
         expect(history.snapshot()).toBeUndefined();
@@ -199,10 +227,9 @@ describe("history/history.snapshot", () => {
     test("Test if snapshot does not change integrity of data", () => {
         const history = new History();
         const projectData = {
-            "/a": [{
-                __name__: "Entity",
-                id: "1",
-            }],
+            "/a": [
+                getEntity(1),
+            ],
         };
         self.app.modules.dataStore.unserializeEntities(projectData);
         const dataBefore = self.app.modules.dataStore.serializeEntities();
@@ -214,30 +241,41 @@ describe("history/history.snapshot", () => {
     test("Snapshot extract current project as expected", () => {
         const history = new History();
         const projectData = {
-            "/a": [{
-                __name__: "Entity",
-                id: "1",
-            }],
+            "/a": [
+                getEntity(1),
+            ],
         };
+        self.app.modules.dataStore.serializeEntities.mockReturnValueOnce(
+            projectData,
+        );
         history.snapshot();
         expect(history.snapshots[history.pointer].layers).toEqual(projectData);
     });
 
     test("Snapshot call dataStore serialization", () => {
-        self.app.modules.dataStore.serializeEntities.mockClear();
         const history = new History();
         history.snapshot();
         expect(self.app.modules.dataStore.serializeEntities).toHaveBeenCalledTimes(1);
     });
 
     test("New snapshot take new head", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/c"] = getEntity(3);
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/c": [
+                getEntity(3),
+            ],
+        };
 
         self.app.modules.dataStore.serializeEntities = jest.fn()
             .mockReturnValueOnce(objectA)
@@ -262,31 +300,59 @@ describe("history/history.snapshot", () => {
     test("Handle after being back in history, new snapshot take new head", () => {
         // If we have a stack of 5 history, when we get back to -3 and we take a new snapshot,
         // make sure old -2 and -1 are deleted
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/c"] = getEntity(3);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
 
-        const objectC = {};
-        objectC["/c"] = getEntity(3);
-        objectC["/c/a"] = getEntity(31);
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/c": [
+                getEntity(3),
+            ],
+        };
 
-        const objectD = {};
-        objectD["/d"] = getEntity(4);
+        const objectC = {
+            "/c": [
+                getEntity(3),
+            ],
+            "/c/a": [
+                getEntity(31),
+            ],
+        };
 
-        const objectE = {};
-        objectE["/e"] = getEntity(5);
+        const objectD = {
+            "/d": [
+                getEntity(4),
+            ],
+        };
 
-        const objectF = {};
-        objectF["/f"] = getEntity(6);
+        const objectE = {
+            "/e": [
+                getEntity(5),
+            ],
+        };
 
-        const objectG = {};
-        objectG["/g"] = getEntity(7);
+        const objectF = {
+            "/f": [
+                getEntity(6),
+            ],
+        };
 
-        self.app.modules.dataStore.serializeEntities = jest.fn()
+        const objectG = {
+            "/g": [
+                getEntity(7),
+            ],
+        };
+
+        self.app.modules.dataStore.serializeEntities
             .mockReturnValueOnce(objectA)
             .mockReturnValueOnce(objectB)
             .mockReturnValueOnce(objectC)
@@ -301,7 +367,7 @@ describe("history/history.snapshot", () => {
         history.snapshot(); // c
         history.snapshot(); // d
         history.snapshot(); // e
-        history.go(-3); // here it calls f which is a side effect of the test
+        history.go(3); // here it calls f which is a side effect of the test
         history.snapshot(); // g
         expect(history.snapshots[0].layers).toEqual(objectG);
         expect(history.snapshots[1].layers).toEqual(objectB);
@@ -309,19 +375,33 @@ describe("history/history.snapshot", () => {
 
     test("Snapshot cropLength", () => {
         // Test when we reached maxLength if old one is well deleted
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/c": [
+                getEntity(3),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/c"] = getEntity(3);
+        const objectC = {
+            "/c": [
+                getEntity(3),
+            ],
+            "/c/a": [
+                getEntity(31),
+            ],
+        };
 
-        const objectC = {};
-        objectC["/c"] = getEntity(3);
-        objectC["/c/a"] = getEntity(31);
-
-        self.app.modules.dataStore.serializeEntities = jest.fn()
+        self.app.modules.dataStore.serializeEntities
             .mockReturnValueOnce(objectA)
             .mockReturnValueOnce(objectB)
             .mockReturnValueOnce(objectC);
@@ -338,105 +418,167 @@ describe("history/history.snapshot", () => {
 
 });
 
-describe("history/history.applyCurrentSnapshotInObject", () => {
-    test("Handle delete property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
+describe("history/history-helper.applySnapshotDifference", () => {
+    test("Handle delete entity", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+        };
 
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(self.app.modules.dataStore.removeEntity).lastCalledWith("2");
+    });
+
+    test("Handle add entity", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
+
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        const lastCall = self.app.modules.dataStore.addEntity.mock.calls[
+            self.app.modules.dataStore.addEntity.mock.calls.length - 1];
+        expect(lastCall[0].id).toEqual(objectB["/b"][0].id);
+        expect(lastCall[1]).toEqual("/b");
     });
 
     test("Handle add property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/a/a": [
+                getEntity(2),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/b"] = getEntity(2);
-
-        const history = new History();
-        // console.log(history.applyCurrentSnapshotInObject(objectA, objectB));
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        const objectB = {
+            "/a": [
+                getEntity(1, "tata"),
+            ],
+            "/a/a": [
+                getEntity(2),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(Entity.prototype.setProp1).toHaveBeenCalledTimes(1);
+        expect(Entity.prototype.setProp1).lastCalledWith("tata");
     });
 
-    test("Handle delete child property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/a/a"] = getEntity(2);
-        objectA["/a/b"] = getEntity(3);
+    test("Handle delete property", () => {
+        const objectA = {
+            "/a": [
+                {
+                    __name__: "Entity",
+                    id: 1,
+                    prop1: "toto",
+                    prop2: "tata",
+                },
+            ],
+            "/a/a": [
+                getEntity(2),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/a/a"] = getEntity(2);
-
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
-    });
-
-    test("Handle add child property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/a/a"] = getEntity(2);
-
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/a/a"] = getEntity(2);
-        objectB["/a/b"] = getEntity(3);
-
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/a/a": [
+                getEntity(2),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(self.app.log.warn).lastCalledWith("You are removing a property between two entities, which should never happen");
     });
 
     test("Handle modify property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+        };
 
-        const objectB = {};
-        objectB["/a"] = getEntity(2);
-
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        const objectB = {
+            "/a": [
+                getEntity(1, "tata"),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(Entity.prototype.setProp1).toHaveBeenCalledTimes(1);
+        expect(Entity.prototype.setProp1).lastCalledWith("tata");
     });
 
-    test("Handle modify children property", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/a/a"] = getEntity(2);
+    test("Handle apply snapshot difference functionnal test", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/a/e": [
+                getEntity(3),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+            "/b/a": [
+                getEntity(4),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/a/e": [
+                getEntity(11),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+            "/b/a": [
+                getEntity(3),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        const nbCallsAddEntity = self.app.modules.dataStore.addEntity.mock.calls.length;
+        const addEntityFirstCall = self.app.modules.dataStore.addEntity.mock.calls[0];
+        const addEntityLastCall = self.app.modules.dataStore
+            .addEntity.mock.calls[nbCallsAddEntity - 1];
 
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/a/a"] = getEntity(1);
+        expect(self.app.modules.dataStore.removeEntity).toHaveBeenCalledTimes(2);
+        expect(self.app.modules.dataStore.addEntity).toHaveBeenCalledTimes(3);
 
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
-    });
+        expect(addEntityFirstCall[0].id).toEqual(11);
+        expect(addEntityFirstCall[1]).toEqual("/a/e");
+        expect(addEntityLastCall[0].id).toEqual(3);
+        expect(addEntityLastCall[1]).toEqual("/b/a");
 
-    test("Handle apply current snapshot functionnal test", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/a/e"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
-        objectA["/b/a"] = getEntity(1);
-
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/a/e"] = getEntity(11);
-        objectB["/a/d"] = getEntity(2);
-        objectB["/c"] = getEntity(3);
-
-        const history = new History();
-        expect(history.applyCurrentSnapshotInObject(objectA, objectB)).toEqual(objectB);
+        expect(self.app.modules.dataStore.removeEntity).toHaveBeenNthCalledWith(1, "4");
+        expect(self.app.modules.dataStore.removeEntity).lastCalledWith(3);
     });
 });
 
 describe("history/history.applyCurrentSnapshot", () => {
     test("Prevent applyCurrentSnapshot on negative pointer", () => {
-        self.app.modules.dataStore.serializeEntities.mockClear();
         const history = new History();
         history.pointer = -1;
         history.applyCurrentSnapshot();
@@ -444,13 +586,22 @@ describe("history/history.applyCurrentSnapshot", () => {
     });
 
     test("Apply snapshot on current object do not modify it", () => {
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/a/e"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
-        objectA["/b/a"] = getEntity(1);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/a/e": [
+                getEntity(3),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+            "/b/a": [
+                getEntity(4),
+            ],
+        };
 
-        self.app.modules.dataStore.serializeEntities = jest.fn()
+        self.app.modules.dataStore.serializeEntities
             .mockReturnValueOnce(objectA);
 
         const history = new History();
@@ -474,31 +625,85 @@ describe("history/history.go", () => {
     });
 
     test("Emit 'history-go' event", () => {
-        self.app.events.emit.mockClear();
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b/a": [
+                getEntity(4),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b/a": [
+                getEntity(3),
+            ],
+        };
+        self.app.modules.dataStore.serializeEntities
+            .mockReturnValueOnce(objectA)
+            .mockReturnValueOnce(objectB);
         const history = new History();
         history.snapshot();
         history.snapshot();
-        history.go(-1);
+        history.go(1);
         expect(self.app.events.emit).lastCalledWith("history-go", 1, history.maxLength);
     });
 
-    // test("Handle if go do nothing when asking for +1 when we are on first position", () => {
-    //     // Handle if go do nothing when asking for +1 when we are on first position
-    // });
+    test("Handle if go do nothing when asking for -1 when we are on last position", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b/a": [
+                getEntity(4),
+            ],
+        };
+        self.app.modules.dataStore.serializeEntities
+            .mockReturnValueOnce(objectA);
+        const history = new History();
+        history.snapshot();
+        history.go(-1);
+        expect(self.app.modules.dataStore.serializeEntities).toHaveBeenCalledTimes(1);
+    });
 
-    // test("Handle if go do nothing when asking for -1 when we are on last position", () => {
-    //     // Handle if go do nothing when asking for -1 when we are on last position
-    // });
+    test("Handle if go do nothing when asking for +1 when we are on last position", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b/a": [
+                getEntity(4),
+            ],
+        };
+        self.app.modules.dataStore.serializeEntities
+            .mockReturnValueOnce(objectA);
+        const history = new History();
+        history.snapshot();
+        history.go(1); // Go to last positon after one snapshot
+        history.go(1);
+        expect(self.app.modules.dataStore.serializeEntities).toHaveBeenCalledTimes(0);
+    });
 
     test("Handle undo/redo", () => {
         // Test equality between project before and after history.go(-1) history.go(1)
-        const objectA = {};
-        objectA["/a"] = getEntity(1);
-        objectA["/b"] = getEntity(2);
-
-        const objectB = {};
-        objectB["/a"] = getEntity(1);
-        objectB["/c"] = getEntity(3);
+        const objectA = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b": [
+                getEntity(2),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/c": [
+                getEntity(3),
+            ],
+        };
 
         self.app.modules.dataStore.serializeEntities = jest.fn()
             .mockReturnValueOnce(objectA)
@@ -509,8 +714,8 @@ describe("history/history.go", () => {
         history.snapshot();
         const objBBefore = history.snapshots[0].layers;
         const objABefore = history.snapshots[1].layers;
-        history.go(-1);
         history.go(1);
+        history.go(-1);
         const objBAfter = history.snapshots[0].layers;
         const objAAfter = history.snapshots[1].layers;
         expect(objBBefore).toEqual(objBAfter);
