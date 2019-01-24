@@ -11,6 +11,14 @@ const Entity = SerializableClass.$extend({
     setProp1: jest.fn(),
 });
 
+const EntityDeepProperty = SerializableClass.$extend({
+    __name__: "EntityDeepProperty",
+    getDeepProp1: jest.fn().mockReturnValue(
+        { x: 0, y: 0, z: 0 },
+    ),
+    setDeepProp1: jest.fn(),
+});
+
 const EntityArray = SerializableClass.$extend({
     __name__: "EntityArray",
     getProp1: jest.fn(),
@@ -55,9 +63,19 @@ function getEntityArray(id = Math.floor(Math.random() * 1000), prop1 = "toto", a
     return newEntity;
 }
 
+function getDeepEntity(id = Math.floor(Math.random() * 1000), deepProp1 = { x: 0, y: 0, z: 0 }) {
+    const newEntity = {
+        __name__: "EntityDeepProperty",
+        id,
+        deepProp1,
+    };
+    return newEntity;
+}
+
 beforeAll(() => {
     SerializableClass.$register(Entity);
     SerializableClass.$register(EntityArray);
+    SerializableClass.$register(EntityDeepProperty);
 });
 
 beforeEach(() => {
@@ -73,6 +91,10 @@ beforeEach(() => {
     EntityArray.prototype.setProp1.mockClear();
     EntityArray.prototype.getArrayProp.mockClear();
     EntityArray.prototype.setArrayProp.mockClear();
+
+    EntityDeepProperty.prototype.getDeepProp1.mockClear();
+    EntityDeepProperty.prototype.setDeepProp1.mockClear();
+
     self.app.modules.dataStore.getEntity.mockReturnValue(new Entity());
     Entity.prototype.getProp1.mockReturnValue(
         "toto",
@@ -576,6 +598,27 @@ describe("history/history-helper.applySnapshotDifference", () => {
         HistoryHelper.applySnapshotDifference(objectA, objectB);
         expect(Entity.prototype.setProp1).toHaveBeenCalledTimes(1);
         expect(Entity.prototype.setProp1).lastCalledWith("tata");
+    });
+
+    test("Handle child property difference", () => {
+        const objectA = {
+            "/a": [
+                getDeepEntity(1),
+            ],
+        };
+        const deepObject = { x: 0, y: 1, z: 1 };
+        const objectB = {
+            "/a": [
+                getDeepEntity(1, deepObject),
+            ],
+        };
+        self.app.modules.dataStore.getEntity.mockClear();
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new EntityDeepProperty(),
+        );
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(EntityDeepProperty.prototype.setDeepProp1).toHaveBeenCalledTimes(1);
+        expect(EntityDeepProperty.prototype.setDeepProp1).lastCalledWith(deepObject);
     });
 
     test("Handle array modification", () => {
