@@ -11,6 +11,19 @@ const Entity = SerializableClass.$extend({
     setProp1: jest.fn(),
 });
 
+const EntityArray = SerializableClass.$extend({
+    __name__: "EntityArray",
+    getProp1: jest.fn(),
+    setProp1: jest.fn(),
+
+    getArrayProp: jest.fn().mockReturnValue([
+        "blinh",
+        "phong",
+        "fire",
+        "poulpy",
+    ]),
+    setArrayProp: jest.fn(),
+});
 
 function getEntity(id = Math.floor(Math.random() * 1000), prop1 = "toto") {
     const newEntity = {
@@ -21,8 +34,30 @@ function getEntity(id = Math.floor(Math.random() * 1000), prop1 = "toto") {
     return newEntity;
 }
 
+function getEntityArray(id = Math.floor(Math.random() * 1000), prop1 = "toto", array = []) {
+    let arrayProp;
+    if (!array.length) {
+        arrayProp = [
+            "blinh",
+            "phong",
+            "fire",
+            "poulpy",
+        ];
+    } else {
+        arrayProp = array;
+    }
+    const newEntity = {
+        __name__: "EntityArray",
+        id,
+        prop1,
+        arrayProp,
+    };
+    return newEntity;
+}
+
 beforeAll(() => {
     SerializableClass.$register(Entity);
+    SerializableClass.$register(EntityArray);
 });
 
 beforeEach(() => {
@@ -33,10 +68,24 @@ beforeEach(() => {
     self.app.events.emit.mockClear();
     Entity.prototype.getProp1.mockClear();
     Entity.prototype.setProp1.mockClear();
+
+    EntityArray.prototype.getProp1.mockClear();
+    EntityArray.prototype.setProp1.mockClear();
+    EntityArray.prototype.getArrayProp.mockClear();
+    EntityArray.prototype.setArrayProp.mockClear();
     self.app.modules.dataStore.getEntity.mockReturnValue(new Entity());
     Entity.prototype.getProp1.mockReturnValue(
         "toto",
     );
+    EntityArray.prototype.getArrayProp.mockReturnValue(
+        [
+            "blinh",
+            "phong",
+            "fire",
+            "poulpy",
+        ],
+    );
+
 });
 
 describe("history/history.getLength", () => {
@@ -529,6 +578,61 @@ describe("history/history-helper.applySnapshotDifference", () => {
         expect(Entity.prototype.setProp1).lastCalledWith("tata");
     });
 
+    test("Handle array modification", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2),
+            ],
+        };
+        const arrayModified = [
+            "blinh",
+            "phong",
+            "tomorrow",
+            "darkness",
+        ];
+        const objectB = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2, "toto", arrayModified),
+            ],
+        };
+        self.app.modules.dataStore.getEntity.mockClear();
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new Entity(),
+        );
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new EntityArray(),
+        );
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(1);
+        expect(EntityArray.prototype.setArrayProp).lastCalledWith(arrayModified);
+    });
+
+    test("Handle when no difference in arrays", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2),
+            ],
+        };
+        self.app.modules.dataStore.getEntity.mockClear();
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new Entity(),
+        );
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new EntityArray(),
+        );
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(0);
+    });
+
     test("Handle apply snapshot difference functionnal test", () => {
         const objectA = {
             "/a": [
@@ -651,7 +755,7 @@ describe("history/history.go", () => {
         expect(self.app.events.emit).lastCalledWith("history-go", 1, history.maxLength);
     });
 
-    test("Handle if go do nothing when asking for -1 when we are on last position", () => {
+    test("Handle if 'go' function do nothing when asking for -1 when we are on first position", () => {
         const objectA = {
             "/a": [
                 getEntity(1),
@@ -665,10 +769,10 @@ describe("history/history.go", () => {
         const history = new History();
         history.snapshot();
         history.go(-1);
-        expect(self.app.modules.dataStore.serializeEntities).toHaveBeenCalledTimes(1);
+        expect(history.pointer).toBe(0);
     });
 
-    test("Handle if go do nothing when asking for +1 when we are on last position", () => {
+    test("Handle if 'go' function do nothing when asking for +1 when we are on last position", () => {
         const objectA = {
             "/a": [
                 getEntity(1),
@@ -677,13 +781,24 @@ describe("history/history.go", () => {
                 getEntity(4),
             ],
         };
+        const objectB = {
+            "/a": [
+                getEntity(1),
+            ],
+            "/b/a": [
+                getEntity(3),
+            ],
+        };
         self.app.modules.dataStore.serializeEntities
-            .mockReturnValueOnce(objectA);
+            .mockReturnValueOnce(objectA)
+            .mockReturnValueOnce(objectB);
         const history = new History();
         history.snapshot();
+        history.snapshot();
         history.go(1); // Go to last positon after one snapshot
-        history.go(1);
-        expect(self.app.modules.dataStore.serializeEntities).toHaveBeenCalledTimes(0);
+        expect(history.pointer).toBe(1);
+        history.go(1); // Must do nothing
+        expect(history.pointer).toBe(1);
     });
 
     test("Handle undo/redo", () => {

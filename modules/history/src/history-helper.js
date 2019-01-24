@@ -144,10 +144,9 @@ const historyHelper = {
     },
 
     checkDiffInArray(array1, array2) {
-        return (array1.length !== array2.length || array1.sort().every(
+        return (array1.length !== array2.length || array1.sort().some(
             (value, index) => value !== array2.sort()[index],
-        )
-        );
+        ));
     },
 
     cloneObject(object) {
