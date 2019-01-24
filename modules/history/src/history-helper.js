@@ -2,19 +2,6 @@ const SerializableClass = require("abitbol-serializable");
 const self = require("../index.js");
 
 const historyHelper = {
-    flattenSnapshot: (snapshotState) => {
-        const flattenSnapshotObject = {};
-        Object.keys(snapshotState).forEach(
-            (path) => {
-                snapshotState[path].forEach(
-                    (entity) => {
-                        flattenSnapshotObject[entity.id] = entity;
-                    },
-                );
-            },
-        );
-        return flattenSnapshotObject;
-    },
 
     /**
      * @param  {Object} currentState
@@ -131,6 +118,29 @@ const historyHelper = {
         );
     },
 
+    /**
+     * Take a snapshot and returns an object with entity.id
+     * as keys and entity as values
+     * @param {object} snapshotState
+     * @return {object}
+     */
+    flattenSnapshot: (snapshotState) => {
+        const flattenSnapshotObject = {};
+        Object.keys(snapshotState).forEach(
+            (path) => {
+                snapshotState[path].forEach(
+                    (entity) => {
+                        flattenSnapshotObject[entity.id] = entity;
+                    },
+                );
+            },
+        );
+        return flattenSnapshotObject;
+    },
+
+    /**
+     * Check the difference between two properties of object
+     */
     checkDiff: (property1, property2) => {
         if (typeof property1 !== "object" || Object.keys(property1).length === 0) {
             return (property1 !== property2);
@@ -143,12 +153,22 @@ const historyHelper = {
         );
     },
 
+    /**
+     * Check the difference between two arrays
+     * @param {array} array1
+     * @param {array} array2
+     */
     checkDiffInArray(array1, array2) {
         return (array1.length !== array2.length || array1.sort().some(
             (value, index) => value !== array2.sort()[index],
         ));
     },
 
+    /**
+     * Quick method to clone an object to have different instance
+     * @param {object} object
+     * @return {object}
+     */
     cloneObject(object) {
         const serializedObject = JSON.stringify(object);
         return JSON.parse(serializedObject);

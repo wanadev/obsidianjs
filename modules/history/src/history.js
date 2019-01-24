@@ -189,14 +189,6 @@ class History {
         this.snapshots.length = this.maxLength;
     }
 
-    getPointer() {
-        return this.pointer;
-    }
-
-    setPointer(val) {
-        this.pointer = val;
-    }
-
 }
 
 module.exports = History;
