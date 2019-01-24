@@ -1,7 +1,7 @@
 {
-  "name": "@obsidianjs/iframe-api",
-  "version": "0.1.1",
-  "description": "API between ObsidianJS application and the page that integrates it through an iframe",
+  "name": "@obsidianjs/stonejs",
+  "version": "0.1.0",
+  "description": "Bindings of the stonejs module for obsidian",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,14 +9,13 @@
   "keywords": [
     "obsidian",
     "obsidianjs",
-    "iframe",
-    "message"
+    "stonejs"
   ],
   "author": "Wanadev <https://www.wanadev.fr/>",
   "license": "BSD-3-Clause",
   "repository": "git@github.com:wanadev/obsidianjs.git",
   "dependencies": {
-    "obsidian-api": "^1.0.5"
+    "stonejs": "^2.3.0"
   },
   "peerDependencies": {
     "@obsidianjs/obsidian": "0.x"

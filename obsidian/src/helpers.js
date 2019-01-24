@@ -103,6 +103,7 @@ const helpers = {
 
         function _isObject(obj) {  // eslint-disable-line no-underscore-dangle
             return typeof obj === "object" &&
+                   obj !== null &&
                    !Array.isArray(obj) &&
                    !(obj instanceof Date) &&
                    !(obj instanceof RegExp);

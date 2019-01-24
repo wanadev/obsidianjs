@@ -1,0 +1,21 @@
+{
+  "name": "@obsidianjs/sentry",
+  "version": "0.1.2",
+  "description": "Listen to log event and forward logs to sentry server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidianjs",
+    "sentry"
+  ],
+  "author": "Wanadev <https://www.wanadev.fr/>",
+  "repository": "git@github.com:wanadev/obsidianjs.git",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "raven-js": "^3.27.0",
+    "uuid": "^3.3.2"
+  }
+}

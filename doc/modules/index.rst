@@ -10,3 +10,5 @@ Obsidian Core Modules
    history/index
    http-request/index
    iframe-api/index
+   sentry/index
+   stonejs/index
