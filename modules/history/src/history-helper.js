@@ -33,9 +33,9 @@ const historyHelper = {
                                             snapshotEntity[property]))
                                         || !currentEntity[property]) {
                                         // Property is different or doesn't exist
-                                        const clonedProperty = historyHelper
-                                            .cloneObject(snapshotEntity[property]);
-                                        entity[property] = clonedProperty;
+                                        const unserializedEntity = SerializableClass
+                                            .$unserialize(snapshotEntity);
+                                        entity[property] = unserializedEntity[property];
                                     }
                                 },
                             );
