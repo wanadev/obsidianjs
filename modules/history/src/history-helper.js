@@ -142,7 +142,9 @@ const historyHelper = {
      * Check the difference between two properties of object
      */
     checkDiff: (property1, property2) => {
-        if (typeof property1 !== "object" || Object.keys(property1).length === 0) {
+        if (property1 === null || property2 === null
+            || typeof property1 !== "object"
+            || Object.keys(property1).length === 0) {
             return (property1 !== property2);
         }
         if (Array.isArray(property1)) {
