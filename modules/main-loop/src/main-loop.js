@@ -18,7 +18,7 @@ class MainLoop {
         this._lastLoopTime = this._lastLoopCorrectedTime;
 
         // Public parameters with getter-setters
-        this._activeFps = config.get("activeFps") || 60;
+        this._activeFps = config.get("activeFps") || -1;
         this._idleFps = config.get("idleFps") || 0;
         this._idle = false;
         this._enabled = false;
@@ -40,7 +40,7 @@ class MainLoop {
         // Initialization
         this.initListeners();
         this.refreshIntervalValue();
-        if (config.debug) {
+        if (config.get("debug")) {
             this.initDebug();
         }
         self.app.events.emit("initialize");
@@ -50,14 +50,17 @@ class MainLoop {
      * Refresh the wanted time _interval between callbacks
      */
     refreshIntervalValue() {
+        const epsilon = 0.01;
         if (this._idle) {
             if (this.idleFps > 0) {
-                this._interval = 1000 / this.idleFps;
+                this._interval = (1000 / this.idleFps) - epsilon;
             } else {
                 this._interval = -1;
             }
-        } else {
+        } else if (this.activeFps > 0) {
             this._interval = 1000 / this.activeFps;
+        } else {
+            this._interval = -1;
         }
     }
 
@@ -139,40 +142,52 @@ class MainLoop {
      * @param {Number} timestamp
      */
     _loop(now) {
-        if (this._interval < 0) {
-            return;
-        }
         // Request animation frame => _loop executed every screen refresh
         this._currentRequestId = requestAnimationFrame(t => this._loop(t));
 
-        // We execute the callbacks only if enough time has passed
-        const correctedTimeSinceLastCall = now - this._lastLoopCorrectedTime;
-        if (correctedTimeSinceLastCall > this._interval) {
-            // Get ready for next frame by setting lastTime=now, but...
-            // Also, adjust for interval not being multiple of 16.67
-            this._lastLoopCorrectedTime = now - (correctedTimeSinceLastCall % this._interval);
+        let loopInfo;
+        // actual time, for fps and deltaTime measurement
+        const timeSinceLastCall = now - this._lastLoopTime;
+        this.fps = 1000 / timeSinceLastCall;
+        this._lastLoopTime = now;
 
-            // actual time, for fps and deltaTime measurement
-            const timeSinceLastCall = now - this.lastLoopTime;
-            this.fps = 1000 / timeSinceLastCall;
-            this.lastLoopTime = now;
-
-            const loopInfo = {
-                deltaTime: correctedTimeSinceLastCall,
+        // interval < 0 : we execute the loop as fast as the screen refresh rate
+        if (this._interval < 0) {
+            loopInfo = {
+                deltaTime: timeSinceLastCall,
                 fps: this.fps,
                 idle: this.idle,
             };
+            this._update(loopInfo);
+        } else {
+            // Fps throttling :
+            // We execute the callbacks only if enough time has passed
+            const correctedTimeSinceLastCall = now - this._lastLoopCorrectedTime;
+            if (correctedTimeSinceLastCall >= this._interval) {
+                // Get ready for next frame by setting lastTime=now, but...
+                // Also, adjust for interval not being multiple of 16.67
+                this._lastLoopCorrectedTime = now - (correctedTimeSinceLastCall % this._interval);
+                loopInfo = {
+                    deltaTime: correctedTimeSinceLastCall,
+                    fps: this.fps,
+                    idle: this.idle,
+                };
+            }
+            this._update(loopInfo);
+        }
+    }
 
-            // loop events
-            self.app.events.emit("update", loopInfo);
+    _update(loopInfo) {
 
-            // loop callbacks
-            for (let i = 0; i < this.callbacks.length; i++) {
-                try {
-                    this.callbacks[i](loopInfo);
-                } catch (error) {
-                    throw Error(error);
-                }
+        // loop events
+        self.app.events.emit("update", loopInfo);
+
+        // loop callbacks
+        for (let i = 0; i < this.callbacks.length; i++) {
+            try {
+                this.callbacks[i](loopInfo);
+            } catch (error) {
+                throw Error(error);
             }
         }
     }
