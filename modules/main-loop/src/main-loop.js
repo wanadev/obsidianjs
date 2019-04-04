@@ -9,6 +9,8 @@ import self from "../index";
 class MainLoop {
 
     constructor() {
+        const config = MainLoop.FetchConfig();
+
         // Private parameters
         this._interval = 0;
         this._currentRequestId = null;
@@ -16,19 +18,31 @@ class MainLoop {
         this._lastLoopTime = this._lastLoopCorrectedTime;
 
         // Public parameters with getter-setters
-        this._activeFps = 60;
-        this._idleFps = 0;
+        this._activeFps = config.get("activeFps") || 60;
+        this._idleFps = config.get("idleFps") || 0;
         this._idle = false;
+        this._enabled = false;
 
         // Public parameters
+
+        /**
+         * Registered callbacks
+         * @type {Array}
+         */
         this.callbacks = [];
-        this.enabled = false;
-        this.idleTime = 10000; // time after app goes to idle in milliseconds, -1 is never
+
+        /**
+         * current fps
+         * @type {Number}
+         */
         this.fps = this.activeFps;
 
         // Initialization
         this.initListeners();
         this.refreshIntervalValue();
+        if (config.debug) {
+            this.initDebug();
+        }
         self.app.events.emit("initialize");
     }
 
@@ -63,12 +77,22 @@ class MainLoop {
         }, true);
     }
 
+    /**
+     * Add Debug callback to log loop info
+     * @return {[type]} [description]
+     */
+    initDebug() {
+        this.addCallback((loopInfo) => {
+            console.log("LoopInfos", JSON.stringify(loopInfo));
+        });
+    }
+
 
     /**
      * Start the loop.
      */
     start() {
-        this.enabled = true;
+        this._enabled = true;
         if (this._currentRequestId) {
             window.cancelAnimationFrame(this._currentRequestId);
         }
@@ -80,7 +104,7 @@ class MainLoop {
      * Stop the loop.
      */
     stop() {
-        this.enabled = false;
+        this._enabled = false;
         if (this._currentRequestId) {
             window.cancelAnimationFrame(this._currentRequestId);
         }
@@ -133,17 +157,19 @@ class MainLoop {
             this.fps = 1000 / timeSinceLastCall;
             this.lastLoopTime = now;
 
-            // loop events
-            self.app.events.emit("update", {
+            const loopInfo = {
                 deltaTime: correctedTimeSinceLastCall,
                 fps: this.fps,
-                isIdle: this.isIdle,
-            });
+                idle: this.idle,
+            };
+
+            // loop events
+            self.app.events.emit("update", loopInfo);
 
             // loop callbacks
             for (let i = 0; i < this.callbacks.length; i++) {
                 try {
-                    this.callbacks[i](timeSinceLastCall, this.isIdle);
+                    this.callbacks[i](loopInfo);
                 } catch (error) {
                     throw Error(error);
                 }
@@ -193,8 +219,19 @@ class MainLoop {
     get idle() {
         return this._idle;
     }
+
+    /**
+     * Is the loop running
+     * @return {Boolean}
+     */
+    get enabled() {
+        return this._enabled;
+    }
     //---------------------
 
+    static FetchConfig() {
+        return self.app.config;
+    }
 
 }
 export default MainLoop;

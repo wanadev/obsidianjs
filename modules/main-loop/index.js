@@ -7,6 +7,8 @@ export default {
     },
     unload() {},
     config: {
-        activeFps: 30,
+        activeFps: 60,
+        idleFps: 0,
+        debug: false,
     },
 };
