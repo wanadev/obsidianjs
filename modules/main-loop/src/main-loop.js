@@ -6,7 +6,7 @@ import self from "../index";
  * It's using RequestAnimationFrame, so to get a constant time interval,
  * 60 must be a multiple of your desired fps
  */
-export default class MainLoop {
+class MainLoop {
 
     constructor() {
         // Private parameters
@@ -48,7 +48,7 @@ export default class MainLoop {
     }
 
     /**
-     * Window listener : lost of focus management
+     * Launch window listeners : lost of focus management
      */
     initListeners() {
         window.addEventListener("focus", () => {
@@ -66,8 +66,6 @@ export default class MainLoop {
 
     /**
      * Start the loop.
-     *
-     * @method start
      */
     start() {
         this.enabled = true;
@@ -80,8 +78,6 @@ export default class MainLoop {
 
     /**
      * Stop the loop.
-     *
-     * @method stop
      */
     stop() {
         this.enabled = false;
@@ -93,8 +89,6 @@ export default class MainLoop {
 
     /**
      * Add a callback.
-     *
-     * @method addCallback
      * @param {Function} callback
      */
     addCallback(callback) {
@@ -103,8 +97,6 @@ export default class MainLoop {
 
     /**
      * Remove a callback.
-     *
-     * @method removeCallback
      * @param {Function} callback
      */
     removeCallback(callback) {
@@ -205,3 +197,4 @@ export default class MainLoop {
 
 
 }
+export default MainLoop;
