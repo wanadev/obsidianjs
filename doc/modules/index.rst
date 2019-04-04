@@ -11,3 +11,4 @@ Obsidian Core Modules
    iframe-api/index
    sentry/index
    stonejs/index
+   main-loop/index

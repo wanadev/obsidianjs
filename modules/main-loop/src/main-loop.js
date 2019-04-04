@@ -1,10 +1,10 @@
 import self from "../index";
 
 /**
- * A generic 60 Hz loop.
- *
- * @class obsidian-core.lib.mainloop
- * @constructor
+ * A loop...
+ * Can be used to render 2d or 3d, or to do anything at a rather fixed time interval
+ * It's using RequestAnimationFrame, so to get a constant time interval,
+ * 60 must be a multiple of your desired fps
  */
 export default class MainLoop {
 
@@ -26,6 +26,7 @@ export default class MainLoop {
         this.idleTime = 10000; // time after app goes to idle in milliseconds, -1 is never
         this.fps = this.activeFps;
 
+        // Initialization
         this.initListeners();
         this.refreshIntervalValue();
         self.app.events.emit("initialize");
