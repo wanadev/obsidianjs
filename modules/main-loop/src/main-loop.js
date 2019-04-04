@@ -1,5 +1,8 @@
 import self from "../index";
 
+const INTERVAL_NOLIMIT = -1;
+const INTERVAL_NOREFRESH = -2;
+
 /**
  * A loop...
  * Can be used to render 2d or 3d, or to do anything at a rather fixed time interval
@@ -24,7 +27,6 @@ class MainLoop {
         this._enabled = false;
 
         // Public parameters
-
         /**
          * Registered callbacks
          * @type {Array}
@@ -54,13 +56,17 @@ class MainLoop {
         if (this._idle) {
             if (this.idleFps > 0) {
                 this._interval = (1000 / this.idleFps) - epsilon;
+            } else if (this.idleFps === 0) {
+                this._interval = INTERVAL_NOREFRESH;
             } else {
-                this._interval = -1;
+                this._interval = INTERVAL_NOLIMIT;
             }
         } else if (this.activeFps > 0) {
-            this._interval = 1000 / this.activeFps;
+            this._interval = (1000 / this.activeFps) - epsilon;
+        } else if (this.activeFps === 0) {
+            this._interval = INTERVAL_NOREFRESH;
         } else {
-            this._interval = -1;
+            this._interval = INTERVAL_NOLIMIT;
         }
     }
 
@@ -142,6 +148,11 @@ class MainLoop {
      * @param {Number} timestamp
      */
     _loop(now) {
+        // 0 fps => no refresh, don't loop
+        if (this._interval === INTERVAL_NOREFRESH) {
+            return;
+        }
+
         // Request animation frame => _loop executed every screen refresh
         this._currentRequestId = requestAnimationFrame(t => this._loop(t));
 
@@ -151,8 +162,8 @@ class MainLoop {
         this.fps = 1000 / timeSinceLastCall;
         this._lastLoopTime = now;
 
-        // interval < 0 : we execute the loop as fast as the screen refresh rate
-        if (this._interval < 0) {
+        // No limitation, the loop goes as fast as the screen refresh rate (if it can)
+        if (this._interval === INTERVAL_NOLIMIT) {
             loopInfo = {
                 deltaTime: timeSinceLastCall,
                 fps: this.fps,
@@ -177,6 +188,12 @@ class MainLoop {
         }
     }
 
+    /**
+     * Update function called in the loop :
+     * - call the callback functions
+     * - emit the update events
+     * @param  {Object} loopInfo loop informations transmitted to the callbacks and by the event
+     */
     _update(loopInfo) {
 
         // loop events
