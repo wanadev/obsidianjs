@@ -3,6 +3,7 @@ main-loop
 
 The **main-loop**  * module can be used to render 2d or 3d, or to do anything at a rather fixed time interval.
 It's using RequestAnimationFrame, so to get a constant time interval, 60 must be a multiple of your desired fps.
+Also, the fps cannot exceed the screen refresh rate for now.
 
 
 Using This Module
@@ -50,20 +51,14 @@ Add some callbacks function to be executed inside the loop, like your render met
 
     mainLoop.addCallback((loopInfo)=>{
         renderMyScene();
-        console.log("main-loop infos :");
-        console.log("fps",loopInfo.fps);
-        console.log("deltaTime",loopInfo.deltaTime);
-        console.log("idle state ",loopInfo.idle);
+        console.log(JSON.stringify(loopInfo));
     })
 
 Or just listen to the update event ::
 
        self.app.events.on("@main-loop.update",(loopInfo)=>{
            renderMyScene();
-           console.log("main-loop infos :");
-           console.log("fps",loopInfo.fps);
-           console.log("deltaTime",loopInfo.deltaTime);
-           console.log("idle state ",loopInfo.idle);
+           console.log(JSON.stringify(loopInfo));
        });
 
 Start and stop the loop when you need it ::

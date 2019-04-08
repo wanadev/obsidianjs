@@ -1,8 +1,5 @@
 import self from "../index";
 
-const INTERVAL_NOLIMIT = -1;
-const INTERVAL_NOREFRESH = -2;
-
 /**
  * A loop...
  * Can be used to render 2d or 3d, or to do anything at a rather fixed time interval
@@ -49,7 +46,7 @@ class MainLoop {
     }
 
     /**
-     * Refresh the wanted time _interval between callbacks
+     * Refresh the wanted time interval between callbacks
      */
     refreshIntervalValue() {
         const epsilon = 0.01;
@@ -57,16 +54,20 @@ class MainLoop {
             if (this.idleFps > 0) {
                 this._interval = (1000 / this.idleFps) - epsilon;
             } else if (this.idleFps === 0) {
-                this._interval = INTERVAL_NOREFRESH;
+                if (this._currentRequestId) {
+                    window.cancelAnimationFrame(this._currentRequestId);
+                }
             } else {
-                this._interval = INTERVAL_NOLIMIT;
+                this._interval = -1;
             }
         } else if (this.activeFps > 0) {
             this._interval = (1000 / this.activeFps) - epsilon;
         } else if (this.activeFps === 0) {
-            this._interval = INTERVAL_NOREFRESH;
+            if (this._currentRequestId) {
+                window.cancelAnimationFrame(this._currentRequestId);
+            }
         } else {
-            this._interval = INTERVAL_NOLIMIT;
+            this._interval = -1;
         }
     }
 
@@ -148,11 +149,6 @@ class MainLoop {
      * @param {Number} timestamp
      */
     _loop(now) {
-        // 0 fps => no refresh, don't loop
-        if (this._interval === INTERVAL_NOREFRESH) {
-            return;
-        }
-
         // Request animation frame => _loop executed every screen refresh
         this._currentRequestId = requestAnimationFrame(t => this._loop(t));
 
@@ -163,7 +159,7 @@ class MainLoop {
         this._lastLoopTime = now;
 
         // No limitation, the loop goes as fast as the screen refresh rate (if it can)
-        if (this._interval === INTERVAL_NOLIMIT) {
+        if (this._interval === -1) {
             loopInfo = {
                 deltaTime: timeSinceLastCall,
                 fps: this.fps,
