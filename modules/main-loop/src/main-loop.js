@@ -152,20 +152,9 @@ class MainLoop {
         // Request animation frame => _loop executed every screen refresh
         this._currentRequestId = requestAnimationFrame(t => this._loop(t));
 
-        let loopInfo;
-        // actual time, for fps and deltaTime measurement
-        const timeSinceLastCall = now - this._lastLoopTime;
-        this.fps = 1000 / timeSinceLastCall;
-        this._lastLoopTime = now;
-
         // No limitation, the loop goes as fast as the screen refresh rate (if it can)
         if (this._interval === -1) {
-            loopInfo = {
-                deltaTime: timeSinceLastCall,
-                fps: this.fps,
-                idle: this.idle,
-            };
-            this._update(loopInfo);
+            this._update(now);
         } else {
             // Fps throttling :
             // We execute the callbacks only if enough time has passed
@@ -174,23 +163,28 @@ class MainLoop {
                 // Get ready for next frame by setting lastTime=now, but...
                 // Also, adjust for interval not being multiple of 16.67
                 this._lastLoopCorrectedTime = now - (correctedTimeSinceLastCall % this._interval);
-                loopInfo = {
-                    deltaTime: correctedTimeSinceLastCall,
-                    fps: this.fps,
-                    idle: this.idle,
-                };
+                this._update(now);
             }
-            this._update(loopInfo);
         }
     }
 
     /**
      * Update function called in the loop :
+     * - refresh fps and deltaTime values
      * - call the callback functions
      * - emit the update events
      * @param  {Object} loopInfo loop informations transmitted to the callbacks and by the event
      */
-    _update(loopInfo) {
+    _update(now) {
+        //  Fps
+        const timeSinceLastCall = now - this._lastLoopTime;
+        this.fps = 1000 / timeSinceLastCall;
+        this._lastLoopTime = now;
+        const loopInfo = {
+            timeSinceLastCall,
+            fps: this.fps,
+            idle: this.idle,
+        };
 
         // loop events
         self.app.events.emit("update", loopInfo);
@@ -204,7 +198,6 @@ class MainLoop {
             }
         }
     }
-
 
     // -- GETTERS SETTERS ---
     /**
