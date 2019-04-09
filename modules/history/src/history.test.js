@@ -536,10 +536,10 @@ describe("history/history-helper.applySnapshotDifference", () => {
     test("Handle add property", () => {
         const objectA = {
             "/a": [
-                getEntity(1),
-            ],
-            "/a/a": [
-                getEntity(2),
+                {
+                    __name__: "Entity",
+                    id: 1,
+                },
             ],
         };
 
@@ -547,13 +547,11 @@ describe("history/history-helper.applySnapshotDifference", () => {
             "/a": [
                 getEntity(1, "tata"),
             ],
-            "/a/a": [
-                getEntity(2),
-            ],
         };
+        Entity.prototype.setProp1.mockClear();
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        expect(Entity.prototype.setProp1).toHaveBeenCalledTimes(1);
-        expect(Entity.prototype.setProp1).lastCalledWith("tata");
+
+        expect(Entity.prototype.setProp1).toHaveBeenNthCalledWith(1, "tata");
     });
 
     test("Handle delete property", () => {
@@ -596,8 +594,8 @@ describe("history/history-helper.applySnapshotDifference", () => {
             ],
         };
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        expect(Entity.prototype.setProp1).toHaveBeenCalledTimes(1);
-        expect(Entity.prototype.setProp1).lastCalledWith("tata");
+
+        expect(Entity.prototype.setProp1).toHaveBeenNthCalledWith(1, "tata");
     });
 
     test("Handle child property difference", () => {
@@ -617,8 +615,8 @@ describe("history/history-helper.applySnapshotDifference", () => {
             new EntityDeepProperty(),
         );
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        expect(EntityDeepProperty.prototype.setDeepProp1).toHaveBeenCalledTimes(1);
-        expect(EntityDeepProperty.prototype.setDeepProp1).lastCalledWith(deepObject);
+
+        expect(EntityDeepProperty.prototype.setDeepProp1).toHaveBeenNthCalledWith(1, deepObject);
     });
 
     test("Handle array modification", () => {
@@ -633,7 +631,7 @@ describe("history/history-helper.applySnapshotDifference", () => {
             "phong",
             "tomorrow",
             "darkness",
-        ];
+        ].sort();
         const objectB = {
             "/a": [
                 getEntity(1),
@@ -648,23 +646,20 @@ describe("history/history-helper.applySnapshotDifference", () => {
             new EntityArray(),
         );
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(1);
-        expect(EntityArray.prototype.setArrayProp).lastCalledWith(arrayModified);
+        const firstCall = EntityArray.prototype.setArrayProp.mock.calls[0][0].sort();
+
+        expect(firstCall).toEqual(arrayModified);
     });
 
     test("Handle when no difference in arrays", () => {
+        const arrayObject = getEntityArray(2);
         const objectA = {
             "/a": [
                 getEntity(1),
-                getEntityArray(2),
+                arrayObject,
             ],
         };
-        const objectB = {
-            "/a": [
-                getEntity(1),
-                getEntityArray(2),
-            ],
-        };
+        const objectB = objectA;
         self.app.modules.dataStore.getEntity.mockClear();
         self.app.modules.dataStore.getEntity.mockReturnValueOnce(
             new Entity(),
@@ -672,8 +667,13 @@ describe("history/history-helper.applySnapshotDifference", () => {
         self.app.modules.dataStore.getEntity.mockReturnValueOnce(
             new EntityArray(),
         );
+        EntityArray.prototype.setArrayProp.mockClear();
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(0);
+        expect(self.app.modules.dataStore.removeEntity).toHaveBeenCalledTimes(0);
+        expect(self.app.modules.dataStore.addEntity).toHaveBeenCalledTimes(0);
+        expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(1);
+        expect(arrayObject.arrayProp.sort()).toEqual(EntityArray.prototype
+            .setArrayProp.mock.calls[0][0].sort());
     });
 
     test("Handle apply snapshot difference functionnal test", () => {

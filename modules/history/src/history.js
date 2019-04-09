@@ -79,6 +79,7 @@ class History {
     clear() {
         this.snapshots.length = 0;
         this.pointer = -1;
+        self.app.events.emit("history-clear");
     }
 
     /**
@@ -136,8 +137,7 @@ class History {
      * Returns the effective delta that will occur.
      * Therefore, a return value of 0 means nothing will change.
      *
-     * @private
-     * @param {Number} testedDelta
+     * @param {Number} delta
      * @return {Number} Effective delta that will occur.
      */
     simulate(testedDelta) {
@@ -158,8 +158,6 @@ class History {
 
     /**
      * Reapply the currently pointed snapshot over the project.
-     *
-     * @private
      * @return {undefined}
      */
     applyCurrentSnapshot() {

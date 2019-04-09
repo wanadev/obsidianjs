@@ -4,8 +4,10 @@ const self = require("../index.js");
 const historyHelper = {
 
     /**
-     * @param  {Object} currentState
-     * @param  {Object} snapshotState
+     * Check the differences between two state and apply the changes of snapshotState
+     * to currentState
+     * @param  {Object} currentState - The current state of the history
+     * @param  {Object} snapshotState - The new state of the history
      */
     applySnapshotDifference: (currentState, snapshotState) => { // eslint-disable-line
         const {
@@ -26,15 +28,16 @@ const historyHelper = {
                         if (currentEntityKey === snapshotEntityKey) {
                             entityFound = true;
                             const entity = dataStore.getEntity(currentEntityKey);
+                            // Property is different or doesn't exist
+                            const unserializedEntity = SerializableClass
+                                .$unserialize(snapshotEntity);
                             Object.keys(snapshotEntity).forEach(
                                 (property) => {
                                     if ((typeof currentEntity[property] !== "undefined"
                                         && historyHelper.checkDiff(currentEntity[property],
                                             snapshotEntity[property]))
                                         || !currentEntity[property]) {
-                                        // Property is different or doesn't exist
-                                        const unserializedEntity = SerializableClass
-                                            .$unserialize(snapshotEntity);
+                                        // Found differences
                                         entity[property] = unserializedEntity[property];
                                     }
                                 },
@@ -54,7 +57,9 @@ const historyHelper = {
                 );
                 if (!entityFound) {
                     // Entity doesn't exist in snapshot
-                    dataStore.removeEntity(currentEntityKey);
+                    if (dataStore.getEntity(currentEntityKey)) {
+                        dataStore.removeEntity(currentEntityKey);
+                    }
                 }
             },
         );
@@ -122,7 +127,7 @@ const historyHelper = {
      * Take a snapshot and returns an object with entity.id
      * as keys and entity as values
      * @param {object} snapshotState
-     * @return {object}
+     * @return {object} The flattened object
      */
     flattenSnapshot: (snapshotState) => {
         const flattenSnapshotObject = {};
@@ -144,7 +149,8 @@ const historyHelper = {
     checkDiff: (property1, property2) => {
         if (property1 === null || property2 === null
             || typeof property1 !== "object"
-            || Object.keys(property1).length === 0) {
+            || Object.keys(property1).length === 0
+        ) {
             return (property1 !== property2);
         }
         if (Array.isArray(property1)) {
