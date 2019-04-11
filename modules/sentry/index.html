@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sentry &mdash; Obsidian Framework  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="stonejs" href="../stonejs/index.html" />
+    <link rel="prev" title="iframe-api" href="../iframe-api/index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Obsidian Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../howto/index.html">HowTo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../obsidian/index.html">Obsidian Framework</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Obsidian Core Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../data-exporter/index.html">data-exporter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data-store/index.html">data-store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../http-request/index.html">http-request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../iframe-api/index.html">iframe-api</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sentry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-this-module">Using This Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config">Config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../stonejs/index.html">stonejs</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Obsidian Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Obsidian Core Modules</a> &raquo;</li>
+        
+      <li>sentry</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/sentry/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sentry">
+<h1>sentry<a class="headerlink" href="#sentry" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>sentry</strong> module purpose is to forward log to sentry server. You can
+choose which level of logs are forwarded to sentry, and add info to every logs
+using the config.</p>
+<p>Each user is uniquely identified with a UUID to help track issues related to
+each other.</p>
+<div class="section" id="using-this-module">
+<h2>Using This Module<a class="headerlink" href="#using-this-module" title="Permalink to this headline">¶</a></h2>
+<p>First add the module to your project:</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span>npm install --save @obsidianjs/sentry
+</pre></div>
+</div>
+<p>Then use it in your application (in your main <code class="docutils literal notranslate"><span class="pre">index.js</span></code>):</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">obsidian</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@obsidianjs/obsidian&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">sentry</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;@obsidianjs/sentry&quot;</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">obsidian</span><span class="p">(</span><span class="s2">&quot;my-application&quot;</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">sentry</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">config</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">dsnKey</span><span class="o">:</span> <span class="s2">&quot;https://&lt;key&gt;@&lt;server&gt;/&lt;project&gt;&quot;</span><span class="p">,</span>
+        <span class="nx">capturedLevels</span><span class="o">:</span> <span class="p">[</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="c1">// ...</span>
+    <span class="p">},</span>
+<span class="p">});</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="config">
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="dnsKey">
+<code class="descname">dnsKey</code><a class="headerlink" href="#dnsKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DSN Key of the project on Sentry</p>
+<p>E.g.:</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;https://5d41402abc4b2a76b9719d911017c592@sentry.io/myproject&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="capturedLevels">
+<code class="descname">capturedLevels</code><a class="headerlink" href="#capturedLevels" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of log level that will be sent to the Sentry server.</p>
+<p>Available levels:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;error&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;warn&quot;</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;info&quot;</span></code></li>
+</ul>
+<p>E.g.:</p>
+<div class="highlight-js notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;warn&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Uncaught error are not considered as a “log level” and are always
+forwared to the Sentry server.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="userInfos">
+<code class="descname">userInfos</code><a class="headerlink" href="#userInfos" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object with any additional information you want. It will be added to each
+log sent to the sentry server.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-api">
+<h2>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Sentry">
+<em class="property">class </em><code class="descname">Sentry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Sentry" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sentry module controller.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You do not need to use this API most of time: once this module is loaded
+with proper configuration, it will just work and you do not need to
+access it.</p>
+</div>
+<dl class="function">
+<dt id="Sentry.addLogLevels">
+<code class="descclassname">Sentry.</code><code class="descname">addLogLevels</code><span class="sig-paren">(</span><em>logLevels</em><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.addLogLevels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add levels of logs that are sent to the sentry server (see <a class="reference internal" href="#capturedLevels" title="capturedLevels"><code class="xref js js-data docutils literal notranslate"><span class="pre">capturedLevels</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>logLevels</strong> (<em>Array.&lt;string&gt;</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.addUserInfos">
+<code class="descclassname">Sentry.</code><code class="descname">addUserInfos</code><span class="sig-paren">(</span><em>additionalUserInfos</em><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.addUserInfos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add properties to the <a class="reference internal" href="#userInfos" title="userInfos"><code class="xref js js-data docutils literal notranslate"><span class="pre">userInfos</span></code></a> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>additionalUserInfos</strong> (<em>Object</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.getLogLevels">
+<code class="descclassname">Sentry.</code><code class="descname">getLogLevels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.getLogLevels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the levels of logs sent to the Sentry server (see <a class="reference internal" href="#capturedLevels" title="capturedLevels"><code class="xref js js-data docutils literal notranslate"><span class="pre">capturedLevels</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>Array.&lt;string&gt;</strong> –</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.getUserInfos">
+<code class="descclassname">Sentry.</code><code class="descname">getUserInfos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.getUserInfos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference internal" href="#userInfos" title="userInfos"><code class="xref js js-data docutils literal notranslate"><span class="pre">userInfos</span></code></a> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>Object</strong> – The userInfo object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.getUserUUID">
+<code class="descclassname">Sentry.</code><code class="descname">getUserUUID</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.getUserUUID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the user UUID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>string</strong> – The user UUID.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.setLogLevels">
+<code class="descclassname">Sentry.</code><code class="descname">setLogLevels</code><span class="sig-paren">(</span><em>logLevels</em><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.setLogLevels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the levels of logs that are sent to the Sentry server (see <a class="reference internal" href="#capturedLevels" title="capturedLevels"><code class="xref js js-data docutils literal notranslate"><span class="pre">capturedLevels</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>logLevels</strong> (<em>Array.&lt;string&gt;</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sentry.setUserInfos">
+<code class="descclassname">Sentry.</code><code class="descname">setUserInfos</code><span class="sig-paren">(</span><em>newUserInfos</em><span class="sig-paren">)</span><a class="headerlink" href="#Sentry.setUserInfos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the <a class="reference internal" href="#userInfos" title="userInfos"><code class="xref js js-data docutils literal notranslate"><span class="pre">userInfos</span></code></a> object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>newUserInfos</strong> (<em>Object</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../stonejs/index.html" class="btn btn-neutral float-right" title="stonejs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../iframe-api/index.html" class="btn btn-neutral" title="iframe-api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Wanadev
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
