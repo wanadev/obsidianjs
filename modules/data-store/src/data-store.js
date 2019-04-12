@@ -3,6 +3,8 @@ const self = require("../index.js");
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
 
+const Entity = require("./entity");
+
 const {
     ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_PATH, ENTITY_STORE,
 } = require("./symbols");
@@ -136,7 +138,13 @@ class DataStore {
         });
     }
 
-    // TODO blob parts...
+    /**
+     * Returns the Entity abitbol-class used in the data-store
+     * @return {Entity}
+     */
+    get Entity() {  // eslint-disable-line class-methods-use-this
+        return Entity;
+    }
 
 }
 
