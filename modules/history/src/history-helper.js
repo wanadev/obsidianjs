@@ -52,6 +52,8 @@ const historyHelper = {
                                     }
                                 },
                             );
+                            // delete to decrease the length of snapshotEntities loop
+                            delete snapshotEntities.snapshotEntity;
                         }
                     },
                 );
