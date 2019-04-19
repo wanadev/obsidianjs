@@ -264,3 +264,12 @@ describe("DataStore.unserializeEntities", () => {
     });
 
 });
+
+describe("DataStore.Entity", () => {
+
+    test("returns the Entity abitbol class", () => {
+        const dataStore = new DataStore();
+        expect(dataStore.Entity).toBe(Entity);
+    });
+
+});
