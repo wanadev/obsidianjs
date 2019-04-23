@@ -19,14 +19,9 @@ const historyHelper = {
 
         Object.keys(currentEntities).forEach(
             (currentEntityKey) => {
-                const snapshotEntitiesKeys = Object.keys(snapshotEntities);
-                const snapshotEntityKey = snapshotEntitiesKeys.find(
-                    snapEntityKey => (currentEntityKey === snapEntityKey),
-                );
-                if (typeof snapshotEntityKey !== "undefined") {
-                    // Check common entity properties
-                    const currentEntity = currentEntities[currentEntityKey];
-                    const snapshotEntity = snapshotEntities[snapshotEntityKey];
+                const currentEntity = currentEntities[currentEntityKey];
+                const snapshotEntity = snapshotEntities[currentEntityKey];
+                if (typeof snapshotEntity !== "undefined") {
                     const entity = dataStore.getEntity(currentEntityKey);
                     // Property is different or doesn't exist
                     const unserializedEntity = SerializableClass
@@ -38,6 +33,9 @@ const historyHelper = {
                                     snapshotEntity[property]))) {
                                 // Found differences
                                 entity[property] = unserializedEntity[property];
+                            } else if (typeof currentEntity[property] === "undefined") {
+                                self.app.log.warn("You have an additional property in the snapshot "
+                                + "state, which should never happen");
                             }
                         },
                     );
@@ -53,7 +51,7 @@ const historyHelper = {
                         },
                     );
                     // delete to decrease the length of snapshotEntities loop
-                    delete snapshotEntities[snapshotEntityKey];
+                    delete snapshotEntities[currentEntityKey];
                 } else if (dataStore.getEntity(currentEntityKey)) {
                     // Entity doesn't exist in snapshot
                     dataStore.removeEntity(currentEntityKey);
@@ -151,7 +149,13 @@ const historyHelper = {
             return (property1 !== property2);
         }
         if (Array.isArray(property1)) {
+            if (!Array.isArray(property2)) {
+                return true;
+            }
             return historyHelper.checkDiffInArray(property1, property2);
+        }
+        if (typeof property2 !== "object") {
+            return true;
         }
         return Object.keys(property1).some(
             propertyKey => historyHelper.checkDiff(property1[propertyKey], property2[propertyKey]),
@@ -164,8 +168,8 @@ const historyHelper = {
      * @param {array} array2
      */
     checkDiffInArray(array1, array2) {
-        return (array1.length !== array2.length || array1.sort().some(
-            (value, index) => value !== array2.sort()[index],
+        return (array1.length !== array2.length || array1.some(
+            (value, index) => historyHelper.checkDiff(value, array2[index]),
         ));
     },
 

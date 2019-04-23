@@ -631,7 +631,7 @@ describe("history/history-helper.applySnapshotDifference", () => {
             "phong",
             "tomorrow",
             "darkness",
-        ].sort();
+        ];
         const objectB = {
             "/a": [
                 getEntity(1),
@@ -646,8 +646,39 @@ describe("history/history-helper.applySnapshotDifference", () => {
             new EntityArray(),
         );
         HistoryHelper.applySnapshotDifference(objectA, objectB);
-        const firstCall = EntityArray.prototype.setArrayProp.mock.calls[0][0].sort();
+        const firstCall = EntityArray.prototype.setArrayProp.mock.calls[0][0];
 
+        expect(firstCall).toEqual(arrayModified);
+    });
+
+    test("Handle same arrays but not ordered in the same way", () => {
+        const objectA = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2),
+            ],
+        };
+        const arrayModified = [
+            "blinh",
+            "phong",
+            "poulpy",
+            "fire",
+        ];
+        const objectB = {
+            "/a": [
+                getEntity(1),
+                getEntityArray(2, "toto", arrayModified),
+            ],
+        };
+        self.app.modules.dataStore.getEntity.mockClear();
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new Entity(),
+        );
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new EntityArray(),
+        );
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        const firstCall = EntityArray.prototype.setArrayProp.mock.calls[0][0];
         expect(firstCall).toEqual(arrayModified);
     });
 
@@ -672,8 +703,8 @@ describe("history/history-helper.applySnapshotDifference", () => {
         expect(self.app.modules.dataStore.removeEntity).toHaveBeenCalledTimes(0);
         expect(self.app.modules.dataStore.addEntity).toHaveBeenCalledTimes(0);
         expect(EntityArray.prototype.setArrayProp).toHaveBeenCalledTimes(1);
-        expect(arrayObject.arrayProp.sort()).toEqual(EntityArray.prototype
-            .setArrayProp.mock.calls[0][0].sort());
+        expect(arrayObject.arrayProp).toEqual(EntityArray.prototype
+            .setArrayProp.mock.calls[0][0]);
     });
 
     test("Handle apply snapshot difference functionnal test", () => {
@@ -721,6 +752,84 @@ describe("history/history-helper.applySnapshotDifference", () => {
 
         expect(self.app.modules.dataStore.removeEntity).toHaveBeenNthCalledWith(1, "4");
         expect(self.app.modules.dataStore.removeEntity).lastCalledWith(3);
+    });
+});
+
+describe("history/history-helper.checkDiff", () => {
+    test("Check difference between two property", () => {
+        const objA = { prop1: "a" };
+        const objB = { prop1: "b" };
+        expect(HistoryHelper.checkDiff(objA, objB)).toBe(true);
+    });
+
+    test("Check difference between object and primitive value", () => {
+        expect(HistoryHelper.checkDiff({ propriete: "oui" }, 4)).toBe(true);
+    });
+
+    test("Check difference between false and falsy", () => {
+        expect(HistoryHelper.checkDiff(false, 0)).toBe(true);
+    });
+
+    test("Check difference between two numbers", () => {
+        expect(HistoryHelper.checkDiff(8, 0)).toBe(true);
+    });
+
+    test("Check difference between two strings", () => {
+        expect(HistoryHelper.checkDiff("jb", "")).toBe(true);
+    });
+
+    test("Check difference between two booleans", () => {
+        expect(HistoryHelper.checkDiff(true, false)).toBe(true);
+    });
+
+    test("Check difference between two different types", () => {
+        expect(HistoryHelper.checkDiff([], 4)).toBe(true);
+    });
+
+    test("Check difference between string and number", () => {
+        expect(HistoryHelper.checkDiff("8465.789", 8465.789)).toBe(true);
+    });
+
+    test("Check difference between array and string", () => {
+        expect(HistoryHelper.checkDiff(["a", "e", "i"], "aei")).toBe(true);
+    });
+
+    test("handle when no differences", () => {
+        const objA = { prop1: "a" };
+        const objB = { prop1: "a" };
+        expect(HistoryHelper.checkDiff(objA, objB)).toBe(false);
+    });
+
+    test("handle array diff", () => {
+        const objA = [
+            "blinh",
+            "phong",
+            "poulpy",
+            "fire",
+        ];
+        const objB = [
+            "blinh",
+            "phong",
+            "jason",
+            "poulpy",
+        ];
+        expect(HistoryHelper.checkDiff(objA, objB)).toBe(true);
+    });
+
+    test("handle array order", () => {
+        const objA = [
+            "blinh",
+            "phong",
+            "poulpy",
+            "fire",
+        ];
+        const objB = [
+            "blinh",
+            "phong",
+            "fire",
+            "poulpy",
+        ];
+        expect(HistoryHelper.checkDiff(objA, objB)).toBe(true);
     });
 });
 
