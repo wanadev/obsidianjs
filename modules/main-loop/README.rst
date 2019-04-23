@@ -9,8 +9,13 @@ You can add the idleFps, activeFps and debug config parameters to change this mo
 
     app.use(mainLoop,{
         config : {
+            // The target fps when the loop is running normally (-1 by default => fps = screen refresh rate)
             activeFps: 30,
+            
+            // The target fps when the window is not focused (0 by default) 
             idleFps: 5,
+            
+            // show loop information in the console (false by default)
             debug: true,
         }
     });
