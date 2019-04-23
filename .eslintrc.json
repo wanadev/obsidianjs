@@ -10,42 +10,19 @@
   "rules": {
     "quotes": ["error", "double"],
     "indent": ["error", 4],
-    "no-underscore-dangle": "off",
-    "no-plusplus": "off",
-    "padded-blocks": [
-      "error",
-      {
-        "classes": "always"
-      }
-    ],
-    "no-multi-spaces": [
-      "error",
-      {
-        "ignoreEOLComments": true
-      }
-    ],
-    "function-paren-newline": ["error", "consistent"],
-    "import/no-extraneous-dependencies": "off",
-    "comma-dangle": [
-      "error",
-      {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "ignore"
-      }
-    ],
-    "no-param-reassign": ["error", { "props": false }],
-    "global-require": "off",
-    "object-shorthand": "off"
+    "padded-blocks": ["error", {
+      "classes": "always"
+    }],
+    "no-multi-spaces": ["error", {
+      "ignoreEOLComments": true
+    }],
+    "no-continue": ["off"],
+    "function-paren-newline": ["error", "consistent"]
   },
-  "overrides": [
-    {
-      "files": ["*.test.js"],
-      "env": {
-        "jest": true
-      }
+  "overrides": [{
+    "files": ["*.test.js", "**/__mocks__/*.js"],
+    "env": {
+      "jest": true
     }
-  ]
+  }]
 }
