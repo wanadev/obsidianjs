@@ -19,49 +19,44 @@ const historyHelper = {
 
         Object.keys(currentEntities).forEach(
             (currentEntityKey) => {
-                let entityFound = false;
-                Object.keys(snapshotEntities).forEach(
-                    (snapshotEntityKey) => {
-                        // Check common entity properties
-                        const currentEntity = currentEntities[currentEntityKey];
-                        const snapshotEntity = snapshotEntities[snapshotEntityKey];
-                        if (currentEntityKey === snapshotEntityKey) {
-                            entityFound = true;
-                            const entity = dataStore.getEntity(currentEntityKey);
-                            // Property is different or doesn't exist
-                            const unserializedEntity = SerializableClass
-                                .$unserialize(snapshotEntity);
-                            Object.keys(snapshotEntity).forEach(
-                                (property) => {
-                                    if ((typeof currentEntity[property] !== "undefined"
-                                        && historyHelper.checkDiff(currentEntity[property],
-                                            snapshotEntity[property]))
-                                        || !currentEntity[property]) {
-                                        // Found differences
-                                        entity[property] = unserializedEntity[property];
-                                    }
-                                },
-                            );
-                            // Check if we don't need to remove a property in entities
-                            // Should never happen
-                            Object.keys(currentEntity).forEach(
-                                (property) => {
-                                    if (typeof snapshotEntity[property] === "undefined") {
-                                        self.app.log.warn("You are removing a property between two entities, which should never happen");
-                                        delete entity[property];
-                                    }
-                                },
-                            );
-                            // delete to decrease the length of snapshotEntities loop
-                            delete snapshotEntities.snapshotEntity;
-                        }
-                    },
+                const snapshotEntitiesKeys = Object.keys(snapshotEntities);
+                const snapshotEntityKey = snapshotEntitiesKeys.find(
+                    snapEntityKey => (currentEntityKey === snapEntityKey),
                 );
-                if (!entityFound) {
+                if (typeof snapshotEntityKey !== "undefined") {
+                    // Check common entity properties
+                    const currentEntity = currentEntities[currentEntityKey];
+                    const snapshotEntity = snapshotEntities[snapshotEntityKey];
+                    const entity = dataStore.getEntity(currentEntityKey);
+                    // Property is different or doesn't exist
+                    const unserializedEntity = SerializableClass
+                        .$unserialize(snapshotEntity);
+                    Object.keys(snapshotEntity).forEach(
+                        (property) => {
+                            if ((typeof currentEntity[property] !== "undefined"
+                                && historyHelper.checkDiff(currentEntity[property],
+                                    snapshotEntity[property]))) {
+                                // Found differences
+                                entity[property] = unserializedEntity[property];
+                            }
+                        },
+                    );
+                    // Check if we don't need to remove a property in entities
+                    // Should never happen
+                    Object.keys(currentEntity).forEach(
+                        (property) => {
+                            if (typeof snapshotEntity[property] === "undefined") {
+                                self.app.log.warn("You are removing a property between two entities"
+                                + ", which should never happen");
+                                delete entity[property];
+                            }
+                        },
+                    );
+                    // delete to decrease the length of snapshotEntities loop
+                    delete snapshotEntities[snapshotEntityKey];
+                } else if (dataStore.getEntity(currentEntityKey)) {
                     // Entity doesn't exist in snapshot
-                    if (dataStore.getEntity(currentEntityKey)) {
-                        dataStore.removeEntity(currentEntityKey);
-                    }
+                    dataStore.removeEntity(currentEntityKey);
                 }
             },
         );
@@ -77,7 +72,7 @@ const historyHelper = {
                                 currentEntity => (snapshotEntity.id === currentEntity.id),
                             );
                             if (!entityFound) {
-                                const cloneObject = historyHelper.cloneObject(snapshotEntity);
+                                const cloneObject = JSON.parse(JSON.stringify(snapshotEntity));
                                 const entity = SerializableClass.$unserialize(cloneObject);
                                 dataStore.addEntity(entity, path);
                                 currentState[path].push(cloneObject);
@@ -172,16 +167,6 @@ const historyHelper = {
         return (array1.length !== array2.length || array1.sort().some(
             (value, index) => value !== array2.sort()[index],
         ));
-    },
-
-    /**
-     * Quick method to clone an object to have different instance
-     * @param {object} object
-     * @return {object}
-     */
-    cloneObject(object) {
-        const serializedObject = JSON.stringify(object);
-        return JSON.parse(serializedObject);
     },
 
 };

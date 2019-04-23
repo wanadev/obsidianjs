@@ -171,8 +171,8 @@ class History {
         } = self.app.modules;
         // current state
         const structuresCache = dataStore.serializeEntities() || {};
-        const clonedStructuresCache = historyHelper.cloneObject(structuresCache);
-        const structureSnapshot = historyHelper.cloneObject(snapshot.layers);
+        const clonedStructuresCache = JSON.parse(JSON.stringify(structuresCache));
+        const structureSnapshot = JSON.parse(JSON.stringify(snapshot.layers));
         historyHelper.applySnapshotDifference(clonedStructuresCache, structureSnapshot);
     }
 
