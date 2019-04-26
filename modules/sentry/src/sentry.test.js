@@ -1,8 +1,7 @@
-jest.mock("../index.js");
-jest.mock("../__mocks__/raven-js.js");
-
 const Raven = require("raven-js");
-const Sentry = require("./sentry").default;
+const Sentry = require("./sentry");
+
+jest.mock("../index.js");
 
 
 describe("Sentry.constructor", () => {

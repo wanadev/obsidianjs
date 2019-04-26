@@ -1,9 +1,9 @@
-import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_STORE } from "../src/symbols";
+const { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_STORE } = require("./symbols");
 
 
 jest.mock("../index.js");
 
-const DataStore = require("./data-store.js").default;
+const DataStore = require("./data-store.js");
 const self = require("../index.js");
 const Entity = require("./entity.js");
 

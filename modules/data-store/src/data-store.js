@@ -148,4 +148,4 @@ class DataStore {
 
 }
 
-export default DataStore;
+module.exports = DataStore;

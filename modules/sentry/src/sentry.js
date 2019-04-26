@@ -1,7 +1,8 @@
-const Raven = require("raven-js");
-const uuidv4 = require("uuid/v4");
+import Raven from "raven-js";
 
-const self = require("../index.js");
+import uuidv4 from "uuid/v4";
+
+import self from "../index";
 
 
 /**
