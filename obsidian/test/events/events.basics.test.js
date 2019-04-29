@@ -104,5 +104,6 @@ describe("basic event emitting", () => {
 
             expect(listener).toHaveBeenCalledTimes(1);
         });
+
     });
 });

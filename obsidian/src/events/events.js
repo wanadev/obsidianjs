@@ -75,7 +75,11 @@ class Events {
     }
 
     [ONCE](namespace, eventPath, listener) { // eslint-disable-line
-        throw new Error("NotImplementedError");
+        const onceListener = () => {
+            listener();
+            this[REMOVE_LISTENER](namespace, eventPath, onceListener);
+        };
+        this[ON](namespace, eventPath, onceListener);
     }
 
     [REMOVE_LISTENER](namespace, eventPath, listener) {
