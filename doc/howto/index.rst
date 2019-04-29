@@ -7,4 +7,3 @@ HowTo
 
    ./getting-started.rst
    ./creating-module.rst
-   ./config.rst

@@ -16,6 +16,7 @@ Documentation
 Changelog
 ---------
 
+* **0.2.2:** Expose the Entity class through the data-store module API
+* **0.2.1:** Fixes wrong export
 * **0.2.0:** Send events when adding and removing an Entity from the store
 * **0.1.0:** Initial release.
-
