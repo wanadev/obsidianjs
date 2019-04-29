@@ -137,6 +137,7 @@ describe("Sentry.getUserUUID", () => {
         sentryInstance.userUUID = null;
 
         const userUUID = sentryInstance.getUserUUID();
+        localStorage.clear();
         expect(userUUID).not.toEqual(sentryInstance.getUserUUID());
         expect(userUUID).toBeDefined();
     });
