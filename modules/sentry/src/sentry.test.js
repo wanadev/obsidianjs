@@ -133,13 +133,11 @@ describe("Sentry.forwardLog", () => {
 
 describe("Sentry.getUserUUID", () => {
     test("When there is no user uuid in the local storage, Sentry.getUserUUID generate one and put it in userUUID", () => {
-        // To be sure there is no userUUID stored
-        try {
-            window.localStorage.sentryUUID = undefined;
-        } catch (e) {
-            console.warn("Local sotrage disabled");
-            return;
-        }
+        Object.defineProperty(window, "localStorage", {
+            value: {
+            },
+            writable: true,
+        });
 
         const sentryInstance = new Sentry();
 
@@ -149,12 +147,11 @@ describe("Sentry.getUserUUID", () => {
 
     test("If there is a Sentry.userUUID in the local storage, Sentry.getUserUUID put it in userUUID", () => {
         const uuid = "6cdc6e4d-fe23-48c0-9a1d-40f0960dc284";
-        try {
-            window.localStorage.sentryUUID = uuid;
-        } catch (e) {
-            console.warn("Local sotrage disabled");
-            return;
-        }
+        Object.defineProperty(window, "localStorage", {
+            value: {},
+            writable: true,
+        });
+        window.localStorage.sentryUUID = uuid;
 
         const sentryInstance = new Sentry();
         expect(sentryInstance.userUUID).not.toBeUndefined();
@@ -164,6 +161,10 @@ describe("Sentry.getUserUUID", () => {
 
     test("If local storage is not supported, Sentry.getUserUUID generate one", () => {
         // We need a  way to disable local storage in order to test the localstorage fallback code
+        Object.defineProperty(window, "localStorage", {
+            value: null,
+            writable: true,
+        });
         const sentryInstance = new Sentry();
 
         expect(sentryInstance.userUUID).not.toBeUndefined();
