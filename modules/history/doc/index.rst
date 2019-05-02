@@ -1,7 +1,7 @@
 history
 =======
 
-The **History** module allows you to manage an history for your project.
+The **History** module allows you to manage an historic for your project.
 It use data-store module to stack entities on 'snapshot' method
 and restore them using 'go' method
 History module can be use to implement system like Undo/Redo, Ctrl+Z / Ctrl+Y
