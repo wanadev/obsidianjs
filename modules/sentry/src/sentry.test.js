@@ -142,10 +142,9 @@ describe("Sentry.getUserUUID", () => {
         }
 
         const sentryInstance = new Sentry();
-        const { userUUID } = sentryInstance;
 
-        expect(userUUID).not.toBeUndefined();
-        expect(userUUID).toEqual(sentryInstance.getUserUUID());
+        expect(sentryInstance.userUUID).not.toBeUndefined();
+        expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
     });
 
     test("If there is a Sentry.userUUID in the local storage, Sentry.getUserUUID put it in userUUID", () => {
@@ -166,9 +165,8 @@ describe("Sentry.getUserUUID", () => {
     test("If local storage is not supported, Sentry.getUserUUID generate one", () => {
         // We need a  way to disable local storage in order to test the localstorage fallback code
         const sentryInstance = new Sentry();
-        const { userUUID } = sentryInstance;
 
-        expect(userUUID).not.toBeUndefined();
-        expect(userUUID).toEqual(sentryInstance.getUserUUID());
+        expect(sentryInstance.userUUID).not.toBeUndefined();
+        expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
     });
 });
