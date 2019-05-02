@@ -9,9 +9,14 @@ describe("Sentry.constructor", () => {
     test("Constructor correctly initialize member variables", () => {
         const sentryInstance = new Sentry();
 
-        expect(Raven.config).toHaveBeenCalled();
         expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
         expect(sentryInstance.capturedLevels).toEqual(["fatal"]);
+    });
+    test("Constructor correctly initialize raven", () => {
+        const sentryInstance = new Sentry();
+
+        expect(Raven.config).toHaveBeenCalled();
+        expect(sentryInstance.ravenClient.install).toHaveBeenCalled();
     });
 });
 
