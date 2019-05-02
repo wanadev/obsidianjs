@@ -16,7 +16,7 @@ const self = require("../index.js");
 class Sentry {
 
     constructor() {
-        this.userUUID = this.getUserUUID();
+        this.getUserUUID();
         this.setLogLevels(self.app.config.get("capturedLevels"));
 
         if (!self.app.config.get("@obsidian.debug")) {
@@ -131,27 +131,25 @@ class Sentry {
     }
 
     /**
-     * Get the user UUID.
+     * Get the user UUID from local storage otherwise we generate one
      *
      * @returns {string} The user UUID.
      */
     getUserUUID() {
-        let uuid = this.userUUID;
-
         if (!this.userUUID) {
             try {
                 if (window.localStorage.sentryUUID) {
-                    uuid = window.localStorage.sentryUUID;
+                    this.userUUID = window.localStorage.sentryUUID;
                 } else {
-                    uuid = uuidv4();
-                    window.localStorage.sentryUUID = uuid;
+                    this.userUUID = uuidv4();
+                    window.localStorage.sentryUUID = this.userUUID;
                 }
             } catch (e) {
-                uuid = uuidv4();
+                this.userUUID = uuidv4();
             }
         }
 
-        return uuid;
+        return this.userUUID;
     }
 
 }

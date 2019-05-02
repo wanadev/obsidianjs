@@ -132,18 +132,43 @@ describe("Sentry.forwardLog", () => {
 });
 
 describe("Sentry.getUserUUID", () => {
-    test("When there is no Sentry.userUUID, sentry.getUserUUID return a different UUID each times it's called", () => {
-        const sentryInstance = new Sentry();
-        sentryInstance.userUUID = null;
+    test("When there is no user uuid in the local storage, Sentry.getUserUUID generate one and put it in userUUID", () => {
+        // To be sure there is no userUUID stored
+        try {
+            window.localStorage.sentryUUID = undefined;
+        } catch (e) {
+            console.warn("Local sotrage disabled");
+            return;
+        }
 
-        const userUUID = sentryInstance.getUserUUID();
-        localStorage.clear();
-        expect(userUUID).not.toEqual(sentryInstance.getUserUUID());
-        expect(userUUID).toBeDefined();
+        const sentryInstance = new Sentry();
+        const { userUUID } = sentryInstance;
+
+        expect(userUUID).not.toBeUndefined();
+        expect(userUUID).toEqual(sentryInstance.getUserUUID());
     });
 
-    test("If there is a Sentry.userUUID, Sentry.getUserUUID just return Sentry.userUUID", () => {
+    test("If there is a Sentry.userUUID in the local storage, Sentry.getUserUUID put it in userUUID", () => {
+        const uuid = "6cdc6e4d-fe23-48c0-9a1d-40f0960dc284";
+        try {
+            window.localStorage.sentryUUID = uuid;
+        } catch (e) {
+            console.warn("Local sotrage disabled");
+            return;
+        }
+
         const sentryInstance = new Sentry();
+        expect(sentryInstance.userUUID).not.toBeUndefined();
         expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
+        expect(sentryInstance.userUUID).toEqual(uuid);
+    });
+
+    test("If local storage is not supported, Sentry.getUserUUID generate one", () => {
+        // We need a  way to disable local storage in order to test the localstorage fallback code
+        const sentryInstance = new Sentry();
+        const { userUUID } = sentryInstance;
+
+        expect(userUUID).not.toBeUndefined();
+        expect(userUUID).toEqual(sentryInstance.getUserUUID());
     });
 });
