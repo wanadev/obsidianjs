@@ -1,4 +1,4 @@
-const each = require("jest-each");  // eslint-disable-line import/no-extraneous-dependencies
+const each = require("jest-each").default;  // eslint-disable-line import/no-extraneous-dependencies
 
 const dependencies = require("../../src/modules-loader/dependencies.js");
 
