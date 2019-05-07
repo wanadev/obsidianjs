@@ -17,7 +17,10 @@
       "ignoreEOLComments": true
     }],
     "no-continue": ["off"],
-    "function-paren-newline": ["error", "consistent"]
+    "function-paren-newline": ["error", "consistent"],
+    "no-plusplus": ["warn", {
+      "allowForLoopAfterthoughts": true
+    }]
   },
   "overrides": [{
     "files": ["*.test.js", "**/__mocks__/*.js"],
