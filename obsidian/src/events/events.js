@@ -75,8 +75,8 @@ class Events {
     }
 
     [ONCE](namespace, eventPath, listener) { // eslint-disable-line
-        const onceListener = () => {
-            listener();
+        const onceListener = (...args) => {
+            listener(...args);
             this[REMOVE_LISTENER](namespace, eventPath, onceListener);
         };
         this[ON](namespace, eventPath, onceListener);
