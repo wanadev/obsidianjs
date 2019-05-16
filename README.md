@@ -1,5 +1,7 @@
 # Obsidian Framework
 
+[![Build Status](https://travis-ci.org/wanadev/obsidianjs.svg?branch=master)](https://travis-ci.org/wanadev/obsidianjs)
+
 
 ## Running Linter and Tests
 
