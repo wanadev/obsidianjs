@@ -81,10 +81,10 @@ class MainLoop {
             }
             this._loop();
             this.idle = false;
-        }, true);
+        });
         window.addEventListener("blur", () => {
             this.idle = true;
-        }, true);
+        });
     }
 
     /**
