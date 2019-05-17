@@ -9,9 +9,14 @@ describe("Sentry.constructor", () => {
     test("Constructor correctly initialize member variables", () => {
         const sentryInstance = new Sentry();
 
-        expect(Raven.config).toHaveBeenCalled();
         expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
         expect(sentryInstance.capturedLevels).toEqual(["fatal"]);
+    });
+    test("Constructor correctly initialize raven", () => {
+        const sentryInstance = new Sentry();
+
+        expect(Raven.config).toHaveBeenCalled();
+        expect(sentryInstance.ravenClient.install).toHaveBeenCalled();
     });
 });
 
@@ -132,18 +137,42 @@ describe("Sentry.forwardLog", () => {
 });
 
 describe("Sentry.getUserUUID", () => {
-    test("When there is no Sentry.userUUID, sentry.getUserUUID return a different UUID each times it's called", () => {
-        const sentryInstance = new Sentry();
-        sentryInstance.userUUID = null;
+    test("When there is no user uuid in the local storage, Sentry.getUserUUID generate one and put it in userUUID", () => {
+        Object.defineProperty(window, "localStorage", {
+            value: {
+            },
+            writable: true,
+        });
 
-        const userUUID = sentryInstance.getUserUUID();
-        localStorage.clear();
-        expect(userUUID).not.toEqual(sentryInstance.getUserUUID());
-        expect(userUUID).toBeDefined();
+        const sentryInstance = new Sentry();
+
+        expect(sentryInstance.userUUID).not.toBeUndefined();
+        expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
     });
 
-    test("If there is a Sentry.userUUID, Sentry.getUserUUID just return Sentry.userUUID", () => {
+    test("If there is a Sentry.userUUID in the local storage, Sentry.getUserUUID put it in userUUID", () => {
+        const uuid = "6cdc6e4d-fe23-48c0-9a1d-40f0960dc284";
+        Object.defineProperty(window, "localStorage", {
+            value: {},
+            writable: true,
+        });
+        window.localStorage.sentryUUID = uuid;
+
         const sentryInstance = new Sentry();
+        expect(sentryInstance.userUUID).not.toBeUndefined();
+        expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
+        expect(sentryInstance.userUUID).toEqual(uuid);
+    });
+
+    test("If local storage is not supported, Sentry.getUserUUID generate one", () => {
+        // We need a  way to disable local storage in order to test the localstorage fallback code
+        Object.defineProperty(window, "localStorage", {
+            value: null,
+            writable: true,
+        });
+        const sentryInstance = new Sentry();
+
+        expect(sentryInstance.userUUID).not.toBeUndefined();
         expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
     });
 });
