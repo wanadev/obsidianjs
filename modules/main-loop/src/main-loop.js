@@ -106,8 +106,8 @@ class MainLoop {
         if (this._currentRequestId) {
             window.cancelAnimationFrame(this._currentRequestId);
         }
-        this._loop();
         self.app.events.emit("start");
+        this._loop();
     }
 
     /**
