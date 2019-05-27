@@ -22,8 +22,5 @@
   "dependencies": {},
   "peerDependencies": {
     "@obsidianjs/obsidian": "0.x"
-  },
-  "devDependencies": {
-    "mockdate": "^2.0.2"
   }
 }
