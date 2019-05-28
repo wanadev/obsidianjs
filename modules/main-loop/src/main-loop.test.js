@@ -7,12 +7,8 @@ const self = require("../index");
 
 const mockedScreenFps = 120;
 const frameTime = 1000 / mockedScreenFps;
-let currentTime = window.performance.now();
+let currentTime = 0.0;
 
-// mock performance
-global.performance = {
-    now: () => currentTime,
-};
 
 // mock  request animation frame so it's limited by mockedScreenFps
 global.requestAnimationFrame = (cb) => {
@@ -22,7 +18,7 @@ global.requestAnimationFrame = (cb) => {
     }, frameTime);
 };
 
-
+// clean timers and mocks before each test
 beforeEach(() => {
     currentTime = window.performance.now();
     jest.clearAllTimers();
@@ -30,14 +26,14 @@ beforeEach(() => {
 });
 
 
-describe("MainLoop._update", () => {
+describe("MainLoop.update", () => {
     test("call callbaks and emit event", () => {
         const mainLoop = new MainLoop();
         const fun1 = jest.fn();
         const fun2 = jest.fn();
         mainLoop.addCallback(fun1);
         mainLoop.addCallback(fun2);
-        mainLoop._update(window.performance.now());
+        mainLoop.update(window.performance.now());
         expect(fun1).toHaveBeenCalledTimes(1);
         expect(fun2).toHaveBeenCalledTimes(1);
 
@@ -62,38 +58,34 @@ describe("fps check", () => {
     test("unlimited fps, 1sec", () => {
         const mainLoop = new MainLoop();
         const countFun = jest.fn();
-        const maxApproximation = mockedScreenFps / 20;
         mainLoop.addCallback(countFun);
         mainLoop.start();
         jest.advanceTimersByTime(1000);
-        const deltaFps = Math.abs(countFun.mock.calls.length - mockedScreenFps);
-        expect(deltaFps <= maxApproximation).toBe(true);
-    });
-    test("unlimited fps, 10sec", () => {
-        const mainLoop = new MainLoop();
-        const countFun = jest.fn();
-        const maxApproximation = mockedScreenFps / 2;
-        mainLoop.addCallback(countFun);
-        mainLoop.start();
-        jest.advanceTimersByTime(10000);
-        const deltaFps = Math.abs(countFun.mock.calls.length - 10 * mockedScreenFps);
-        expect(deltaFps <= maxApproximation).toBe(true);
+
+        // -- frame count --
+        const deltaFrameCount = Math.abs(countFun.mock.calls.length - mockedScreenFps);
+        const maxApproximation = mockedScreenFps / 20;
+        expect(deltaFrameCount).toBeLessThanOrEqual(maxApproximation);
+
+        // -- data sent to the callback --
+
+        // first frame infos : no time elapsed, fps is infinity
+        const firstInfos = countFun.mock.calls[0][0];
+        expect(firstInfos.timeSinceLastCall).toBe(0);
+        expect(firstInfos.fps).toBe(Infinity);
+        expect(firstInfos.idle).toBe(false);
+
+
+        // fps and time elapsed check for other frames
+        for (let i = 1; i < countFun.mock.calls.length; i++) {
+            // epsilons bigger for the first frame which do get less accurate infos
+            const epsilonFps = i === 1 ? 2 : 0.2;
+            const epsilonTime = i === 1 ? 0.2 : 0.02;
+            const loopInfos = countFun.mock.calls[i][0];
+            expect(Math.abs(loopInfos.fps - mockedScreenFps)).toBeLessThan(epsilonFps);
+            expect(Math.abs(loopInfos.timeSinceLastCall - frameTime)).toBeLessThan(epsilonTime);
+            expect(loopInfos.idle).toBe(false);
+        }
+
     });
 });
-/* describe("fps check 2", () => {
-    test("fps count", () => {
-        MockDate.set(0);
-        expect(self.app.events.emit.mock.calls.length).toBe(0);
-        // console.log(" calls before", self.app.events.emit.mock.calls);
-
-        const mainLoop = new MainLoop();
-        mainLoop.start();
-        const emitCallsOffset = 2;
-
-        global.timeTravel(2000);
-
-        // console.log("calls 50", self.app.events.emit.mock.calls);
-        expect(self.app.events.emit.mock.calls.length).toBe(50 + emitCallsOffset);
-    });
-
-}); */
