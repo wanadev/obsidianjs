@@ -106,8 +106,8 @@ class MainLoop {
         if (this._currentRequestId) {
             window.cancelAnimationFrame(this._currentRequestId);
         }
-        this._loop();
         self.app.events.emit("start");
+        this._loop();
     }
 
     /**
@@ -149,6 +149,7 @@ class MainLoop {
      * @param {Number} timestamp
      */
     _loop(now) {
+        console.log("loop now ", now);
         // Request animation frame => _loop executed every screen refresh
         this._currentRequestId = requestAnimationFrame(t => this._loop(t));
 
