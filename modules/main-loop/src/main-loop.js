@@ -82,7 +82,9 @@ class MainLoop {
             if (this.$data.currentRequestId) {
                 window.cancelAnimationFrame(this.$data.currentRequestId);
             }
-            this.loop();
+            if (this.enabled) {
+                this.loop();
+            }
             this.idle = false;
         });
         window.addEventListener("blur", () => {
@@ -110,7 +112,9 @@ class MainLoop {
             window.cancelAnimationFrame(this.$data.currentRequestId);
         }
         self.app.events.emit("start");
-        this.loop();
+        if (!(this.idle && this.idleFps === 0)) {
+            this.loop();
+        }
     }
 
     /**
