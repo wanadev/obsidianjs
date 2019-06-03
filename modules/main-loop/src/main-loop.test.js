@@ -2,25 +2,28 @@ import MainLoop from "./main-loop";
 
 jest.mock("../index.js");
 jest.useFakeTimers();
-
 const self = require("../index");
 
-const mockedScreenFps = 120;
-const frameTime = 1000 / mockedScreenFps;
-let currentTime = 0.0;
+const GLOBALS = {
+    // mocked screen fps for requestAnimationFrame and its corresponding frame time
+    mockedScreenFps: 120,
+    frameTime: 1000 / 120,
+    // mocked current time
+    currentTime: 0.0,
+};
 
 
 // mock  request animation frame so it's limited by mockedScreenFps
 global.requestAnimationFrame = (cb) => {
-    currentTime += frameTime;
+    GLOBALS.currentTime += GLOBALS.frameTime;
     setTimeout(() => {
-        cb(currentTime);
-    }, frameTime);
+        cb(GLOBALS.currentTime);
+    }, GLOBALS.frameTime);
 };
 
 // clean timers and mocks before each test
 beforeEach(() => {
-    currentTime = window.performance.now();
+    GLOBALS.currentTime = window.performance.now();
     jest.clearAllTimers();
     jest.clearAllMocks();
 });
@@ -35,7 +38,6 @@ beforeEach(() => {
  * @param autostart=true
  * @param debug={}
  */
-
 function TestFps(mainLoop, time, expectedFps, expectedIdle = false, autostart = true, debug = {}) {
     self.app.events.emit.mock.calls.length = 0;
 
@@ -108,6 +110,7 @@ describe("MainLoop.update", () => {
         expect(self.app.events.emit.mock.calls[1][0]).toBe("update");
     });
 });
+
 describe("events cast", () => {
     test("events and enabled state", () => {
         const mainLoop = new MainLoop();
@@ -122,6 +125,7 @@ describe("events cast", () => {
         expect(self.app.events.emit.mock.calls.length).toBe(4);
     });
 });
+
 describe("Interval calculation", () => {
     test("interval for active state, unlimited fps", () => {
         const mainLoop = new MainLoop();
@@ -171,15 +175,14 @@ describe("window events", () => {
 
 });
 
-
 describe("fps check", () => {
     test("unlimited fps, 1sec", () => {
         const mainLoop = new MainLoop();
-        TestFps(mainLoop, 1000, mockedScreenFps);
+        TestFps(mainLoop, 1000, GLOBALS.mockedScreenFps);
     });
     test("unlimited fps, 10sec", () => {
         const mainLoop = new MainLoop();
-        TestFps(mainLoop, 10000, mockedScreenFps);
+        TestFps(mainLoop, 10000, GLOBALS.mockedScreenFps);
     });
     test("60 fps, 1sec", () => {
         const mainLoop = new MainLoop();
@@ -205,7 +208,7 @@ describe("fps check", () => {
     });
     test("activeFps variation", () => {
         const mainLoop = new MainLoop();
-        TestFps(mainLoop, 1000, mockedScreenFps);
+        TestFps(mainLoop, 1000, GLOBALS.mockedScreenFps);
         mainLoop.activeFps = 60;
         TestFps(mainLoop, 1000, 60, false, false);
         mainLoop.activeFps = 30;
