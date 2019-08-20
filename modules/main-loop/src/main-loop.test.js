@@ -79,6 +79,7 @@ function TestFps(mainLoop, time, expectedFps, expectedIdle = false, autostart = 
         const epsilonTime = i === 1 ? 0.2 : 0.02;
         const loopInfos = allInfos[i];
         if (debug.loopInfos) {
+            // eslint-disable-line no-console
             console.log("loop info", loopInfos);
         }
         if (Math.abs(loopInfos.fps - expectedFps) > epsilonFps
