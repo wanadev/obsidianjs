@@ -98,7 +98,7 @@ class MainLoop {
      */
     initDebug() {
         this.addCallback((loopInfo) => {
-            console.log("LoopInfos", JSON.stringify(loopInfo));
+            self.app.log("LoopInfos", JSON.stringify(loopInfo));
         });
     }
 
