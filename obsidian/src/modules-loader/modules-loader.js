@@ -145,13 +145,16 @@ class ModulesLoader {
 
         // Get module's dependencies
         const dependencies = {};
-        const unmetDependency = this[MODULES_LIST][moduleName].requires
+
+        let unmetDependency = "";
+        this[MODULES_LIST][moduleName].requires
             .some((dependencyName) => {
                 const dependencyJavascriptName = helpers.toCamelCase(dependencyName);
                 const dependency = this[MODULES][dependencyJavascriptName];
 
                 if (dependency === undefined) {
-                    return dependencyName;
+                    unmetDependency = dependencyName;
+                    return true;
                 }
 
                 dependencies[dependencyJavascriptName] = dependency;
