@@ -11,19 +11,22 @@ class MainLoop {
     constructor() {
         const config = MainLoop.FetchConfig();
 
-        // Private parameters
-        this._interval = 0;
-        this._currentRequestId = null;
-        this._lastLoopCorrectedTime = window.performance.now();
-        this._lastLoopTime = this._lastLoopCorrectedTime;
+        // --- Internal parameters
+        this.$data = {
+            interval: 0,
+            currentRequestId: null,
+            lastLoopCorrectedTime: window.performance.now(),
+            lastLoopTime: window.performance.now(),
 
-        // Public parameters with getter-setters
-        this._activeFps = config.get("activeFps") || -1;
-        this._idleFps = config.get("idleFps") || 0;
-        this._idle = false;
-        this._enabled = false;
+            // with corresponding getters-setters or getters only :
+            activeFps: config.get("activeFps") || -1,
+            idleFps: config.get("idleFps") || 0,
+            idle: false,
+            enabled: false,
+        };
 
-        // Public parameters
+
+        // --- Public parameters
         /**
          * Registered callbacks
          * @type {Array}
@@ -31,7 +34,7 @@ class MainLoop {
         this.callbacks = [];
 
         /**
-         * current fps
+         * Current fps
          * @type {Number}
          */
         this.fps = this.activeFps;
@@ -50,24 +53,24 @@ class MainLoop {
      */
     refreshIntervalValue() {
         const epsilon = 0.01;
-        if (this._idle) {
+        if (this.$data.idle) {
             if (this.idleFps > 0) {
-                this._interval = (1000 / this.idleFps) - epsilon;
+                this.$data.interval = (1000 / this.idleFps) - epsilon;
             } else if (this.idleFps === 0) {
-                if (this._currentRequestId) {
-                    window.cancelAnimationFrame(this._currentRequestId);
+                if (this.$data.currentRequestId) {
+                    window.cancelAnimationFrame(this.$data.currentRequestId);
                 }
             } else {
-                this._interval = -1;
+                this.$data.interval = -1;
             }
         } else if (this.activeFps > 0) {
-            this._interval = (1000 / this.activeFps) - epsilon;
+            this.$data.interval = (1000 / this.activeFps) - epsilon;
         } else if (this.activeFps === 0) {
-            if (this._currentRequestId) {
-                window.cancelAnimationFrame(this._currentRequestId);
+            if (this.$data.currentRequestId) {
+                window.cancelAnimationFrame(this.$data.currentRequestId);
             }
         } else {
-            this._interval = -1;
+            this.$data.interval = -1;
         }
     }
 
@@ -76,10 +79,12 @@ class MainLoop {
      */
     initListeners() {
         window.addEventListener("focus", () => {
-            if (this._currentRequestId) {
-                window.cancelAnimationFrame(this._currentRequestId);
+            if (this.$data.currentRequestId) {
+                window.cancelAnimationFrame(this.$data.currentRequestId);
             }
-            this._loop();
+            if (this.enabled) {
+                this.loop();
+            }
             this.idle = false;
         });
         window.addEventListener("blur", () => {
@@ -93,7 +98,7 @@ class MainLoop {
      */
     initDebug() {
         this.addCallback((loopInfo) => {
-            console.log("LoopInfos", JSON.stringify(loopInfo));
+            self.app.log("LoopInfos", JSON.stringify(loopInfo));
         });
     }
 
@@ -102,21 +107,23 @@ class MainLoop {
      * Start the loop.
      */
     start() {
-        this._enabled = true;
-        if (this._currentRequestId) {
-            window.cancelAnimationFrame(this._currentRequestId);
+        this.$data.enabled = true;
+        if (this.$data.currentRequestId) {
+            window.cancelAnimationFrame(this.$data.currentRequestId);
         }
-        this._loop();
         self.app.events.emit("start");
+        if (!(this.idle && this.idleFps === 0)) {
+            this.loop();
+        }
     }
 
     /**
      * Stop the loop.
      */
     stop() {
-        this._enabled = false;
-        if (this._currentRequestId) {
-            window.cancelAnimationFrame(this._currentRequestId);
+        this.$data.enabled = false;
+        if (this.$data.currentRequestId) {
+            window.cancelAnimationFrame(this.$data.currentRequestId);
         }
         self.app.events.emit("stop");
     }
@@ -144,26 +151,27 @@ class MainLoop {
      * The loop
      * Inspired by
      * https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
-     * @method _loop
+     * @method $data.loop
      * @private
      * @param {Number} timestamp
      */
-    _loop(now) {
-        // Request animation frame => _loop executed every screen refresh
-        this._currentRequestId = requestAnimationFrame(t => this._loop(t));
+    loop(now = this.$data.lastLoopTime) {
+        // Request animation frame => $data.loop executed every screen refresh
+        this.$data.currentRequestId = requestAnimationFrame(t => this.loop(t));
 
         // No limitation, the loop goes as fast as the screen refresh rate (if it can)
-        if (this._interval === -1) {
-            this._update(now);
+        if (this.$data.interval === -1) {
+            this.update(now);
         } else {
             // Fps throttling :
             // We execute the callbacks only if enough time has passed
-            const correctedTimeSinceLastCall = now - this._lastLoopCorrectedTime;
-            if (correctedTimeSinceLastCall >= this._interval) {
+            const correctedTimeSinceLastCall = now - this.$data.lastLoopCorrectedTime;
+            if (correctedTimeSinceLastCall >= this.$data.interval) {
                 // Get ready for next frame by setting lastTime=now, but...
                 // Also, adjust for interval not being multiple of 16.67
-                this._lastLoopCorrectedTime = now - (correctedTimeSinceLastCall % this._interval);
-                this._update(now);
+                this.$data.lastLoopCorrectedTime = now
+                    - (correctedTimeSinceLastCall % this.$data.interval);
+                this.update(now);
             }
         }
     }
@@ -175,11 +183,11 @@ class MainLoop {
      * - emit the update events
      * @param  {Object} loopInfo loop informations transmitted to the callbacks and by the event
      */
-    _update(now) {
+    update(now) {
         //  Fps
-        const timeSinceLastCall = now - this._lastLoopTime;
+        const timeSinceLastCall = now - this.$data.lastLoopTime;
         this.fps = 1000 / timeSinceLastCall;
-        this._lastLoopTime = now;
+        this.$data.lastLoopTime = now;
         const loopInfo = {
             timeSinceLastCall,
             fps: this.fps,
@@ -207,12 +215,12 @@ class MainLoop {
      * @param  {Number} activeFps
      */
     set activeFps(activeFps) {
-        this._activeFps = activeFps;
+        this.$data.activeFps = activeFps;
         this.refreshIntervalValue();
     }
 
     get activeFps() {
-        return this._activeFps;
+        return this.$data.activeFps;
     }
 
     /**
@@ -220,12 +228,12 @@ class MainLoop {
      * @param  {Number} idleFps
      */
     set idleFps(idleFps) {
-        this._idleFps = idleFps;
+        this.$data.idleFps = idleFps;
         this.refreshIntervalValue();
     }
 
     get idleFps() {
-        return this._idleFps;
+        return this.$data.idleFps;
     }
 
     /**
@@ -233,12 +241,12 @@ class MainLoop {
      * @param  {Boolean} isIdle
      */
     set idle(isIdle) {
-        this._idle = isIdle;
+        this.$data.idle = isIdle;
         this.refreshIntervalValue();
     }
 
     get idle() {
-        return this._idle;
+        return this.$data.idle;
     }
 
     /**
@@ -246,7 +254,7 @@ class MainLoop {
      * @return {Boolean}
      */
     get enabled() {
-        return this._enabled;
+        return this.$data.enabled;
     }
     //---------------------
 
