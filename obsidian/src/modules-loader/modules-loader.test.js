@@ -359,7 +359,7 @@ describe("ModulesLoader.load", () => {
 
         return modules.load("module-2")
             .catch((error) => {
-                expect(error.toString()).toMatch(/UnmetDependency/);
+                expect(error.toString()).toMatch(/UnmetDependencies/);
             });
     });
 
