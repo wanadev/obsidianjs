@@ -153,7 +153,7 @@ class ModulesLoader {
                 const dependency = this[MODULES][dependencyJavascriptName];
 
                 if (dependency === undefined) {
-                    unmetDependencies.push(`"${dependencyName}"`);
+                    unmetDependencies.push(dependencyName);
                 }
 
                 dependencies[dependencyJavascriptName] = dependency;
@@ -161,7 +161,7 @@ class ModulesLoader {
 
         if (unmetDependencies.length) {
             return Promise.reject(
-                new Error(`UnmetDependencies: "${moduleName}" has one or several missing dependencies. Your app must use the following module(s) in order to load the "${moduleName}" module properly => ${unmetDependencies.reduce((s1, s2) => `${s1}, ${s2}`)}`),
+                new Error(`UnmetDependencies: "${moduleName}" has one or several missing dependencies. Your app must use the following module(s) in order to load the "${moduleName}" module properly => ${unmetDependencies.join(", ")}`),
             );
         }
 
