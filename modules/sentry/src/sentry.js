@@ -1,4 +1,4 @@
-const Raven = require("raven-js");
+const Sentry = require("@sentry/browser");
 const uuidv4 = require("uuid/v4");
 
 const self = require("../index.js");
@@ -13,28 +13,21 @@ const self = require("../index.js");
  *    with proper configuration, it will just work and you do not need to
  *    access it.
  */
-class Sentry {
+class SentryController {
 
     constructor() {
         this.getUserUUID();
         this.setLogLevels(self.app.config.get("capturedLevels"));
 
         if (!self.app.config.get("@obsidian.debug")) {
-            this.ravenClient = Raven
-                .config(self.app.config.get("dsnKey"),
-                    {
-                        autoBreadcrumbs: true,
-                        logger: "obsidianjs/sentry",
-                    });
+            Sentry.init({
+                dsn: self.app.config.get("dsnKey"),
+            });
+            this.setUserInfos(self.app.config.get("userInfos"));
 
-            if (this.ravenClient) {
-                this.ravenClient.install();
-                this.setUserInfos(self.app.config.get("userInfos"));
-
-                self.app.events.on("@obsidian.log", (level, namespace, args) => {
-                    this.forwardLog(level, namespace, args);
-                });
-            }
+            self.app.events.on("@obsidian.log", (level, namespace, args) => {
+                this.forwardLog(level, namespace, args);
+            });
         }
     }
 
@@ -113,11 +106,11 @@ class Sentry {
      */
     forwardLog(level, namespace, args) {
         if (this.capturedLevels.includes(level)) {
-            Raven.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)),
-                {
-                    level,
-                    tags: [namespace],
-                });
+            Sentry.withScope((scope) => {
+                scope.setLevel(level);
+                scope.setTag("namespace", namespace);
+                Sentry.captureException(new Error(`[${self.app.name}][${namespace}]`.concat(...args)));
+            });
         }
     }
 
@@ -127,7 +120,9 @@ class Sentry {
      * @private
      */
     setSentryUserContext() {
-        Raven.setUserContext(this.userInfos);
+        Sentry.configureScope((scope) => {
+            scope.setUser(this.userInfos);
+        });
     }
 
     /**
@@ -154,4 +149,4 @@ class Sentry {
 
 }
 
-export default Sentry;
+export default SentryController;
