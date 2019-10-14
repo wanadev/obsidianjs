@@ -11,7 +11,7 @@ describe("SentryController.constructor", () => {
         expect(sentryInstance.userUUID).toEqual(sentryInstance.getUserUUID());
         expect(sentryInstance.capturedLevels).toEqual(["fatal"]);
     });
-    test("Constructor correctly initialize raven", () => {
+    test("Constructor correctly initialize sentry", () => {
         new SentryController();  // eslint-disable-line no-new
 
         expect(Sentry.init).toHaveBeenCalled();
