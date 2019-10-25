@@ -1,9 +1,8 @@
 {
   "name": "@obsidianjs/obsidian",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "description": "Obsidian Framework",
   "main": "src/index.js",
-  "types": "src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
