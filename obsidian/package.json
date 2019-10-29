@@ -9,8 +9,5 @@
   },
   "author": "Wanadev",
   "license": "BSD-3-Clause",
-  "repository": "git@github.com:wanadev/obsidianjs.git",
-  "devDependencies": {
-
-  }
+  "repository": "git@github.com:wanadev/obsidianjs.git"
 }
