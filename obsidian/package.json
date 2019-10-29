@@ -3,10 +3,14 @@
   "version": "0.2.1",
   "description": "Obsidian Framework",
   "main": "src/index.js",
+  "types": "src/types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Wanadev",
   "license": "BSD-3-Clause",
-  "repository": "git@github.com:wanadev/obsidianjs.git"
+  "repository": "git@github.com:wanadev/obsidianjs.git",
+  "devDependencies": {
+
+  }
 }
