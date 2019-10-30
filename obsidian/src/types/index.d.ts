@@ -1,21 +1,32 @@
-declare type Application = import("./src/application");
+export = obsidian;
+
+/**
+ * Obsidian application factory.
+ *
+ * @public
+ * @param {string} [name=obsidian] The name of the application (default: ``"obsidian"``).
+ * @return {Application} A new Obsidian application.
+ */
+declare function obsidian(name?: string | undefined): obsidian.Application;
 
 declare module "./src/application" {
     export class Application {
         modules: {[key: string]: any};
-        use(module: Module, data?: any) : Promise<void>;
+        use(module: obsidian.Module, data?: any) : Promise<void>;
     }
 }
 
-export declare interface Module extends ModuleDeclaration {
-    app: Application;
-}
+declare namespace obsidian {
+    export interface Module extends ModuleDeclaration {
+        app: Application;
+    }
 
-export declare interface ModuleDeclaration {
-    name: string;
-    requires: string[];
-    load(): void;
-    unload(): void;
-}
+    export interface ModuleDeclaration {
+        name: string;
+        requires: string[];
+        load(): void;
+        unload(): void;
+    }
+    export type Application = import("./src/application");
 
-export type obsidian = typeof import("./src/index");
+}
