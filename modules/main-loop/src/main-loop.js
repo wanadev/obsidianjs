@@ -94,7 +94,6 @@ class MainLoop {
 
     /**
      * Add Debug callback to log loop info
-     * @return {[type]} [description]
      */
     initDebug() {
         this.addCallback((loopInfo) => {
