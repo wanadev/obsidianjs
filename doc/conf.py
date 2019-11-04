@@ -167,6 +167,8 @@ texinfo_documents = [
 
 # sphinx-js
 
+_base_path = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
 js_source_path = [
     "obsidian/src/",
     "obsidian/src/events/",
@@ -176,5 +178,5 @@ js_source_path.extend(
     [p.replace("../", "").replace("\\", "/")
         for p in glob.glob("../../modules/*/src")]
 )
-root_for_relative_js_paths = "./"
-jsdoc_config_path = os.path.join(os.path.dirname(__file__), "jsdoc.conf.json")
+root_for_relative_js_paths = _base_path
+jsdoc_config_path = os.path.join(_base_path, "doc", "jsdoc.conf.json")
