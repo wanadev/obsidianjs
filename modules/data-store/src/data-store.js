@@ -1,5 +1,7 @@
+const uuidv4 = require("uuid/v4");
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
+const nativeSerializer = require("./simple-serializer").default;
 const self = require("../index.js");
 
 const Entity = require("./entity");
@@ -30,8 +32,14 @@ class DataStore {
         if (!this[ENTITIES_BY_PATH][path]) {
             this[ENTITIES_BY_PATH][path] = [];
         }
+        if (!entity.$data) {
+            entity.$data = {}; // eslint-disable-line no-param-reassign
+        }
         entity.$data[ENTITY_PATH] = path; // eslint-disable-line no-param-reassign
         entity.$data[ENTITY_STORE] = this; // eslint-disable-line no-param-reassign
+        if (!entity.id) {
+            entity.id = uuidv4(); // eslint-disable-line no-param-reassign
+        }
         this[ENTITIES_BY_PATH][path].push(entity);
         this[ENTITIES_BY_UUID][entity.id] = entity;
         self.app.events.emit("entity-added", entity);
@@ -53,7 +61,8 @@ class DataStore {
             id = entity.id; // eslint-disable-line prefer-destructuring
             realEntity = entity;
         }
-        const path = this[ENTITIES_BY_UUID][id].path; // eslint-disable-line prefer-destructuring
+        // eslint-disable-next-line prefer-destructuring
+        const path = this[ENTITIES_BY_UUID][id].$data[ENTITY_PATH];
         delete this[ENTITIES_BY_UUID][id];
         const index = this[ENTITIES_BY_PATH][path].indexOf(realEntity);
         this[ENTITIES_BY_PATH][path].splice(index, 1);
@@ -118,7 +127,13 @@ class DataStore {
      * @return {Object} The serialized entities.
      */
     serializeEntities() {  // → string (JSON)
-        return serializer.objectSerializer(this[ENTITIES_BY_PATH]);
+        const { nativeEntities, otherEntities } = nativeSerializer.extractNativeEntities(
+            this[ENTITIES_BY_PATH]
+        );
+        return {
+            ...nativeSerializer.objectSerializer(nativeEntities),
+            ...serializer.objectSerializer(otherEntities),
+        };
     }
 
     /**
@@ -129,13 +144,21 @@ class DataStore {
      * @return {undefined}
      */
     unserializeEntities(serializedEntities) {
-        const unserialized = serializer.objectUnserializer(serializedEntities);
+        debugger;
+        const { nativeEntities, otherEntities } = nativeSerializer.extractNativeEntities(
+            serializedEntities
+        );
+        const unserialized = {
+            ...nativeSerializer.objectUnserializer(nativeEntities),
+            ...serializer.objectUnserializer(otherEntities),
+        };
         Object.keys(unserialized).forEach((path) => {
             unserialized[path].forEach((entity) => {
                 this.addEntity(entity, path);
             });
         });
     }
+
 
     /**
      * Returns the Entity abitbol-class used in the data-store

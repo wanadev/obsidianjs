@@ -27,6 +27,7 @@
   "homepage": "https://github.com/wanadev/obsidianjs#readme",
   "dependencies": {
     "abitbol-serializable": "^2.0.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "^3.0.4",
+    "uuid": "^3.3.3"
   }
 }
