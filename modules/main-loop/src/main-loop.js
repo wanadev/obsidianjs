@@ -8,6 +8,9 @@ import self from "../index";
  */
 class MainLoop {
 
+    /**
+     * @constructor
+     */
     constructor() {
         const config = MainLoop.FetchConfig();
 

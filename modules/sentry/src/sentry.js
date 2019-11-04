@@ -15,6 +15,9 @@ const self = require("../index.js");
  */
 class Sentry {
 
+    /**
+     * @constructor
+     */
     constructor() {
         this.getUserUUID();
         this.setLogLevels(self.app.config.get("capturedLevels"));
