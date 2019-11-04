@@ -7,6 +7,9 @@ const LOG = Symbol("log");
  */
 class Logging {
 
+    /**
+     * @constructor
+     */
     constructor(rootLogging = null) {
         this[ROOT] = rootLogging;
     }

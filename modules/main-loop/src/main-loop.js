@@ -8,6 +8,9 @@ import self from "../index";
  */
 class MainLoop {
 
+    /**
+     * @constructor
+     */
     constructor() {
         const config = MainLoop.FetchConfig();
 
@@ -94,7 +97,6 @@ class MainLoop {
 
     /**
      * Add Debug callback to log loop info
-     * @return {[type]} [description]
      */
     initDebug() {
         this.addCallback((loopInfo) => {

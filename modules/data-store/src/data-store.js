@@ -14,6 +14,9 @@ const {
  */
 class DataStore {
 
+    /**
+     * @constructor
+     */
     constructor() {
         this[ENTITIES_BY_PATH] = {};
         this[ENTITIES_BY_UUID] = {};

@@ -10,6 +10,11 @@ const BASE_CONFIG = Symbol("baseConfig");
  */
 class Config {
 
+    /**
+     * @constructor
+     *
+     * @param {Object} [rootConfig] The root config (defaut: ``null``)
+     */
     constructor(rootConfig = null) {
         this[APP] = null;
         this[ROOT] = rootConfig;
