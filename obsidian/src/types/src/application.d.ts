@@ -1,8 +1,7 @@
 export = Application;
 /**
  * Obsidian Application.
- */
-/**
+ *
  * @typedef {import('./modules-loader/modules-loader')} ModulesLoader
  * @typedef {import('./config')} Config
  * @typedef {import('./events/events')} Events
@@ -117,7 +116,19 @@ declare class Application {
 declare namespace Application {
     export { ModulesLoader, Config, Events, Logging };
 }
+/**
+ * Obsidian Application.
+ */
 type ModulesLoader = import("./modules-loader/modules-loader");
+/**
+ * Obsidian Application.
+ */
 type Config = import("./config");
+/**
+ * Obsidian Application.
+ */
 type Events = import("./events/events");
+/**
+ * Obsidian Application.
+ */
 type Logging = import("./logging");

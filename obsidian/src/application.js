@@ -11,14 +11,12 @@ const IS_STARTED = Symbol("isStarted");
 
 /**
  * Obsidian Application.
+ *
+ * @typedef {import('./modules-loader/modules-loader')} ModulesLoader
+ * @typedef {import('./config')} Config
+ * @typedef {import('./events/events')} Events
+ * @typedef {import('./logging')} Logging
  */
-
- /**
-  * @typedef {import('./modules-loader/modules-loader')} ModulesLoader
-  * @typedef {import('./config')} Config
-  * @typedef {import('./events/events')} Events
-  * @typedef {import('./logging')} Logging
-  */
 
 class Application {
 
