@@ -1,7 +1,7 @@
-const self = require("../index.js");
 
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
+const self = require("../index.js");
 
 const Entity = require("./entity");
 
@@ -14,6 +14,9 @@ const {
  */
 class DataStore {
 
+    /**
+     * @constructor
+     */
     constructor() {
         this[ENTITIES_BY_PATH] = {};
         this[ENTITIES_BY_UUID] = {};

@@ -1,9 +1,9 @@
 jest.mock("../index.js");
 
+const SerializableClass = require("abitbol-serializable");
 const History = require("./history.js");
 const HistoryHelper = require("./history-helper.js");
 const self = require("../index.js");
-const SerializableClass = require("abitbol-serializable");
 
 const Entity = SerializableClass.$extend({
     __name__: "Entity",

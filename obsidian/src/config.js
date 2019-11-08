@@ -10,6 +10,11 @@ const BASE_CONFIG = Symbol("baseConfig");
  */
 class Config {
 
+    /**
+     * @constructor
+     *
+     * @param {Object} [rootConfig] The root config (defaut: ``null``)
+     */
     constructor(rootConfig = null) {
         this[APP] = null;
         this[ROOT] = rootConfig;
@@ -121,7 +126,7 @@ class Config {
             return path.slice(1);
 
         // Absolute module
-        } else if (path.startsWith("@")) {
+        } if (path.startsWith("@")) {
             const p = path.slice(1).split(".");
             p[0] = helpers.toCamelCase(p[0]);
             p.unshift("modules");

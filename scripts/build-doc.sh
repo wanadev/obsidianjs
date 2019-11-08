@@ -6,6 +6,8 @@ SPHINXPROJ=ObsidianFramework
 SOURCEDIR=build/doc.tmp
 BUILDDIR=build
 
+PATH="$PWD/node_modules/.bin:$PATH"
+
 if [ -d __env__ ] ; then
     test -f __env__/bin/activate \
         && source __env__/bin/activate \

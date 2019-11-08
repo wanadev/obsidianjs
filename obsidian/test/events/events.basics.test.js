@@ -41,13 +41,11 @@ describe("basic event emitting", () => {
             const listeners = [jest.fn(), jest.fn(), jest.fn()];
             const args = ["hello", "world", 12];
 
-            listeners.forEach(listener =>
-                events.on("my-event", listener));
+            listeners.forEach(listener => events.on("my-event", listener));
 
             events.emit("my-event", ...args);
 
-            listeners.forEach(listener =>
-                expect(listener).toHaveBeenCalledTimes(1));
+            listeners.forEach(listener => expect(listener).toHaveBeenCalledTimes(1));
         });
 
         test("calls the registered listener only once if registered multiple times to the same event", () => {

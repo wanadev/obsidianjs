@@ -1,4 +1,4 @@
-import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_STORE } from "../src/symbols";
+import { ENTITIES_BY_PATH, ENTITIES_BY_UUID, ENTITY_STORE } from "./symbols";
 
 
 jest.mock("../index.js");

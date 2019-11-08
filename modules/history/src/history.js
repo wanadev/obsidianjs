@@ -9,6 +9,9 @@ const historyHelper = require("./history-helper.js");
  */
 class History {
 
+    /**
+     * @constructor
+     */
     constructor() {
         // max Length of history, above that oldest snapshots are deleted
         this.maxLength = (self.app.config) ? self.app.config.get("maxLength") : 50;

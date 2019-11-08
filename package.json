@@ -22,7 +22,7 @@
     "husky": "^2.2.0",
     "jest": "^24.8.0",
     "jest-each": "^24.8.0",
-    "jsdoc": "^3.6.1",
+    "jsdoc": "^3.6.3",
     "jsdoc-plugin-abitbol": "^0.1.5",
     "lerna": "^3.13.4",
     "lint-staged": "^8.1.6",
