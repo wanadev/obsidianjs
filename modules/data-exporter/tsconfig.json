@@ -6,12 +6,12 @@
     "checkJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./types",
+    "declarationDir": "./src/types",
     "rootDir": "./src",
     "noEmit": false,
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "exclude": ["types"]
+  "exclude": ["src/types"]
 }
