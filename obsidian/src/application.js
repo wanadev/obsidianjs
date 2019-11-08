@@ -11,7 +11,13 @@ const IS_STARTED = Symbol("isStarted");
 
 /**
  * Obsidian Application.
+ *
+ * @typedef {import('./modules-loader/modules-loader')} ModulesLoader
+ * @typedef {import('./config')} Config
+ * @typedef {import('./events/events')} Events
+ * @typedef {import('./logging')} Logging
  */
+
 class Application {
 
     /**
@@ -20,10 +26,10 @@ class Application {
      * @param {string} [namespace] The namespace, generally the
      *        module name (default: ``"obsidian"``).
      * @param {Object} [dependencies={}] Application dependencies.
-     * @param {ModulesLoader} dependencies.modulesLoader An instance of the module loader.
-     * @param {Config} dependencies.config An instance of the config handler.
-     * @param {Events} dependencies.events An instance of the event dispatcher.
-     * @param {Logging} dependencies.log An instance of the logger.
+     * @param {ModulesLoader=} dependencies.modulesLoader An instance of the module loader.
+     * @param {Config=} dependencies.config An instance of the config handler.
+     * @param {Events=} dependencies.events An instance of the event dispatcher.
+     * @param {Logging=} dependencies.log An instance of the logger.
      * @param {Application} [dependencies.rootApp=null] (optional) An instance
      *        of the root application, if any.
      * @param {Object} [modules={}] (optional) The modules that should be accessible

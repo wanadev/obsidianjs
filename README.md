@@ -39,3 +39,7 @@ To only run test on changed files:
 You can now run the following command to build doc:
 
     npm run build-doc
+
+## Generate TS types
+
+`npx tsc -p ./obsidian`

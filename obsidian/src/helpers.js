@@ -102,11 +102,11 @@ const helpers = {
     mergeDeep(object1, object2) {
 
         function _isObject(obj) {  // eslint-disable-line no-underscore-dangle
-            return typeof obj === "object" &&
-                   obj !== null &&
-                   !Array.isArray(obj) &&
-                   !(obj instanceof Date) &&
-                   !(obj instanceof RegExp);
+            return typeof obj === "object"
+                   && obj !== null
+                   && !Array.isArray(obj)
+                   && !(obj instanceof Date)
+                   && !(obj instanceof RegExp);
         }
 
         Object.keys(object2).forEach((key) => {

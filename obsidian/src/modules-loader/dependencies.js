@@ -36,7 +36,7 @@ function generateDependencyTree(moduleName, modules) {
  * @return {string[]} An ordered module list.
  */
 function flattenDependencyTree(tree) {
-    let order = [];
+    const order = [];
     let stack = [tree];
 
     while (stack.length) {

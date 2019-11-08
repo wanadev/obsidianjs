@@ -1,7 +1,7 @@
-const self = require("../index.js");
 
 const serializer = require("abitbol-serializable/lib/serializer");
 const minimatch = require("minimatch");
+const self = require("../index.js");
 
 const Entity = require("./entity");
 

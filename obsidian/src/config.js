@@ -126,7 +126,7 @@ class Config {
             return path.slice(1);
 
         // Absolute module
-        } else if (path.startsWith("@")) {
+        } if (path.startsWith("@")) {
             const p = path.slice(1).split(".");
             p[0] = helpers.toCamelCase(p[0]);
             p.unshift("modules");

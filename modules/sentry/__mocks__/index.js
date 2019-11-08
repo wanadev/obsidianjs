@@ -8,9 +8,9 @@ module.exports = {
             get: (seekedValue) => {
                 if (seekedValue === "@obsidian.debug") {
                     return false;
-                } else if (seekedValue === "capturedLevels") {
+                } if (seekedValue === "capturedLevels") {
                     return ["fatal"];
-                } else if (seekedValue === "userInfos") {
+                } if (seekedValue === "userInfos") {
                     return {};
                 }
                 return null;
