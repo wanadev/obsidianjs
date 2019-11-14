@@ -24,8 +24,9 @@ const historyHelper = {
                 if (typeof snapshotEntity !== "undefined") {
                     const entity = dataStore.getEntity(currentEntityKey);
                     // Property is different or doesn't exist
-                    const unserializedEntity = SerializableClass
-                        .$unserialize(snapshotEntity);
+                    const unserializedEntity = dataStore.unserializeEntity(snapshotEntity);
+//SerializableClass
+  //                      .$unserialize(snapshotEntity);
                     Object.keys(snapshotEntity).forEach(
                         (property) => {
                             if ((typeof currentEntity[property] !== "undefined"

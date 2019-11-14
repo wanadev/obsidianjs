@@ -47,8 +47,8 @@ describe("Class instance serializaton", () => {
         const b = new ClassB("c");
 
         const serialized = SimpleSerializer.objectSerializer({
-            pathA: a,
-            pathB: b,
+            pathA: [a],
+            pathB: [b],
 
         });
         const unserialized = SimpleSerializer.objectUnserializer(serialized);

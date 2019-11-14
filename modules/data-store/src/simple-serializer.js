@@ -18,11 +18,11 @@ const SimpleSerializer = {
             serializedEntities[path] = [];
             const entities = entitiesByPath[path];
             entities.forEach((entity) => {
-                if (typeof (entity.serialize) === "function") {
-                    const s = entity.serialize();
-                    s.$data = entity.$data;
-                    s[this.classParameter] = entity.constructor.name;
-                    serializedEntities[path].push(s);
+                const serialized = this.serializeEntity(entity);
+                if (serialized) {
+                    serializedEntities[path].push(serialized);
+                } else {
+                    throw new Error(`Entity ${entity} doesn't have a serialize method !`);
                 }
             });
         });
@@ -35,25 +35,40 @@ const SimpleSerializer = {
             unserializedEntities[k] = [];
             const serializedData = serializedEntities[k];
             serializedData.forEach((serializedEntity) => {
-                const cl = serializedEntity[this.classParameter];
-                if (cl) {
-                    const Class = this.classes.find(
-                        c => c.name === cl,
-                    );
-                    if (Class) {
-                        const obj = new Class();
-                        obj.unserialize(serializedEntity);
-                        unserializedEntities[k].push(obj);
-                    } else {
-                        throw new Error(`class ${cl} not registered for unserialization`);
-                    }
+                const unserialized = this.unserializeEntity(serializedEntity);
+                if (unserialized) {
+                    unserializedEntities[k].push(unserialized);
                 } else {
-                    throw new Error(`The serialized object ${serializedData} doesn't have a serialized class !`);
+                    throw new Error(`The serialized object ${serializedData} doesn't have a registered class parameter.`);
                 }
 
             });
         });
         return unserializedEntities;
+    },
+
+    unserializeEntity(serializedEntity, Class = null) {
+        const ActualClass = Class || this.isSerializedNative(serializedEntity);
+        if (ActualClass) {
+            const ent = new ActualClass();
+            ent.unserialize(serializedEntity);
+            return ent;
+        }
+        return null;
+    },
+
+    serializeEntity(entity) {
+        if (typeof (entity.serialize) === "function") {
+            const s = entity.serialize();
+            s.$data = entity.$data;
+            s[this.classParameter] = entity.constructor.name;
+            return s;
+        }
+        return null;
+    },
+
+    isSerializedNative(serializedObject) {
+        return serializedObject.__name__ ? this.classes.find(c => c.name === serializedObject[this.classParameter]) : false;
     },
 
     extractNativeEntities(entitiesByPath) {
@@ -62,7 +77,7 @@ const SimpleSerializer = {
         Object.keys(entitiesByPath).forEach((path) => {
             const entities = entitiesByPath[path];
             entities.forEach((entity) => {
-                if (this.classes.find(c => c.name === entity.__name__)) {
+                if (this.isSerializedNative(entity)) {
                     if (!nativeEntities[path]) {
                         nativeEntities[path] = [];
                     }

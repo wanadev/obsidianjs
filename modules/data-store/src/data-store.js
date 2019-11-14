@@ -1,5 +1,6 @@
 const uuidv4 = require("uuid/v4");
 const serializer = require("abitbol-serializable/lib/serializer");
+const SerializableClass = require("abitbol-serializable");
 const minimatch = require("minimatch");
 const nativeSerializer = require("./simple-serializer").default;
 const self = require("../index.js");
@@ -128,7 +129,7 @@ class DataStore {
      */
     serializeEntities() {  // → string (JSON)
         const { nativeEntities, otherEntities } = nativeSerializer.extractNativeEntities(
-            this[ENTITIES_BY_PATH]
+            this[ENTITIES_BY_PATH],
         );
         return {
             ...nativeSerializer.objectSerializer(nativeEntities),
@@ -144,9 +145,8 @@ class DataStore {
      * @return {undefined}
      */
     unserializeEntities(serializedEntities) {
-        debugger;
         const { nativeEntities, otherEntities } = nativeSerializer.extractNativeEntities(
-            serializedEntities
+            serializedEntities,
         );
         const unserialized = {
             ...nativeSerializer.objectUnserializer(nativeEntities),
@@ -159,6 +159,14 @@ class DataStore {
         });
     }
 
+    unserializeEntity(serializedEntity) { // eslint-disable-line class-methods-use-this
+        const NativeClass = nativeSerializer.isSerializedNative(serializedEntity);
+        if (NativeClass) {
+            return nativeSerializer.unserializeEntity(serializedEntity, NativeClass);
+        }
+        return SerializableClass.$unserialize(serializedEntity);
+    }
+
 
     /**
      * Returns the Entity abitbol-class used in the data-store
@@ -166,6 +174,10 @@ class DataStore {
      */
     get Entity() {  // eslint-disable-line class-methods-use-this
         return Entity;
+    }
+
+    isSerializedNative(serializedEntity) {
+        return nativeSerializer.isSerializedNative(serializedEntity);
     }
 
 }

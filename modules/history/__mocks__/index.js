@@ -1,5 +1,5 @@
-
-
+const SerializableClass = require("abitbol-serializable");
+const ActualDataStore = require("../../data-store/index.js").load();
 module.exports = {
     app: {
         events: {
@@ -60,6 +60,9 @@ module.exports = {
                             id: "3",
                         },
                     }),
+                unserializeEntity(serialized) {
+                    return ActualDataStore.unserializeEntity(serialized);
+                },
             },
         },
     },

@@ -430,7 +430,7 @@ describe("DataStore.removeEntity Native", () => {
 
 });
 
-describe("DataStore.getEntity", () => {
+describe("DataStore.getEntity Native", () => {
 
     test("returns the requested entity if it is in the store", () => {
         const dataStore = new DataStore();
@@ -447,7 +447,7 @@ describe("DataStore.getEntity", () => {
 
 });
 
-describe("DataStore.listEntities", () => {
+describe("DataStore.listEntities Native", () => {
 
     test("returns all entities by default", () => {
         const dataStore = new DataStore();
@@ -489,7 +489,7 @@ describe("DataStore.listEntities", () => {
 
 });
 
-describe("DataStore.clear", () => {
+describe("DataStore.clear Native", () => {
 
     test("removes everything from the store", () => {
         const dataStore = new DataStore();
@@ -505,10 +505,9 @@ describe("DataStore.clear", () => {
 
 });
 
-describe("DataStore.serializeEntities", () => {
+describe("DataStore.serializeEntities Native", () => {
 
     test("returns serialized entities", () => {
-        debugger;
         const dataStore = new DataStore();
         const entity = new EntityNative({ id: "entity-0" });
         const entity1 = new EntityNative({ id: "entity-1" });
@@ -520,41 +519,3 @@ describe("DataStore.serializeEntities", () => {
 
 });
 
-describe("DataStore.unserializeEntities", () => {
-
-    test("unserializes enities and add them to the store", () => {
-        const serializedData = {
-            "/tata": [{
-                __name__: "Entity",
-                id: "entity-0",
-            }, {
-                __name__: "Entity",
-                id: "entity-1",
-            }],
-            "/toto": [{
-                __name__: "Entity",
-                id: "entity-3",
-            }],
-            "/tata/titi": [{
-                __name__: "Entity",
-                id: "entity-2",
-            }],
-        };
-
-        const dataStore = new DataStore();
-        dataStore.unserializeEntities(serializedData);
-        expect(dataStore[ENTITIES_BY_PATH]["/tata"]).toHaveLength(2);
-        expect(dataStore[ENTITIES_BY_PATH]["/tata/titi"]).toHaveLength(1);
-        expect(dataStore[ENTITIES_BY_PATH]["/toto"]).toHaveLength(1);
-    });
-
-});
-
-describe("DataStore.Entity", () => {
-
-    test("returns the EntityNative  abitbol class", () => {
-        const dataStore = new DataStore();
-        expect(dataStore.Entity).toBe(Entity);
-    });
-
-});
