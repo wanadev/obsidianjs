@@ -159,14 +159,6 @@ class DataStore {
         });
     }
 
-    unserializeEntity(serializedEntity) { // eslint-disable-line class-methods-use-this
-        const NativeClass = nativeSerializer.isSerializedNative(serializedEntity);
-        if (NativeClass) {
-            return nativeSerializer.unserializeEntity(serializedEntity, NativeClass);
-        }
-        return SerializableClass.$unserialize(serializedEntity);
-    }
-
 
     /**
      * Returns the Entity abitbol-class used in the data-store
@@ -178,6 +170,14 @@ class DataStore {
 
     isSerializedNative(serializedEntity) {
         return nativeSerializer.isSerializedNative(serializedEntity);
+    }
+
+    registerClass(cl) { // eslint-disable-line class-methods-use-this
+        if (cl.$class) {
+            SerializableClass.$register(cl);
+        } else {
+            nativeSerializer.registerClass(cl);
+        }
     }
 
 }

@@ -1,15 +1,41 @@
 jest.mock("../index.js");
 
+const SerializableClass = require("abitbol-serializable");
 const History = require("./history.js");
 const HistoryHelper = require("./history-helper.js");
 const self = require("../index.js");
-const SerializableClass = require("abitbol-serializable");
 
 const Entity = SerializableClass.$extend({
     __name__: "Entity",
     getProp1: jest.fn(),
     setProp1: jest.fn(),
 });
+
+class NativeEntity {
+
+    serialize() {
+        return {
+            id: this.id,
+            prop1: this.prop1,
+        };
+    }
+
+    unserialize(serialized) {
+        Object.assign(this, serialized);
+    }
+
+    get prop1() {
+        return this.getter();
+    }
+
+    set prop1(p) {
+        this.setter(p);
+    }
+
+}
+
+NativeEntity.prototype.setter = jest.fn();
+NativeEntity.prototype.getter = jest.fn();
 
 const EntityDeepProperty = SerializableClass.$extend({
     __name__: "EntityDeepProperty",
@@ -18,6 +44,34 @@ const EntityDeepProperty = SerializableClass.$extend({
     ),
     setDeepProp1: jest.fn(),
 });
+
+class NativeEntityDeepProperty {
+
+    serialize() {
+        return {
+            id: this.id,
+            deepProp1: this.deepProp1,
+        }
+
+    }
+
+    unserialize(serialized) {
+        Object.assign(this, serialized);
+    }
+
+    get deepProp1() {
+        return this.getter;
+    }
+
+    set deepProp1(p) {
+        this.setter(p);
+    }
+
+}
+NativeEntityDeepProperty.prototype.getter = jest.fn().mockReturnValue(
+    { x: 0, y: 0, z: 0 },
+);
+NativeEntityDeepProperty.prototype.setter = jest.fn();
 
 const EntityArray = SerializableClass.$extend({
     __name__: "EntityArray",
@@ -36,6 +90,15 @@ const EntityArray = SerializableClass.$extend({
 function getEntity(id = Math.floor(Math.random() * 1000), prop1 = "toto") {
     const newEntity = {
         __name__: "Entity",
+        id,
+        prop1,
+    };
+    return newEntity;
+}
+
+function getNativeEntity(id = Math.floor(Math.random() * 1000), prop1 = "toto") {
+    const newEntity = {
+        __name__: "NativeEntity",
         id,
         prop1,
     };
@@ -72,10 +135,21 @@ function getDeepEntity(id = Math.floor(Math.random() * 1000), deepProp1 = { x: 0
     return newEntity;
 }
 
+function getDeepNativeEntity(id = Math.floor(Math.random() * 1000), deepProp1 = { x: 0, y: 0, z: 0 }) {
+    const newEntity = {
+        __name__: "NativeEntityDeepProperty",
+        id,
+        deepProp1,
+    };
+    return newEntity;
+}
+
 beforeAll(() => {
     SerializableClass.$register(Entity);
     SerializableClass.$register(EntityArray);
     SerializableClass.$register(EntityDeepProperty);
+    self.app.modules.dataStore.registerClass(NativeEntity);
+    self.app.modules.dataStore.registerClass(NativeEntityDeepProperty);
 });
 
 beforeEach(() => {
@@ -309,11 +383,39 @@ describe("history/history.snapshot", () => {
         expect(dataBefore).toEqual(dataAfter);
     });
 
+    test("Test if snapshot does not change integrity of native data", () => {
+        const history = new History();
+        const projectData = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+        };
+        self.app.modules.dataStore.unserializeEntities(projectData);
+        const dataBefore = self.app.modules.dataStore.serializeEntities();
+        history.snapshot();
+        const dataAfter = self.app.modules.dataStore.serializeEntities();
+        expect(dataBefore).toEqual(dataAfter);
+    });
+
     test("Snapshot extract current project as expected", () => {
         const history = new History();
         const projectData = {
             "/a": [
                 getEntity(1),
+            ],
+        };
+        self.app.modules.dataStore.serializeEntities.mockReturnValueOnce(
+            projectData,
+        );
+        history.snapshot();
+        expect(history.snapshots[history.pointer].layers).toEqual(projectData);
+    });
+
+    test("Snapshot extract current project as expected (Native)", () => {
+        const history = new History();
+        const projectData = {
+            "/a": [
+                getNativeEntity(1),
             ],
         };
         self.app.modules.dataStore.serializeEntities.mockReturnValueOnce(
@@ -345,6 +447,38 @@ describe("history/history.snapshot", () => {
             ],
             "/c": [
                 getEntity(3),
+            ],
+        };
+
+        self.app.modules.dataStore.serializeEntities = jest.fn()
+            .mockReturnValueOnce(objectA)
+            .mockReturnValueOnce(objectB);
+
+        const history = new History();
+        history.snapshot();
+        expect(history.snapshots[0].layers).toEqual(objectA);
+        history.snapshot();
+        expect(history.snapshots[0].layers).toEqual(objectB);
+        expect(history.snapshots[1].layers).toEqual(objectA);
+    });
+
+    test("New snapshot take new head (Native)", () => {
+
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/b": [
+                getNativeEntity(2),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/c": [
+                getNativeEntity(3),
             ],
         };
 
@@ -444,6 +578,81 @@ describe("history/history.snapshot", () => {
         expect(history.snapshots[1].layers).toEqual(objectB);
     });
 
+    test("Handle after being back in history, new snapshot take new head (Native)", () => {
+        // If we have a stack of 5 history, when we get back to -3 and we take a new snapshot,
+        // make sure old -2 and -1 are deleted
+
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/b": [
+                getNativeEntity(2),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/c": [
+                getNativeEntity(3),
+            ],
+        };
+
+        const objectC = {
+            "/c": [
+                getNativeEntity(3),
+            ],
+            "/c/a": [
+                getNativeEntity(31),
+            ],
+        };
+
+        const objectD = {
+            "/d": [
+                getNativeEntity(4),
+            ],
+        };
+
+        const objectE = {
+            "/e": [
+                getNativeEntity(5),
+            ],
+        };
+
+        const objectF = {
+            "/f": [
+                getNativeEntity(6),
+            ],
+        };
+
+        const objectG = {
+            "/g": [
+                getNativeEntity(7),
+            ],
+        };
+
+        self.app.modules.dataStore.serializeEntities
+            .mockReturnValueOnce(objectA)
+            .mockReturnValueOnce(objectB)
+            .mockReturnValueOnce(objectC)
+            .mockReturnValueOnce(objectD)
+            .mockReturnValueOnce(objectE)
+            .mockReturnValueOnce(objectF)
+            .mockReturnValueOnce(objectG);
+
+        const history = new History();
+        history.snapshot(); // a
+        history.snapshot(); // b
+        history.snapshot(); // c
+        history.snapshot(); // d
+        history.snapshot(); // e
+        history.go(3); // here it calls f which is a side effect of the test
+        history.snapshot(); // g
+        expect(history.snapshots[0].layers).toEqual(objectG);
+        expect(history.snapshots[1].layers).toEqual(objectB);
+    });
     test("Snapshot cropLength", () => {
         // Test when we reached maxLength if old one is well deleted
         const objectA = {
@@ -486,6 +695,48 @@ describe("history/history.snapshot", () => {
         expect(history.snapshots[history.maxLength - 1].layers).toEqual(objectB);
         expect(history.snapshots.length).toEqual(history.maxLength);
     });
+    test("Snapshot cropLength (Native)", () => {
+        // Test when we reached maxLength if old one is well deleted
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/b": [
+                getNativeEntity(2),
+            ],
+        };
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/c": [
+                getNativeEntity(3),
+            ],
+        };
+
+        const objectC = {
+            "/c": [
+                getNativeEntity(3),
+            ],
+            "/c/a": [
+                getNativeEntity(31),
+            ],
+        };
+
+        self.app.modules.dataStore.serializeEntities
+            .mockReturnValueOnce(objectA)
+            .mockReturnValueOnce(objectB)
+            .mockReturnValueOnce(objectC);
+
+        const history = new History();
+        history.maxLength = 2;
+        history.snapshot(); // a
+        history.snapshot(); // b
+        history.snapshot(); // c
+        // a have been croped
+        expect(history.snapshots[history.maxLength - 1].layers).toEqual(objectB);
+        expect(history.snapshots.length).toEqual(history.maxLength);
+    });
 
 });
 
@@ -503,6 +754,26 @@ describe("history/history-helper.applySnapshotDifference", () => {
         const objectB = {
             "/a": [
                 getEntity(1),
+            ],
+        };
+
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(self.app.modules.dataStore.removeEntity).lastCalledWith("2");
+    });
+
+    test("Handle delete native entity", () => {
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/b": [
+                getNativeEntity(2),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
             ],
         };
 
@@ -533,6 +804,28 @@ describe("history/history-helper.applySnapshotDifference", () => {
         expect(lastCall[1]).toEqual("/b");
     });
 
+    test("Handle add native entity", () => {
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/b": [
+                getNativeEntity(2),
+            ],
+        };
+
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        const lastCall = self.app.modules.dataStore.addEntity.mock.calls[
+            self.app.modules.dataStore.addEntity.mock.calls.length - 1];
+        expect(lastCall[0].id).toEqual(objectB["/b"][0].id);
+        expect(lastCall[1]).toEqual("/b");
+    });
     test("Handle add property", () => {
         const objectA = {
             "/a": [
@@ -552,6 +845,26 @@ describe("history/history-helper.applySnapshotDifference", () => {
         HistoryHelper.applySnapshotDifference(objectA, objectB);
 
         expect(Entity.prototype.setProp1).toHaveBeenNthCalledWith(1, "tata");
+    });
+    test("Handle add property (Native)", () => {
+        const objectA = {
+            "/a": [
+                {
+                    __name__: "Entity",
+                    id: 1,
+                },
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1, "tata"),
+            ],
+        };
+        NativeEntity.prototype.setter.mockClear();
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+
+        expect(NativeEntity.prototype.setter).toHaveBeenNthCalledWith(1, "tata");
     });
 
     test("Handle delete property", () => {
@@ -581,6 +894,32 @@ describe("history/history-helper.applySnapshotDifference", () => {
         expect(self.app.log.warn).lastCalledWith("You are removing a property between two entities, which should never happen");
     });
 
+    test("Handle delete property (native)", () => {
+        const objectA = {
+            "/a": [
+                {
+                    __name__: "Entity",
+                    id: 1,
+                    prop1: "toto",
+                    prop2: "tata",
+                },
+            ],
+            "/a/a": [
+                getEntity(2),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+            "/a/a": [
+                getNativeEntity(2),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+        expect(self.app.log.warn).lastCalledWith("You are removing a property between two entities, which should never happen");
+    });
     test("Handle modify property", () => {
         const objectA = {
             "/a": [
@@ -596,6 +935,22 @@ describe("history/history-helper.applySnapshotDifference", () => {
         HistoryHelper.applySnapshotDifference(objectA, objectB);
 
         expect(Entity.prototype.setProp1).toHaveBeenNthCalledWith(1, "tata");
+    });
+    test("Handle modify property (native)", () => {
+        const objectA = {
+            "/a": [
+                getNativeEntity(1),
+            ],
+        };
+
+        const objectB = {
+            "/a": [
+                getNativeEntity(1, "tata"),
+            ],
+        };
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+
+        expect(NativeEntity.prototype.setter).toHaveBeenNthCalledWith(1, "tata");
     });
 
     test("Handle child property difference", () => {
@@ -617,6 +972,27 @@ describe("history/history-helper.applySnapshotDifference", () => {
         HistoryHelper.applySnapshotDifference(objectA, objectB);
 
         expect(EntityDeepProperty.prototype.setDeepProp1).toHaveBeenNthCalledWith(1, deepObject);
+    });
+
+    test("Handle child property difference (native)", () => {
+        const objectA = {
+            "/a": [
+                getDeepNativeEntity(1),
+            ],
+        };
+        const deepObject = { x: 0, y: 1, z: 1 };
+        const objectB = {
+            "/a": [
+                getDeepNativeEntity(1, deepObject),
+            ],
+        };
+        self.app.modules.dataStore.getEntity.mockClear();
+        self.app.modules.dataStore.getEntity.mockReturnValueOnce(
+            new NativeEntityDeepProperty(),
+        );
+        HistoryHelper.applySnapshotDifference(objectA, objectB);
+
+        expect(NativeEntityDeepProperty.prototype.setter).toHaveBeenNthCalledWith(1, deepObject);
     });
 
     test("Handle array modification", () => {

@@ -68,7 +68,7 @@ const SimpleSerializer = {
     },
 
     isSerializedNative(serializedObject) {
-        return serializedObject.__name__ ? this.classes.find(c => c.name === serializedObject[this.classParameter]) : false;
+        return serializedObject[this.classParameter] ? this.classes.find(c => c.name === serializedObject[this.classParameter]) : false;
     },
 
     extractNativeEntities(entitiesByPath) {

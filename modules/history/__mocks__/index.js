@@ -63,6 +63,9 @@ module.exports = {
                 unserializeEntity(serialized) {
                     return ActualDataStore.unserializeEntity(serialized);
                 },
+                registerClass(cl) {
+                    ActualDataStore.registerClass(cl);
+                }
             },
         },
     },

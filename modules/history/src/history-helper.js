@@ -1,4 +1,5 @@
 const SerializableClass = require("abitbol-serializable");
+const SimpleSerializer = require("../../data-store/src/simple-serializer.js").default;
 const self = require("../index.js");
 
 const historyHelper = {
@@ -24,9 +25,8 @@ const historyHelper = {
                 if (typeof snapshotEntity !== "undefined") {
                     const entity = dataStore.getEntity(currentEntityKey);
                     // Property is different or doesn't exist
-                    const unserializedEntity = dataStore.unserializeEntity(snapshotEntity);
-//SerializableClass
-  //                      .$unserialize(snapshotEntity);
+                    //const unserializedEntity = dataStore.unzerializeEntity(snapshotEntity);
+                    const unserializedEntity = historyHelper.unserializeEntity(snapshotEntity);
                     Object.keys(snapshotEntity).forEach(
                         (property) => {
                             if ((typeof currentEntity[property] !== "undefined"
@@ -72,7 +72,7 @@ const historyHelper = {
                             );
                             if (!entityFound) {
                                 const cloneObject = JSON.parse(JSON.stringify(snapshotEntity));
-                                const entity = SerializableClass.$unserialize(cloneObject);
+                                const entity = historyHelper.unserializeEntity(cloneObject);
                                 dataStore.addEntity(entity, path);
                                 currentState[path].push(cloneObject);
                             }
@@ -82,7 +82,7 @@ const historyHelper = {
                     currentState[path] = []; // eslint-disable-line no-param-reassign
                     snapshotPath.forEach(
                         (snapshotEntity) => {
-                            const entity = SerializableClass.$unserialize(snapshotEntity);
+                            const entity = historyHelper.unserializeEntity(snapshotEntity);
                             dataStore.addEntity(entity, path);
                             currentState[path].push(snapshotEntity);
                         },
@@ -105,8 +105,8 @@ const historyHelper = {
                                         if ((currentEntity.id === snapshotEntity.id)
                                         && (snapshotPathKey !== currentPathKey)) {
                                             dataStore.removeEntity(currentEntity.id);
-                                            const entity = SerializableClass
-                                                .$unserialize(snapshotEntity);
+                                            const entity = historyHelper
+                                                .unserializeEntity(snapshotEntity);
                                             dataStore.addEntity(entity, snapshotPathKey);
                                         }
                                     },
@@ -173,6 +173,14 @@ const historyHelper = {
             (value, index) => historyHelper.checkDiff(value, array2[index]),
         ));
     },
+
+    unserializeEntity(serializedEntity) { // eslint-disable-line class-methods-use-this
+        const NativeClass = SimpleSerializer.isSerializedNative(serializedEntity);
+        if (NativeClass) {
+            return SimpleSerializer.unserializeEntity(serializedEntity, NativeClass);
+        }
+        return SerializableClass.$unserialize(serializedEntity);
+    }
 
 };
 module.exports = historyHelper;
