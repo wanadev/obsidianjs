@@ -1,6 +1,6 @@
 {
   "name": "@obsidianjs/main-loop",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Loop",
   "main": "index.js",
   "directories": {
