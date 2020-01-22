@@ -204,7 +204,7 @@ class MainLoop {
             try {
                 this.callbacks[i](loopInfo);
             } catch (error) {
-                throw Error(error);
+                self.app.log.error(error);
             }
         }
     }
