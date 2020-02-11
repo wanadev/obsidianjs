@@ -57,7 +57,7 @@ class DataStore {
             id = entity.id; // eslint-disable-line prefer-destructuring
             realEntity = entity;
         }
-        const path = this[ENTITIES_BY_UUID][id].path; // eslint-disable-line prefer-destructuring
+        const path = this[ENTITIES_BY_UUID][id].$data[ENTITY_PATH]; // eslint-disable-line prefer-destructuring
         delete this[ENTITIES_BY_UUID][id];
         const index = this[ENTITIES_BY_PATH][path].indexOf(realEntity);
         this[ENTITIES_BY_PATH][path].splice(index, 1);
