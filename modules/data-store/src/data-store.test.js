@@ -144,7 +144,7 @@ describe("DataStore.removeEntity", () => {
         expect(self.app.events.emit).lastCalledWith("entity-removed", entity);
     });
 
-    test("don't runs 'entity-removed' event if entity is not found inside dataStore", () => {
+    test("doesn't run 'entity-removed' event if entity is not found inside dataStore", () => {
         self.app.events.emit.mockClear();
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
