@@ -144,6 +144,13 @@ describe("DataStore.removeEntity", () => {
         expect(self.app.events.emit).lastCalledWith("entity-removed", entity);
     });
 
+    test("don't runs 'entity-removed' event if entity is not found inside dataStore", () => {
+        self.app.events.emit.mockClear();
+        const dataStore = new DataStore();
+        const entity = new Entity({ id: "entity-0" });
+        dataStore.removeEntity(entity.id);
+        expect(self.app.events.emit).not.toBeCalledWith("entity-removed", entity);
+    });
 });
 
 describe("DataStore.getEntity", () => {
