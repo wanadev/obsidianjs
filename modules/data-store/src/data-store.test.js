@@ -149,7 +149,7 @@ describe("DataStore.removeEntity", () => {
         const dataStore = new DataStore();
         const entity = new Entity({ id: "entity-0" });
         dataStore.removeEntity(entity.id);
-        expect(self.app.events.emit).not.toBeCalledWith("entity-removed", entity);
+        expect(self.app.events.emit).not.toBeCalled();
     });
 });
 
