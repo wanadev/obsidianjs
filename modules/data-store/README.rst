@@ -16,6 +16,7 @@ Documentation
 Changelog
 ---------
 
+* **0.3.0:** Do not send the "entity-removed" when the item was not in the data store (#57)
 * **0.2.2:** Expose the Entity class through the data-store module API
 * **0.2.1:** Fixes wrong export
 * **0.2.0:** Send events when adding and removing an Entity from the store
