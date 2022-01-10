@@ -20,6 +20,6 @@
     "@obsidianjs/data-store": "0.x"
   },
   "dependencies": {
-    "obsidian-file": "^2.0.4"
+    "obsidian-file": "^3.0.1"
   }
 }
