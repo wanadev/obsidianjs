@@ -18,9 +18,25 @@ Then use it in your application (in your main ``index.js``)::
 
    const obsidian = require("@obsidianjs/obsidian");
    const dataExporter = require("@obsidianjs/data-exporter");
+   const ObisidianProjectFile = require("obsidian-file");
 
    const app = obsidian("my-application");
-   app.use(dataExporter);
+   app.use(dataExporter, {
+       config: {
+           // A string to identify the type of the prohect (uppercase, 10
+           // characters maximum)
+           type: "GENERIC",
+
+           // Format of the Metadata section (0x00: JSON, 0x01: JSON+deflate)
+           metadataFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
+
+           // Format of the Project section (0x00: JSON, 0x01: JSON+deflate)
+           projectFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
+
+           // Format of the BlobIndex section (0x00: JSON, 0x01: JSON+deflate)
+           blobIndexFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
+       },
+   });
    app.start();
 
 Finally require it in modules that need it::
