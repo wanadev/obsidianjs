@@ -10,6 +10,7 @@
   "rules": {
     "quotes": ["error", "double"],
     "indent": ["error", 4],
+    "import/extensions": "off",
     "padded-blocks": ["error", {
       "classes": "always"
     }],

@@ -12,5 +12,8 @@ module.exports = {
                 unserializeEntities: jest.fn(),
             },
         },
+        config: {
+            get: jest.fn(k => (k === "type" ? "GENERIC" : 1)),
+        },
     },
 };

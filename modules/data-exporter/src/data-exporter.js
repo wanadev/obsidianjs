@@ -2,12 +2,7 @@ const ObisidianProjectFile = require("obsidian-file");
 
 const self = require("../index.js");
 
-const DEFAULT_CONFIG = {
-    type: "GENERIC",
-    metadataFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
-    projectFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
-    blobIndexFormat: ObisidianProjectFile.FORMAT_JSON_DEFLATE,
-};
+const { config } = self.app;
 
 /**
  * Export (and import) data from the data-store module as an Obsidian Project
@@ -32,8 +27,12 @@ class DataExporter {
      */
     export(metadata = {}, options = {}) {  // eslint-disable-line class-methods-use-this
         const { dataStore } = self.app.modules;
-        const mergedOptions = Object.assign({}, DEFAULT_CONFIG, options);
-        // TODO Also merge options from config when available
+        const mergedOptions = Object.assign({
+            type: config.get("type"),
+            metadataFormat: config.get("metadataFormat"),
+            projectFormat: config.get("projectFormat"),
+            blobIndexFormat: config.get("blobIndexFormat"),
+        }, options);
         // TODO Also merge metadata when data-store implement them
         const project = new ObisidianProjectFile();
         project.type = mergedOptions.type;
