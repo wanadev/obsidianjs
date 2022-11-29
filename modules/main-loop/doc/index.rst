@@ -25,7 +25,7 @@ Then use it in your application (in your main ``index.js``)::
 You can add the idleFps, activeFps and debug config parameters to change this module behavior ::
 
     app.use(mainLoop, {
-        config : {
+        config: {
             // The target fps when the loop is running normally (-1 by default => fps = screen refresh rate)
             activeFps: 30,
 
