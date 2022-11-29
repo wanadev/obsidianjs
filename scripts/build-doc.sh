@@ -13,7 +13,7 @@ if [ -d __env__ ] ; then
         && source __env__/bin/activate \
         || source __env__/Scripts/activate
 else
-    virtualenv __env__
+    python3 -m venv __env__
     test -f __env__/bin/activate \
         && source __env__/bin/activate \
         || source __env__/Scripts/activate
