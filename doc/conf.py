@@ -23,7 +23,7 @@ import glob
 # -- Project information -----------------------------------------------------
 
 project = u"Obsidian Framework"
-copyright = u"2018, Wanadev"
+copyright = u"2018-2022, Wanadev"
 author = u"Wanadev"
 
 # The short X.Y version
